@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.PostDao;
+import com.friendBook.model.Post;
+import com.friendBook.model.PostDao;
+
 import exceptions.PublishException;
-import post.Post;
 
 @WebServlet("/PostsListServlet")
 public class PostsListServlet extends HttpServlet {

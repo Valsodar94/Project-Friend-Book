@@ -1,4 +1,4 @@
-package user;
+package com.friendBook.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import exceptions.UserException;
-import post.Post;
 
 public class User {
 	private static final int MAX_PASSWORD_LENGTH = 20;

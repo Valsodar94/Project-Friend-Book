@@ -1,6 +1,4 @@
-package like;
-
-import user.User;
+package com.friendBook.model;
 
 public class Like {
 	private Likeable entity;

@@ -1,13 +1,9 @@
-package comment;
+package com.friendBook.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import like.Like;
-import like.Likeable;
-import user.User;
 
 public class Comment implements Likeable{
 	private int id;

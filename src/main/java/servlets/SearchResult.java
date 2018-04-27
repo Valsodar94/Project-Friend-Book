@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.UserDao;
+import com.friendBook.model.User;
+import com.friendBook.model.UserDao;
+
 import exceptions.UserException;
-import user.User;
 
 
 @WebServlet("/SearchResult")

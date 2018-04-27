@@ -1,4 +1,4 @@
-package dao;
+package com.friendBook.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,10 +10,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import db.DBConnection;
-import exceptions.PublishException;
-import post.Post;
+import org.springframework.stereotype.Component;
 
+import exceptions.PublishException;
+@Component
 public class PostDao {
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "

@@ -1,4 +1,4 @@
-package dao;
+package com.friendBook.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,12 +7,12 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-import db.DBConnection;
+import org.springframework.stereotype.Component;
+
 import exceptions.LoginException;
 import exceptions.RegisterException;
 import exceptions.UserException;
-import user.User;
-
+@Component
 public class UserDao implements IUserDao{
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?)";

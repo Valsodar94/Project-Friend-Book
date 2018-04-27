@@ -1,4 +1,4 @@
-package post;
+package com.friendBook.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,11 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import comment.Comment;
-import like.Like;
-import like.Likeable;
-import user.User;
 
 public class Post implements Likeable, Comparable<Post>{
 	private int id;
