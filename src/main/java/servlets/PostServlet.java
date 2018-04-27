@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import dao.PostDao;
 import dao.UserDao;
-import exceptions.PublishException;
+import exceptions.PostException;
 import exceptions.RegisterException;
 import exceptions.UserException;
 import post.Post;
@@ -65,7 +65,7 @@ public class PostServlet extends HttpServlet{
 		}			
 			doGet(request, response);
 		}
-		catch(PublishException e) {
+		catch(PostException e) {
 			e.printStackTrace();
 			response.sendRedirect("ErrorForm.html");
 		}

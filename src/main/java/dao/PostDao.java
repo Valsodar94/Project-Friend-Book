@@ -10,11 +10,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import db.DBConnection;
-import exceptions.PublishException;
+import exceptions.PostException;
 import post.Post;
 
-public class PostDao {
+@Component
+public class PostDao implements IPostDAO{
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "
 			+ "VALUES (?, ?, localtime(), ?);";
@@ -26,7 +29,7 @@ public class PostDao {
 		db = DBConnection.getInstance();
 	}
 
-	public boolean publish(Post post) throws PublishException {
+	public boolean publish(Post post) throws PostException {
 		if ((post.getText() == null || post.getText().length() == 0)
 				&& (post.getPictureUrl() == null || post.getPictureUrl().length() == 0)) {
 			return false;
@@ -45,11 +48,11 @@ public class PostDao {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new PublishException("Something went wrong with DB", e);
+			throw new PostException("Something went wrong with DB", e);
 		}
 	}
 
-	public List<Post> extractPosts(int userId) throws PublishException {
+	public List<Post> extractPosts(int userId) throws PostException {
 		PreparedStatement pstmt;
 		try {
 			pstmt = db.getConnection().prepareStatement(EXTRACT_POSTS_SQL);
@@ -69,15 +72,15 @@ public class PostDao {
 			return usersPosts;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new PublishException("Something went wrong with DB", e);
+			throw new PostException("Something went wrong with DB", e);
 		}
 	}
 
-	public void delete() {
+	public void delete() throws PostException{
 
 	}
 
-	public void edit() {
+	public void edit() throws PostException{
 
 	}
 

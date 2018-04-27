@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import dao.PostDao;
-import exceptions.PublishException;
+import exceptions.PostException;
 import post.Post;
 
 @WebServlet("/PostsListServlet")
@@ -44,7 +44,7 @@ public class PostsListServlet extends HttpServlet {
 			request.setAttribute("postsList", postsList);		
 			RequestDispatcher rd = request.getRequestDispatcher("PostList.jsp");
 			rd.include(request, response);
-		} catch (PublishException e) {
+		} catch (PostException e) {
 			e.printStackTrace();
 			response.sendRedirect("ErrorForm.html");
 		}

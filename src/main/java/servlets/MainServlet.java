@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import exceptions.LoginException;
-import exceptions.PublishException;
+import exceptions.PostException;
 
 @WebServlet("/MainServlet")
 public class MainServlet extends HttpServlet {
