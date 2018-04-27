@@ -1,9 +1,8 @@
-package dao;
+package com.friendBook.model;
 
 import java.util.List;
 
 import exceptions.PostException;
-import post.Post;
 
 public interface IPostDAO {
 	

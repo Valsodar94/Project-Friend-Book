@@ -1,6 +1,7 @@
-package dao;
+package com.friendBook.model;
 
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,12 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.springframework.stereotype.Component;
 
-import db.DBConnection;
 import exceptions.PostException;
-import post.Post;
 
 @Component
 public class PostDao implements IPostDAO{

@@ -5,12 +5,8 @@
 <%@ include file="Header.jsp" %>
 
 
-	<% 
-	HttpSession session2 = request.getSession();
-	if (session2.getAttribute("USER") !=null) 
-		response.sendRedirect("MainServlet");
-	%>
-	<form method="POST" action="LoginServlet">
+
+	<form method="POST" action="/login">
 		<h3>Please login:<br></h3> 
 		<p>Username: <input type="text" name="username" placeholder="Username"><br></p>
 		<p>Password: <input type="password" name="password" placeholder="Password"><br></p>

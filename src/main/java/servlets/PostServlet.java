@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.PostDao;
-import dao.UserDao;
 import exceptions.PostException;
+import com.friendBook.model.Post;
+import com.friendBook.model.PostDao;
+import com.friendBook.model.User;
+import com.friendBook.model.UserDao;
 import exceptions.RegisterException;
 import exceptions.UserException;
-import post.Post;
-import user.User;
 
 @WebServlet("/PostServlet")
 public class PostServlet extends HttpServlet{

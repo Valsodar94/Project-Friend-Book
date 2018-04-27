@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.UserDao;
+import com.friendBook.model.UserDao;
+
 import exceptions.LoginException;
 import exceptions.UserException;
 
