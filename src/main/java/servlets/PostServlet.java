@@ -40,18 +40,7 @@ public class PostServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String text = request.getParameter("postText");
 		String pictureUrl = request.getParameter("pictureUrl");
-		String picture = "";
-		
-		if(pictureUrl.length() > 0) {
-			int symb = pictureUrl.length()-1;
-			for(;symb>0;symb--) {
-				if(pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
-					symb++;
-					break;
-				}
-			}
-			picture = pictureUrl.substring(symb);
-		}		
+		String picture = extractPictureName(pictureUrl);		
 		
 		try {
 		if(!((text == null || text.length() == 0) && (picture == null || picture.length() == 0))) {			
@@ -70,6 +59,20 @@ public class PostServlet extends HttpServlet{
 			response.sendRedirect("ErrorForm.html");
 		}
 
+	}
+
+	private String extractPictureName(String pictureUrl) {
+		if(pictureUrl.length() > 0) {
+			int symb = pictureUrl.length()-1;
+			for(;symb>0;symb--) {
+				if(pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
+					symb++;
+					break;
+				}
+			}
+			return pictureUrl.substring(symb);
+		}
+		return "";
 	}
 
 }
