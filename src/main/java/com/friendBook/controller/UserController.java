@@ -11,8 +11,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
@@ -27,23 +29,22 @@ public class UserController {
 	private UserDao uDao;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(Model model, HttpServletRequest req, HttpServletResponse resp) {
-		HttpSession session = req.getSession();
-		String username = req.getParameter("username");
-		String password = req.getParameter("password");
+	public String login(@RequestParam("username") String username,
+			@RequestParam("password") String password,
+			HttpSession session, Model model) {
 		try {
 			int userId = uDao.login(username, password);
 			session.setAttribute("USER", username);
 			session.setAttribute("USERID", userId);
-			session.setAttribute("nmb", uDao.getUsersByString("r").size());
+			
 			session.setMaxInactiveInterval(120);
-		
 		}
-		catch (LoginException | UserException e) {
-			return "redirect:InvalidLogin.html";
+		catch (LoginException e) {
+			return"register";
 		}
-		return"redirect:index";
+		return "index";
 	}
+
 	
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {

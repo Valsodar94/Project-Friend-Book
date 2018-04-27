@@ -9,7 +9,7 @@
 		response.sendRedirect("MainServlet");
 	%>
 	
-	<form method="POST" action="/register">
+	<form method="POST" action="./register">
 
 		<h3>Please register:<br></h3>
 		<% String msg = (String)request.getAttribute("error");
