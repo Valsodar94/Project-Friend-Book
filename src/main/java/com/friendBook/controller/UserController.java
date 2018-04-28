@@ -41,12 +41,14 @@ public class UserController {
 			session.setAttribute("USERID", userId);
 			
 			session.setMaxInactiveInterval(120);
+			return "index.jsp";
+
 		}
 		catch (LoginException e) {
-			return"register";
+			model.addAttribute("error", "Invalid username or password");
+		    return"index.jsp";
 		}
 		
-		return "index";
 	}
 
 	
@@ -56,7 +58,7 @@ public class UserController {
 			session.setAttribute("USER", null);
 			session.invalidate();
 		}
-		return "index";
+		return "index.jsp";
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -70,24 +72,34 @@ public class UserController {
 		
         if(!(password.equals(password2))){
         	model.addAttribute("error", "passwords missmatch");
-        	return"RegistrationForm";            
+        	return"RegistrationForm.jsp";            
         }
 		try {
 			if(uDao.checkIfUsernameExistsInDB(username)) {
 	            model.addAttribute("error", "Username is taken, please enter a different username");
-	            return"RegistrationForm";
+	            return"RegistrationForm.jsp";
 	            
 			}
 			if(uDao.checkIfEmailExistsInDB(email)) {
 				model.addAttribute("error", "Email is already used, please enter a different email");
-			    return"RegistrationForm";			}
+			    return"RegistrationForm.jsp";			}
 			User u = new User(0,username,password,email);
 			uDao.register(u);
-			return "index";
+			return "index.jsp";
 		}
 		catch(RegisterException | UserException | SQLException e) {
 			e.printStackTrace();
-			return"RegistrationForm";
+			return"RegistrationForm.jsp";
 		}
 	}
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpSession session) {
+		if (session.getAttribute("USER") != null) {
+			session.setAttribute("USER", null);
+			session.invalidate();
+		}
+		return "index.jsp";
+	}
+	
 }

@@ -76,10 +76,10 @@ body{
 <div style="float:right;">
     <c:choose>
 		<c:when test="${not empty fn:trim(sessionScope.USER)}">
-			<p> <a href="LogoutServlet">logout</a></p>
+			<p> <a href="./logOut">logOut</a></p>
 		</c:when>
 		<c:otherwise>
-			<p> <a href="LoginForm.jsp">login</a></p>
+			<p> <a href="./login">login</a></p>
 		</c:otherwise>
 	</c:choose>
    </div>

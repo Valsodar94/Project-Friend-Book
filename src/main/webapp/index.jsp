@@ -7,13 +7,14 @@
     <c:choose>
 		<c:when test="${not empty sessionScope.USER}">
 			<%@ include file="Header.jsp" %>
+			<p> Hello ${ sessionScope.USER } </p>
 		</c:when>
 		<c:otherwise>
 			<%@ include file="LoginForm.jsp" %>
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${not empty error}">
-			Error: ${error}
+			<h4 style=color:red;>${error}</h4>
 	</c:if>
 
 </body>
