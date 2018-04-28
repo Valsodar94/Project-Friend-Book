@@ -13,7 +13,7 @@
 
 
 
-	<form method="POST" action="/login">
+	<form method="POST" action="/Project-Friend-Book/login">
 		<h3>Please login:<br></h3> 
 		<p>Username: <input type="text" name="username" placeholder="Username"><br></p>
 		<p>Password: <input type="password" name="password" placeholder="Password"><br></p>

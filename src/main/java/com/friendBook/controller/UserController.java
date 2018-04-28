@@ -1,5 +1,7 @@
 package com.friendBook.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
+import com.mysql.fabric.Response;
 
 import exceptions.LoginException;
 import exceptions.RegisterException;
@@ -31,7 +34,7 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("username") String username,
 			@RequestParam("password") String password,
-			HttpSession session, Model model) {
+			HttpSession session, Model model, HttpServletResponse response) throws IOException {
 		try {
 			int userId = uDao.login(username, password);
 			session.setAttribute("USER", username);
@@ -42,6 +45,7 @@ public class UserController {
 		catch (LoginException e) {
 			return"register";
 		}
+		
 		return "index";
 	}
 

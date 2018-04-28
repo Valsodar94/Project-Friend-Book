@@ -6,9 +6,7 @@
 
 
 <%@ include file="Header.jsp" %>
-	<c:if test="${sessionScope.USERID is null}" >
-		<%@ include file="LoginForm.jsp" %>
-	</c:if>
+<%@ include file="LoginForm.jsp" %>
 
 </body>
 </html>
