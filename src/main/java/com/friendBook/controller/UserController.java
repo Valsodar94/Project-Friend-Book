@@ -60,8 +60,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		HttpSession session = request.getSession();
+	public String register(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
 
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
@@ -70,31 +69,25 @@ public class UserController {
 
 		
         if(!(password.equals(password2))){
-            request.setAttribute("error", "passwords missmatch");
-            request.getRequestDispatcher("RegistrationForm.jsp").forward(request,response);
-            
+        	model.addAttribute("error", "passwords missmatch");
+        	return"RegistrationForm";            
         }
 		try {
 			if(uDao.checkIfUsernameExistsInDB(username)) {
-	            request.setAttribute("error", "Username is taken, please enter a different username");
-	            request.getRequestDispatcher("RegistrationForm.jsp").forward(request,response);
+	            model.addAttribute("error", "Username is taken, please enter a different username");
+	            return"RegistrationForm";
 	            
 			}
 			if(uDao.checkIfEmailExistsInDB(email)) {
-			    request.setAttribute("error", "Email is already used, please enter a different email");
-	            request.getRequestDispatcher("RegistrationForm.jsp").forward(request,response);
-			}
+				model.addAttribute("error", "Email is already used, please enter a different email");
+			    return"RegistrationForm";			}
 			User u = new User(0,username,password,email);
-			int userId = uDao.register(u);
-			session.setAttribute("USER", username);
-			session.setAttribute("USERID", userId);
-			session.setMaxInactiveInterval(120);
-			response.sendRedirect("MainServlet");
+			uDao.register(u);
+			return "index";
 		}
 		catch(RegisterException | UserException | SQLException e) {
 			e.printStackTrace();
-			response.sendRedirect("RegistrationForm.jsp");
+			return"RegistrationForm";
 		}
-		return "index";
 	}
 }

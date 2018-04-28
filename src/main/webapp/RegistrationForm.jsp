@@ -1,11 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ include file="Header.jsp" %>
 <body>
 
-	<form method="POST" action="/register">
-
+	<form method="POST" action="/Project-Friend-Book/register">
+		<c:if test="${not empty error}">
+			Error: ${error}
+		</c:if>
 		<h3>Please register:<br></h3>
 
 		<p>Username: <input type="text" name="username" maxlength="15" pattern=".{3,15}" required title="3 to 15 characters" placeholder="3 to 15 characters"><br></p>
