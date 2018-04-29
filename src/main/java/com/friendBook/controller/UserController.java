@@ -131,5 +131,5 @@ public class UserController {
 		model.addAttribute("error", "Hoi");
 		return "redirect:/index.jsp";
 	}
-	
+
 }

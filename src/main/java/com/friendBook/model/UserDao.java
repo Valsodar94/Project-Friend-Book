@@ -22,6 +22,7 @@ public class UserDao implements IUserDao{
 	private static final String SELECT_USER = "SELECT * FROM users WHERE user_id=?;";
 	private static final String GET_USERS_BY_STRING = "SELECT * FROM users WHERE user_name like ?";
 	private static final String REMOVE_FROM_FOLLOWED_USERS = "DELETE FROM followed_users WHERE user_id = ? AND followed_user_id = ?";
+	private static final String GET_FOLLOWED_USERS = "SELECT * FROM followed_users WHERE user_id = ?";
 	private final DBConnection db;
 	
 	public UserDao() throws ClassNotFoundException, SQLException {
@@ -166,7 +167,20 @@ public class UserDao implements IUserDao{
 		}
 	}
 	
-	public List<User> getAllFollowedUsers(int id){
-		return null;
+	public List<Integer> getAllFollowedUsers(int id) throws UserException{
+		try {
+			PreparedStatement pstmt = db.getConnection().prepareStatement(GET_FOLLOWED_USERS);
+			pstmt.setInt(1, id);
+			ResultSet resultSet = pstmt.executeQuery();
+			List<Integer> followedUsersIds = new LinkedList<>();
+			while(resultSet.next()) {
+				int followedUserId = resultSet.getInt(2);
+				followedUsersIds.add(followedUserId);
+			}
+			return followedUsersIds;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new UserException("DB DOWN", e);
+		}
 	}
 }

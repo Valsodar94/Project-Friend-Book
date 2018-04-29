@@ -8,8 +8,30 @@
 		<c:when test="${not empty sessionScope.USER}">
 			<jsp:include page="Header.jsp"/>
 			<p> Hello ${ sessionScope.USER } </p>
-			<jsp:include page="PostForm.jsp" />
-			<jsp:include page="PostList.jsp" /> 
+			<c:choose>
+		<c:when test="${posts.size() == 0}">
+			<h3>No posts :(</h3>
+		</c:when>
+		<c:otherwise>
+			<h3>Followed user's posts::</h3>
+			<c:forEach items="${posts}" var="post">
+				<c:out value="${post.text}" />
+				<br>
+				<c:out value="Published on: ${post.time}" />
+				<br>
+				<c:choose>
+					<c:when test="${post.pictureUrl.length() > 0}">
+						<img class="img"
+							src="<c:url value="./images/${post.pictureUrl}"/>" />
+						<br>
+					</c:when>
+				</c:choose>
+				<c:out value="${post.likes.size()} likes" />
+				<br>
+				<hr>
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
 		</c:when>
 		<c:otherwise>
 			<jsp:include page="LoginForm.jsp" /> 
