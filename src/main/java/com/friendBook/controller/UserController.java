@@ -30,7 +30,7 @@ import exceptions.UserException;
 public class UserController {
 	@Autowired
 	private UserDao uDao;
-
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("username") String username,
 			@RequestParam("password") String password,

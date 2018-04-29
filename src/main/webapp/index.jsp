@@ -6,11 +6,13 @@
 	
     <c:choose>
 		<c:when test="${not empty sessionScope.USER}">
-			<%@ include file="Header.jsp" %>
+			<jsp:include page="Header.jsp"/>
 			<p> Hello ${ sessionScope.USER } </p>
+			<jsp:include page="PostForm.jsp" />
+			<jsp:include page="PostList.jsp" /> 
 		</c:when>
 		<c:otherwise>
-			<%@ include file="LoginForm.jsp" %>
+			<jsp:include page="LoginForm.jsp" /> 
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${not empty error}">

@@ -52,6 +52,7 @@ public class PostController {
 		}		
 	}
 	
+	
 	//TODO da se napravqt pyrvo v PostDAO
 	public void delete() throws PostException {
 

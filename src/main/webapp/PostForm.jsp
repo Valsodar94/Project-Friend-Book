@@ -20,7 +20,7 @@ a {
 	<h1>Hello, <%=(String) session.getAttribute("USER")%> !</h1>
 	</div>
 	
-	<form method="POST" action="PostServlet">
+	<form method="POST" action="./publish">
 		<p>Enter your post text here</p>
 		<textarea name="postText" cols="30" rows="4" placeholder="What's on your mind <%=(String) session.getAttribute("USER")%>?"></textarea></br>
 		<input type="file" name="pictureUrl" placeholder="Upload image"/></br></br>
