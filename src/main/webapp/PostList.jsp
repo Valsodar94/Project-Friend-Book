@@ -1,21 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<style type="text/css">
-.img {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	width: 400px;
-}
-
-.img img {
-	max-width: 100%;
-}
-</style>
+<!-- <link rel="stylesheet" type="text/css" href="static/css/IndexStyle.css" media="screen" /> -->
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Posts list</title>
 </head>
@@ -33,13 +22,21 @@
 				<br>
 				<c:choose>
 					<c:when test="${post.pictureUrl.length() > 0}">
-						<img class="img"
-							src="<c:url value="./images/${post.pictureUrl}"/>" />
+						<img class="img" src="./uploaded/${post.pictureUrl}" />
 						<br>
 					</c:when>
 				</c:choose>
 				<c:out value="${post.likes.size()} likes" />
 				<br>
+				<br>
+				<h4>Comments:</h4>
+				<form action="">
+					<div class="comment">
+						<textarea name="postText" cols="50" rows="4"
+							placeholder="Comment this post"></textarea>
+						<input type="submit" value="Comment" />
+					</div>
+				</form>
 				<hr>
 			</c:forEach>
 		</c:otherwise>

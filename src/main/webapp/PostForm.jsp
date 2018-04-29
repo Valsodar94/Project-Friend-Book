@@ -17,9 +17,9 @@ a {
 }
 </STYLE>
 
-	<div class="main">
+	<!--  <div class="main">
 	<h1>Hello, <c:out value = "${USER}"/> !</h1>
-	</div>
+	</div>   -->
 	
 	<p>Enter your post text here</p>
 	<form method="POST" action="/Project-Friend-Book/publish">		
