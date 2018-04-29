@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Friend Book post here</title>
@@ -17,12 +18,13 @@ a {
 </STYLE>
 
 	<div class="main">
-	<h1>Hello, <%=(String) session.getAttribute("USER")%> !</h1>
+	<h1>Hello, <c:out value = "${USER}"/> !</h1>
 	</div>
 	
-	<form method="POST" action="./publish">
-		<p>Enter your post text here</p>
-		<textarea name="postText" cols="30" rows="4" placeholder="What's on your mind <%=(String) session.getAttribute("USER")%>?"></textarea></br>
+	<p>Enter your post text here</p>
+	<form method="POST" action="/Project-Friend-Book/publish">		
+		<textarea name="postText" cols="50" rows="5" 
+		placeholder="What's on your mind <c:out value = "${USER}"/>?"></textarea></br>
 		<input type="file" name="pictureUrl" placeholder="Upload image"/></br></br>
 		<input type="submit" value="Publish" />
 	</form>

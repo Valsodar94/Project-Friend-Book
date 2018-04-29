@@ -21,12 +21,12 @@
 </head>
 <body>
 	<c:choose>
-		<c:when test="${postsList.size() == 0}">
+		<c:when test="${posts.size() == 0}">
 			<h3>You don't have any posts yet</h3>
 		</c:when>
 		<c:otherwise>
 			<h3>Your posts:</h3>
-			<c:forEach items="${postsList}" var="post">
+			<c:forEach items="${posts}" var="post">
 				<c:out value="${post.text}" />
 				<br>
 				<c:out value="Published on: ${post.time}" />

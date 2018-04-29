@@ -41,7 +41,7 @@ public class UserController {
 			session.setAttribute("USERID", userId);
 			
 			session.setMaxInactiveInterval(120);
-			return "index.jsp";
+			return "redirect:/posts";
 
 		}
 		catch (LoginException e) {

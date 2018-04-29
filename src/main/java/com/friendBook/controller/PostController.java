@@ -27,29 +27,36 @@ public class PostController {
 	public String extractPosts(Model model, HttpServletRequest request) throws PostException {
 		HttpSession session = request.getSession();
 		int userId = (int) session.getAttribute("USERID");
-		List <Post> posts = postDao.extractPosts(userId);
-		model.addAttribute("posts", posts);
-		return "posts";
+		List <Post> postsList = postDao.extractPosts(userId);
+		model.addAttribute("posts", postsList);
+		return "index.jsp";
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
-	public String publish(Model model, @ModelAttribute Post newPost, HttpServletRequest request) {
-		HttpSession session = request.getSession();
+	public String publish(Model model, HttpServletRequest request) {
+		
 		String text = request.getParameter("postText");
 		String pictureUrl = request.getParameter("pictureUrl");
-		String picture = extractPictureName(pictureUrl);
+		String picture = extractPictureName(pictureUrl);		
 		
 		try {			
 			if (!((text == null || text.length() == 0) 
-					&& (picture == null || picture.length() == 0))) {
-				session.setAttribute("post", new Post(0, (int) session.getAttribute("USERID")));
-				postDao.publish(newPost);				
+					&& (picture == null || picture.length() == 0))) {	
+				HttpSession session = request.getSession();
+				int userId = (int) session.getAttribute("USERID");
+				
+				Post newPost = new Post(0, userId);
+				newPost.setText(text);
+				newPost.setPictureUrl(picture);
+				postDao.publish(newPost);	
+				model.addAttribute("post", newPost);
 			}
 			return extractPosts(model, request);
 		} catch (PostException e) {
 			e.printStackTrace();
 			return "redirect:ErrorForm.html";
 		}		
+	
 	}
 	
 	
