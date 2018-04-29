@@ -14,12 +14,14 @@ import exceptions.RegisterException;
 import exceptions.UserException;
 @Component
 public class UserDao implements IUserDao{
+	private static final String INSERT_INTO_FOLLOWED_USERS = "INSERT INTO followed_users VALUES (?, ?)";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?)";
 	private static final String CHECK_FOR_USERNAME = "SELECT * FROM users WHERE user_name=?";
 	private static final String CHECK_FOR_EMAIL = "SELECT * FROM users WHERE user_email=?";
 	private static final String SELECT_USER = "SELECT * FROM users WHERE user_id=?;";
 	private static final String GET_USERS_BY_STRING = "SELECT * FROM users WHERE user_name like ?";
+	private static final String REMOVE_FROM_FOLLOWED_USERS = "DELETE FROM followed_users WHERE user_id = ? AND followed_user_id = ?";
 	private final DBConnection db;
 	
 	public UserDao() throws ClassNotFoundException, SQLException {
@@ -130,5 +132,41 @@ public class UserDao implements IUserDao{
 			throw new UserException("Something went wrong with DB");
 		}
 	}
-		
+	public boolean follow(int followerID, int followedID) throws UserException {
+		try {
+			PreparedStatement pstmt = db.getConnection().prepareStatement(INSERT_INTO_FOLLOWED_USERS);
+			pstmt.setInt(1, followerID);
+			pstmt.setInt(2, followedID);
+			int addedRows = pstmt.executeUpdate();
+			if(addedRows>0)
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new UserException("Someting went wrong with DB", e);
+		}
+	}
+	
+	public boolean unfollow(int followerID, int followedID) throws UserException {
+		try {
+			PreparedStatement pstmt = db.getConnection().prepareStatement(REMOVE_FROM_FOLLOWED_USERS);
+			pstmt.setInt(1, followerID);
+			pstmt.setInt(2, followedID);
+			int removedRows = pstmt.executeUpdate();
+			if(removedRows>0)
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new UserException("Someting went wrong with DB", e);
+		}
+	}
+	
+	public List<User> getAllFollowedUsers(int id){
+		return null;
+	}
 }
