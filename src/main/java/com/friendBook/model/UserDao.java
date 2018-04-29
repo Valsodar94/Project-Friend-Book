@@ -141,7 +141,7 @@ public class UserDao implements IUserDao{
 			if(addedRows>0)
 				return true;
 			else
-				return false;
+				throw new UserException("Already followed!!!");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -158,11 +158,11 @@ public class UserDao implements IUserDao{
 			if(removedRows>0)
 				return true;
 			else
-				return false;
+				throw new UserException("Not followed in the first place!!");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UserException("Someting went wrong with DB", e);
+			throw new UserException("Something went wrong with DB", e);
 		}
 	}
 	

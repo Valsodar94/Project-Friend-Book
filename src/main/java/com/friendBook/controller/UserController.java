@@ -93,13 +93,43 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(HttpSession session) {
-		if (session.getAttribute("USER") != null) {
-			session.setAttribute("USER", null);
-			session.invalidate();
+	@RequestMapping(value = "/follow", method = RequestMethod.POST)
+	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
+		
+		if(session.getAttribute("USERID") !=null && profileID!=null) {
+			try {
+				int userId = (int) session.getAttribute("USERID");
+				uDao.follow(userId, Integer.parseInt(profileID));
+				return"redirect:/Profile.jsp?id="+profileID;
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				return "redirect:/index.jsp";
+			} catch (UserException e) {
+				e.printStackTrace();
+				return "redirect:/index.jsp";
+
+			}
 		}
-		return "index.jsp";
+		return "redirect:/index.jsp";
+	}
+	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
+	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
+		if(session.getAttribute("USERID") !=null && profileID!=null) {
+			try {
+				int userId = (int) session.getAttribute("USERID");
+				uDao.unfollow(userId, Integer.parseInt(profileID));
+				model.addAttribute("error", "Hoi");
+				return"redirect:/Profile.jsp?id="+profileID;
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				return "redirect:/index.jsp";
+			} catch (UserException e) {
+				e.printStackTrace();
+				return "redirect:/index.jsp";
+			}
+		}
+		model.addAttribute("error", "Hoi");
+		return "redirect:/index.jsp";
 	}
 	
 }
