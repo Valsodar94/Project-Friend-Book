@@ -8,7 +8,7 @@
 	<c:if test="${not empty sessionScope.USER}">
 			<c:redirect url="index.jsp"/>
 		</c:if>
-	<form method="POST" action="/Project-Friend-Book/register">
+	<form method="POST" action="register">
 		<c:if test="${not empty error}">
 			<h4 style=color:red;>${error}</h4>
 		</c:if>

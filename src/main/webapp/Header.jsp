@@ -79,7 +79,7 @@ body{
 			<p> <a href="./logOut">logOut</a></p>
 		</c:when>
 		<c:otherwise>
-			<p> <a href="index.jsp">login</a></p>
+			<p> <a href="./index.jsp">login</a></p>
 		</c:otherwise>
 	</c:choose>
    </div>
