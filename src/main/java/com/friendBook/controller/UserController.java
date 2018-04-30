@@ -52,7 +52,7 @@ public class UserController {
 	}
 
 	
-	@RequestMapping(value = "./logOut", method = RequestMethod.GET)
+	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
 		if (session.getAttribute("USER") != null) {
 			session.setAttribute("USER", null);

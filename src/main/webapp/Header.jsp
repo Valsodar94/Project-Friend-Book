@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <style>
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
@@ -66,7 +66,7 @@ body{
 <div class="wrap">
    <div class="search" style="float:left;">
    	<form method="GET" action="SearchResult">
-      <input type="text" name="search" class="searchTerm" placeholder="What are you lookings for?">
+      <input type="text" name="search" class="searchTerm" placeholder="What are you looking for?">
       <button type="submit" class="searchButton">
         <i class="fa fa-search"></i>
      </button>
@@ -76,7 +76,7 @@ body{
 <div style="float:right;">
     <c:choose>
 		<c:when test="${not empty fn:trim(sessionScope.USER)}">
-			<p> <a href="logOut">logOut</a></p>
+			<p> <a href="/logOut">logOut</a></p>
 		</c:when>
 		<c:otherwise>
 			<p> <a href="./index.jsp">login</a></p>
