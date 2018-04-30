@@ -3,39 +3,109 @@ package com.friendBook.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-public class Comment implements Likeable{
+public class Comment implements Likeable, Comparable<Comment>{
+	
 	private int id;
+	private String text;
 	private LocalDateTime time;
-	private User user;
-	private List<Like> likes;
-	public Comment(int id, LocalDateTime time, User user) {
-		super();
+	private int userId;
+	private int postId;
+	private List<CommentAnswer> answers;
+	private Set<Like> likes;
+	
+	public Comment(int id, int userId, int postId) {
 		this.id = id;
-		this.time = time;
-		this.user = user;
-		likes = new ArrayList<>();
+		this.text = "";
+		this.time = LocalDateTime.now();
+		this.userId = userId;
+		this.postId = postId;
+		this.answers = new ArrayList();
+		this.likes = new HashSet();
 	}
+
 	public int getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
+
+	public String getText() {
+		return text;
 	}
+
 	public LocalDateTime getTime() {
 		return time;
 	}
-	public void setTime(LocalDateTime time) {
-		this.time = time;
+
+	public int getUserId() {
+		return userId;
 	}
-	public User getUser() {
-		return user;
+	
+	public int getPostId() {
+		return postId;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	
+	public void setText(String text) {
+		if(text != null & text.length() > 0) {
+			this.text = text;
+		}		
 	}
-	public List<Like> getLikes() {
-		return Collections.unmodifiableList(likes);
+	
+	public List<CommentAnswer> getComments() {
+		return Collections.unmodifiableList(answers);
 	}
+	
+	public void addComment(CommentAnswer answer) {
+		if(answer != null) {
+			this.answers.add(answer);
+		}
+	}
+	
+	public void removeComment(CommentAnswer answer) {
+		if(answer != null) {
+			for(CommentAnswer a: answers) {
+				if(a.equals(answer)) {
+					this.answers.remove(a);
+					break;
+				}
+			}			
+		}
+	}
+	
+	public Set<Like> getLikes() {
+		return Collections.unmodifiableSet(likes);
+	}
+	
+	public void addLike(Like like) {
+		if(like != null) {
+			this.likes.add(like);
+		}
+	}
+	
+	public void removeLike(Like like) {
+		if(like != null) {
+			for(Iterator<Like> it = likes.iterator(); it.hasNext();) {
+				if(it.equals(like)) {
+					this.likes.remove(like);
+					break;
+				}
+			}			
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Comment [id=" + id + ", text=" + text + ", time=" + time 
+				+ ", userId=" + userId + ", postId=" + postId
+				+ ", answers=" + answers + ", likes=" + likes + "]";
+	}
+
+	@Override
+	public int compareTo(Comment otherComment) {
+		return otherComment.getTime().compareTo(this.getTime());
+	}
+	
 }
