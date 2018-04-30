@@ -5,16 +5,16 @@
 	<%@ include file="Header.jsp" %>  
  	
     <c:choose>
-		<c:when test="${sessionScope.USERID == param.id}">
+		<c:when test="${sessionScope.USERID == id}">
 			<%@ include file="PostForm.jsp" %>
 		</c:when>
 		<c:otherwise>
 			<form method="POST" action="./follow">
-				<input type="hidden" name="profileID" value="${param.id}">
+				<input type="hidden" name="profileID" value="${id}">
 				<input type="submit" value="follow">
 			</form>
 						<form method="POST" action="./unfollow">
-				<input type="hidden" name="profileID" value="${param.id}">
+				<input type="hidden" name="profileID" value="${id}">
 				<input type="submit" value="unfollow">
 			</form>
 		</c:otherwise>

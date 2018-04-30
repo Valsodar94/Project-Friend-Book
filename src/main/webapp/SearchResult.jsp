@@ -12,8 +12,8 @@
 	<c:choose>
 		<c:when test="${not empty users}">
 			<c:forEach items = "${users}" var = "user">
-			<p> <a href="./Profile.jsp?id=${user.getId()}">${user.getUsername()} </a></p>
-		</c:forEach>
+				<a href="./profile/${user.getId()}">${user.getUsername()}</a>
+			</c:forEach>
 		</c:when>
 		<c:otherwise>
 			<p>2</p>

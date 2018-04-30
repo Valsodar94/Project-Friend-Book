@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.friendBook.model.Post;
 import com.friendBook.model.PostDao;
@@ -53,11 +54,13 @@ public class PostController {
 		return "index.jsp";
 	}
 	
-	@RequestMapping(method=RequestMethod.GET, value="/Profile.jsp")
-	public String extractUserPosts(Model model, HttpServletRequest request, @RequestParam("id") String id) throws PostException {
-		List <Post> postsList = new LinkedList<>(postDao.extractPosts(Integer.parseInt(id)));
-		model.addAttribute("posts", postsList);
-		return "Profile.jsp";
+	@RequestMapping(value="/profile/{id}", method=RequestMethod.GET)
+	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView) throws PostException {
+		List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
+		modelAndView.addObject("posts", postsList);
+		modelAndView.addObject("id", id);
+		modelAndView.setViewName("../Profile.jsp");
+		return modelAndView;
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
@@ -67,23 +70,24 @@ public class PostController {
 		String pictureUrl = request.getParameter("pictureUrl");
 		String picture = extractPictureName(pictureUrl);		
 		
+
 		try {			
 			if (!((text == null || text.length() == 0) 
 					&& (picture == null || picture.length() == 0))) {	
 				HttpSession session = request.getSession();
+
 				int userId = (int) session.getAttribute("USERID");
-				
 				Post newPost = new Post(0, userId);
 				newPost.setText(text);
 				newPost.setPictureUrl(picture);
 				postDao.publish(newPost);	
 				model.addAttribute("post", newPost);
-				return extractUserPosts(model, request, ""+userId);
+				return "redirect:/profile/"+userId;
 			}
 			return "redirect:ErrorForm.html";
 		} catch (PostException e) {
 			e.printStackTrace();
-			return "redirect:ErrorForm.html";
+			return "redirect:index.jsp";
 		}
 	
 	}
