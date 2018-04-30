@@ -51,14 +51,17 @@ public class UserController {
 		
 	}
 
-	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login() {
+		return "index.jsp";
+	}
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
 		if (session.getAttribute("USER") != null) {
 			session.setAttribute("USER", null);
 			session.invalidate();
 		}
-		return "redirect:index.jsp";
+		return "index.jsp";
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -93,14 +96,14 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "/profile/follow", method = RequestMethod.POST)
+	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		
 		if(session.getAttribute("USERID") !=null && profileID!=null) {
 			try {
 				int userId = (int) session.getAttribute("USERID");
 				uDao.follow(userId, Integer.parseInt(profileID));
-				return"redirect:/profile/"+profileID;
+				return"redirect:/"+profileID;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				return "redirect:/index.jsp";
@@ -112,13 +115,13 @@ public class UserController {
 		}
 		return "redirect:/index.jsp";
 	}
-	@RequestMapping(value = "/profile/unfollow", method = RequestMethod.POST)
+	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
 	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		if(session.getAttribute("USERID") !=null && profileID!=null) {
 			try {
 				int userId = (int) session.getAttribute("USERID");
 				uDao.unfollow(userId, Integer.parseInt(profileID));
-				return "redirect:/profile/"+profileID;
+				return "redirect:/"+profileID;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				return "redirect:/index.jsp";

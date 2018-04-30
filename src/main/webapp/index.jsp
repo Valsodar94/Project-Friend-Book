@@ -12,7 +12,7 @@
 		<c:when test="${not empty sessionScope.USER}">
 			<jsp:include page="Header.jsp" />
 			<div>Hello ${sessionScope.USER}			
-			<a href="./profile/${sessionScope.USERID}">Home</a></div>
+			<a href="./${sessionScope.USERID}">Home</a></div>
 			<h4>Posts from the people you follow:</h4>
 			<jsp:include page="PostList.jsp" />
 		</c:when>

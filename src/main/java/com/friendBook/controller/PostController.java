@@ -54,12 +54,12 @@ public class PostController {
 		return "index.jsp";
 	}
 	
-	@RequestMapping(value="/profile/{id}", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView) throws PostException {
 		List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
 		modelAndView.addObject("posts", postsList);
 		modelAndView.addObject("id", id);
-		modelAndView.setViewName("../Profile.jsp");
+		modelAndView.setViewName("Profile.jsp");
 		return modelAndView;
 	}
 
@@ -82,7 +82,7 @@ public class PostController {
 				newPost.setPictureUrl(picture);
 				postDao.publish(newPost);	
 				model.addAttribute("post", newPost);
-				return "redirect:/profile/"+userId;
+				return "redirect:/"+userId;
 			}
 			return "redirect:ErrorForm.html";
 		} catch (PostException e) {

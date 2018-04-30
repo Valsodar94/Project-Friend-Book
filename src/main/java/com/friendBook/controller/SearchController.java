@@ -29,7 +29,7 @@ public class SearchController {
 	@Autowired
 	private UserDao uDao;
 	
-	@RequestMapping(value = "/SearchResult", method = RequestMethod.GET)
+	@RequestMapping(value = {"/SearchResult", "/profile/SearchResult"}, method = RequestMethod.GET)
 	public ModelAndView showSearchResults(@RequestParam("search") String search) {
 				List<User> users = new LinkedList<>();
 		try {
