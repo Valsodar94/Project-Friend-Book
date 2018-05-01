@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.friendBook.model.Post;
 import com.friendBook.model.PostDao;
+import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
 
 import exceptions.PostException;
@@ -36,10 +37,10 @@ public class WelcomePageController {
 			if(session.getAttribute("USERID")!=null) {
 				int userId = (int) session.getAttribute("USERID");
 				try {
-					List<Integer> followedUsersIds = new LinkedList<>(uDao.getAllFollowedUsers(userId));
+					List<User> followedUsers = new LinkedList<>(uDao.getAllFollowedUsers(userId));
 					Set<Post> feed = new TreeSet<>();
-					for(Integer i : followedUsersIds) {
-						feed.addAll(postDao.extractPosts(i));
+					for(User u : followedUsers) {
+						feed.addAll(postDao.extractPosts(u.getId()));
 					}
 					model.addAttribute("posts", feed);
 					return "test";

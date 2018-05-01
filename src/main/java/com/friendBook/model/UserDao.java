@@ -23,10 +23,16 @@ public class UserDao implements IUserDao{
 	private static final String SELECT_USER = "SELECT * FROM users WHERE user_id=?;";
 	private static final String GET_USERS_BY_STRING = "SELECT * FROM users WHERE user_name like ?";
 	private static final String REMOVE_FROM_FOLLOWED_USERS = "DELETE FROM followed_users WHERE user_id = ? AND followed_user_id = ?";
-	private static final String GET_FOLLOWED_USERS = "SELECT * FROM followed_users WHERE user_id = ?";
+	private static final String GET_FOLLOWED_USERS = "select u.user_id, u.user_name, u.user_pass, u.user_email\n" + 
+			"from users u join followed_users f\n" + 
+			"on(u.user_id = f.followed_user_id)\n" + 
+			"where f.user_id = ?";
 	private static final String CHECK_IF_FOLLOW_ALREADY_EXISTS = "SELECT * FROM followed_users WHERE user_id = ? AND followed_user_id =?";
 	private static final String CHECK_IF_USER_EXISTS = "SELECT * FROM users WHERE user_id=?";
-
+	private static final String EXTRACT_ALL_FOLLOWERS = "select *\n" + 
+			"from followed_users f join users u\n" + 
+			"using(user_id)\n" + 
+			"where followed_user_id = ?";
 	private final DBConnection db;
 	
 	public UserDao() throws ClassNotFoundException, SQLException {
@@ -171,22 +177,47 @@ public class UserDao implements IUserDao{
 		}
 	}
 	
-	public List<Integer> getAllFollowedUsers(int id) throws UserException{
+	public List<User> getAllFollowedUsers(int id) throws UserException{
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(GET_FOLLOWED_USERS);
 			pstmt.setInt(1, id);
 			ResultSet resultSet = pstmt.executeQuery();
-			List<Integer> followedUsersIds = new LinkedList<>();
+			List<User> followedUsers = new LinkedList<>();
 			while(resultSet.next()) {
-				int followedUserId = resultSet.getInt(2);
-				followedUsersIds.add(followedUserId);
+				int id2 = resultSet.getInt(1);
+				String username = resultSet.getString(2);
+				String password = resultSet.getString(3);
+				String email = resultSet.getString(4);
+				User u = new User(id2,username,password, email);
+				followedUsers.add(u);
 			}
-			return followedUsersIds;
+			return followedUsers;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new UserException("DB DOWN", e);
 		}
 	}	
+	public List<User> getAllFollowers(int id) throws UserException{
+		try {
+			PreparedStatement pstmt = db.getConnection().prepareStatement(EXTRACT_ALL_FOLLOWERS);
+			pstmt.setInt(1, id);
+			ResultSet resultSet = pstmt.executeQuery();
+			List<User> followers = new LinkedList<>();
+			while(resultSet.next()) {
+				int id2 = resultSet.getInt(1);
+				String username = resultSet.getString(3);
+				String password = resultSet.getString(4);
+				String email = resultSet.getString(5);
+				User u = new User(id2,username,password, email);
+				followers.add(u);
+			}
+			return followers;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new UserException("DB DOWN", e);
+		}
+	}
+	
 	public boolean checkIfFollowExistsInDb(int followerId,int followedId) throws UserException {
 			try {
 				PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_FOLLOW_ALREADY_EXISTS);
