@@ -36,21 +36,20 @@ public class CommentController {
 	private CommentDAO commentDao;
 	
 	@RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
-	public String getComments(Model model, HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		if(session.getAttribute("POSTID")!=null) {
-			int postId = (int) session.getAttribute("POSTID");
+	public String getComments(@PathVariable("id") int postId, Model model, HttpServletRequest request) {
+		if(postId >= 0) {
 			try {
 				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
 				Collections.sort(commentsOnPost);
 				model.addAttribute("comments", commentsOnPost);
-				return "test";
-			} catch (CommentException e) {
+				Post post = postDao.getPostById(postId);
+				model.addAttribute("post", post);
+			} catch (CommentException | PostException e) {
 				e.printStackTrace();
 				return "redirect:test";
 			}
 		} 
-		return "test";
+		return "CommentsView";
 	}
 	
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
