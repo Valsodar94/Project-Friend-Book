@@ -34,7 +34,7 @@ public class PostDao implements IPostDAO {
 		db = DBConnection.getInstance();
 	}
 
-	public Post getPostById(int postId) throws PostException {
+	public Post getPostById(int postId) throws PostException, LikeException {
 		if (postId <= 0) {
 			return null;
 		}
@@ -51,7 +51,8 @@ public class PostDao implements IPostDAO {
 			post.setPictureUrl(resultSet.getString(3));
 			post.setTime(LocalDateTime.parse(resultSet.getString(4), 
 					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
-
+			List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
+			post.setLikes(likedPostUserIds.size());
 			return post;
 		} catch (SQLException e) {
 			e.printStackTrace();

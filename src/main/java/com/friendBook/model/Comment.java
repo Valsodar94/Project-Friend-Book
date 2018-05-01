@@ -16,7 +16,7 @@ public class Comment implements Likeable, Comparable<Comment>{
 	private int userId;
 	private int postId;
 	private List<CommentAnswer> answers;
-	private Set<Like> likes;
+	private int likes;
 	
 	public Comment(int id, int userId, int postId) {
 		this.id = id;
@@ -25,7 +25,7 @@ public class Comment implements Likeable, Comparable<Comment>{
 		this.userId = userId;
 		this.postId = postId;
 		this.answers = new ArrayList();
-		this.likes = new HashSet();
+		this.likes = 0;
 	}
 
 	public int getId() {
@@ -81,25 +81,13 @@ public class Comment implements Likeable, Comparable<Comment>{
 		}
 	}
 	
-	public Set<Like> getLikes() {
-		return Collections.unmodifiableSet(likes);
+	public void setLikes(int likes) {
+		if(likes>=0)
+			this.likes = likes;
 	}
 	
-	public void addLike(Like like) {
-		if(like != null) {
-			this.likes.add(like);
-		}
-	}
-	
-	public void removeLike(Like like) {
-		if(like != null) {
-			for(Iterator<Like> it = likes.iterator(); it.hasNext();) {
-				if(it.equals(like)) {
-					this.likes.remove(like);
-					break;
-				}
-			}			
-		}
+	public int getLikes() {
+		return likes;
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import com.friendBook.model.Post;
 import com.friendBook.model.PostDao;
 
 import exceptions.CommentException;
+import exceptions.LikeException;
 import exceptions.PostException;
 import exceptions.UserException;
 
@@ -44,7 +45,7 @@ public class CommentController {
 				model.addAttribute("comments", commentsOnPost);
 				Post post = postDao.getPostById(postId);
 				model.addAttribute("post", post);
-			} catch (CommentException | PostException e) {
+			} catch (CommentException | LikeException | PostException e) {
 				e.printStackTrace();
 				return "redirect:test";
 			}

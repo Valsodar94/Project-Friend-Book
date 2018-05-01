@@ -23,7 +23,7 @@
 			</c:if> -->
 				<c:out value="${comment.text}" /><br>
 				<c:out value="Published on: ${comment.time}" /><br>
-				<c:out value="${comments.likes.size()} likes" /><br>
+				<c:out value="${comments.likes} likes" /><br>
 				<form method="POST" action="./like">
 					<input type="hidden" name="postId" value="${comment.getId()}"> 
 					<input type="submit" value="like">
