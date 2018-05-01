@@ -35,37 +35,46 @@ public class UserController {
 	public String login(@RequestParam("username") String username,
 			@RequestParam("password") String password,
 			HttpSession session, Model model, HttpServletResponse response) throws IOException {
-		try {
-			int userId = uDao.login(username, password);
-			session.setAttribute("USER", username);
-			session.setAttribute("USERID", userId);
-			
-			session.setMaxInactiveInterval(120);
-			return "redirect:/";
-
-		}
-		catch (LoginException e) {
-			model.addAttribute("error", "Invalid username or password");
-		    return"test";
+		if(session.getAttribute("USER") == null) {
+			try {
+				int userId = uDao.login(username, password);
+				session.setAttribute("USER", username);
+				session.setAttribute("USERID", userId);
+				
+				session.setMaxInactiveInterval(120);
+				return "redirect:/";
+	
+			}
+			catch (LoginException e) {
+				model.addAttribute("error", "Invalid username or password");
+			    return"test";
+			}
+		} else {
+			model.addAttribute("error", "You are already logged");
+			return "test";
 		}
 		
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
-		return "test";
+		return "redirect:/";
 	}
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
 		if (session.getAttribute("USER") != null) {
 			session.setAttribute("USER", null);
+			session.setAttribute("USERID", null);
 			session.invalidate();
 		}
-		return "test";
+		return "redirect:/";
 	}
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String showRegistrationForm() {
-		return "RegistrationForm";
+	public String showRegistrationForm(HttpSession session) {
+		if(session.getAttribute("USER")== null)
+			return "RegistrationForm";
+		else
+			return "redirect:/";
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -103,7 +112,7 @@ public class UserController {
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		
-		if(session.getAttribute("USERID") !=null || profileID!=null) {
+		if(session.getAttribute("USERID") !=null && profileID!=null) {
 			int followerId = (int) session.getAttribute("USERID");
 			int followedId = Integer.parseInt(profileID);
 			try {
@@ -126,22 +135,6 @@ public class UserController {
 		session.setAttribute("error", "Your session has expired");
 		return "redirect:/";
 	}
-//	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
-//	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
-//		if(session.getAttribute("USERID") !=null && profileID!=null) {
-//			try {
-//				int userId = (int) session.getAttribute("USERID");
-//				uDao.unfollow(userId, Integer.parseInt(profileID));
-//				return "redirect:/"+profileID;
-//			} catch (NumberFormatException e) {
-//				e.printStackTrace();
-//				return "redirect:/test";
-//			} catch (UserException e) {
-//				e.printStackTrace();
-//				return "redirect:/test";
-//			}
-//		}
-//		return "redirect:/test";
-//	}
+
 
 }

@@ -48,7 +48,7 @@ public class LikeController {
 			}
 		}
 		model.addAttribute("error", "Your session has expired. You need to login");
-		return "/";
+		return "test";
 
 	}
 	

@@ -5,9 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ include file="Header.jsp" %>
 <body>
-	<c:if test="${not empty sessionScope.USER}">
-			<c:redirect url="index.jsp"/>
-		</c:if>
+
 	<form method="POST" action="register">
 		<c:if test="${not empty error}">
 			<h4 style=color:red;>${error}</h4>

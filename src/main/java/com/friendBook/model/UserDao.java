@@ -25,6 +25,7 @@ public class UserDao implements IUserDao{
 	private static final String REMOVE_FROM_FOLLOWED_USERS = "DELETE FROM followed_users WHERE user_id = ? AND followed_user_id = ?";
 	private static final String GET_FOLLOWED_USERS = "SELECT * FROM followed_users WHERE user_id = ?";
 	private static final String CHECK_IF_FOLLOW_ALREADY_EXISTS = "SELECT * FROM followed_users WHERE user_id = ? AND followed_user_id =?";
+	private static final String CHECK_IF_USER_EXISTS = "SELECT * FROM users WHERE user_id=?";
 
 	private final DBConnection db;
 	
@@ -203,5 +204,20 @@ public class UserDao implements IUserDao{
 			}
 
 	
+	}
+
+	public boolean checkIfUserExistsInDB(Integer id) throws UserException {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_USER_EXISTS);
+				pstmt.setInt(1, id);
+				ResultSet resultSet = pstmt.executeQuery();
+				if (resultSet.next()) 
+					return true;
+				 else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB",e);
+			}
 	}
 }

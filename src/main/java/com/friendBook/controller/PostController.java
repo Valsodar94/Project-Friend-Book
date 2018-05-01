@@ -52,44 +52,57 @@ public class PostController {
 				return "test";
 			}
 		} 
-		return "test";
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView) throws PostException {
-		List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
-		modelAndView.addObject("posts", postsList);
-		modelAndView.addObject("id", id);
-		modelAndView.setViewName("Profile");
-		return modelAndView;
+	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) throws PostException {
+	
+		try {
+			if(uDao.checkIfUserExistsInDB(id)) {
+				List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
+				modelAndView.addObject("posts", postsList);
+				modelAndView.addObject("id", id);
+				modelAndView.setViewName("Profile");
+				return modelAndView;
+			}
+			else
+				return new ModelAndView("test", "error", "No such user");
+		} catch (UserException e) {
+			e.printStackTrace();
+			return new ModelAndView("test", "error", e.getMessage());
+		}
+		
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
-	public String publish(Model model, HttpServletRequest request) {
-		
-		String text = request.getParameter("postText");
-		String pictureUrl = request.getParameter("pictureUrl");
-		String picture = extractPictureName(pictureUrl);		
-		
-
-		try {			
-			if (!((text == null || text.length() == 0) 
-					&& (picture == null || picture.length() == 0))) {	
-				HttpSession session = request.getSession();
-
-				int userId = (int) session.getAttribute("USERID");
-				Post newPost = new Post(0, userId);
-				newPost.setText(text);
-				newPost.setPictureUrl(picture);
-				postDao.publish(newPost);	
-				model.addAttribute("post", newPost);
-				return "redirect:/"+userId;
+	public String publish(Model model, HttpServletRequest request, HttpSession session) {
+		if(session.getAttribute("USER")!=null) {
+			String text = request.getParameter("postText");
+			String pictureUrl = request.getParameter("pictureUrl");
+			String picture = extractPictureName(pictureUrl);		
+			
+	
+			try {			
+				if (!((text == null || text.length() == 0) 
+						&& (picture == null || picture.length() == 0))) {	
+	
+					int userId = (int) session.getAttribute("USERID");
+					Post newPost = new Post(0, userId);
+					newPost.setText(text);
+					newPost.setPictureUrl(picture);
+					postDao.publish(newPost);	
+					model.addAttribute("post", newPost);
+					return "redirect:/"+userId;
+				}
+				return "redirect:ErrorForm.html";
+			} catch (PostException e) {
+				e.printStackTrace();
+				return "redirect:test";
 			}
-			return "redirect:ErrorForm.html";
-		} catch (PostException e) {
-			e.printStackTrace();
-			return "redirect:test";
 		}
+		else
+			return "redirect:/";
 	
 	}
 	
