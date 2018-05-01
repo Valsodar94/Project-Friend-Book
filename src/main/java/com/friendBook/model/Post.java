@@ -15,7 +15,7 @@ public class Post implements Likeable, Comparable<Post>{
 	private LocalDateTime time;
 	private int userId;
 	private List<Comment> comments;
-	private Set<Like> likes;
+	private int likes;
 	
 	public Post(int id, int userId) {
 		this.id = id;
@@ -24,7 +24,6 @@ public class Post implements Likeable, Comparable<Post>{
 		this.time = LocalDateTime.now();
 		this.userId = userId;
 		this.comments = new ArrayList<>();
-		this.likes = new HashSet<>();
 	}
 	
 	public int getId() {
@@ -86,26 +85,14 @@ public class Post implements Likeable, Comparable<Post>{
 		}
 	}
 	
-	public Set<Like> getLikes() {
-		return Collections.unmodifiableSet(likes);
+	public void setLikes(int likes) {
+		if(likes>=0)
+			this.likes = likes;
+	}
+	public int getLikes() {
+		return likes;
 	}
 	
-	public void addLike(Like like) {
-		if(like != null) {
-			this.likes.add(like);
-		}
-	}
-	
-	public void removeLike(Like like) {
-		if(like != null) {
-			for(Iterator<Like> it = likes.iterator(); it.hasNext();) {
-				if(it.equals(like)) {
-					this.likes.remove(like);
-					break;
-				}
-			}			
-		}
-	}
 
 	@Override
 	public String toString() {

@@ -10,8 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import exceptions.LikeException;
 import exceptions.PostException;
 
 @Component
@@ -23,6 +26,9 @@ public class PostDao implements IPostDAO {
 	private static final String GET_POST_SQL = "SELECT * FROM posts WHERE post_id=?";
 
 	private final DBConnection db;
+	
+	@Autowired
+	private LikeDao likeDao;
 
 	public PostDao() throws ClassNotFoundException, SQLException {
 		db = DBConnection.getInstance();
@@ -85,16 +91,19 @@ public class PostDao implements IPostDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				Post post = new Post(resultSet.getInt(1), userId);
+				int postId = resultSet.getInt(1);
+				Post post = new Post(postId, userId);
 				post.setText(resultSet.getString(2));
 				post.setPictureUrl(resultSet.getString(3));
 				post.setTime(LocalDateTime.parse(resultSet.getString(4),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+				List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
+				post.setLikes(likedPostUserIds.size());
 				usersPosts.add(post);
 			}
 			Collections.sort(usersPosts);
 			return usersPosts;
-		} catch (SQLException e) {
+		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
 			throw new PostException("Something went wrong with DB", e);
 		}
