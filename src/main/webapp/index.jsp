@@ -8,6 +8,7 @@
 <title>Friend Book</title>
 </head>
 <body>
+	<p>${message}</p>
 	<c:choose>
 		<c:when test="${not empty sessionScope.USER}">
 			<jsp:include page="Header.jsp" />

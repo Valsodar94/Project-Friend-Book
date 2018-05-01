@@ -99,7 +99,7 @@ public class UserController {
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		
-		if(session.getAttribute("USERID") !=null && profileID!=null) {
+		if(session.getAttribute("USERID") !=null || profileID!=null) {
 			try {
 				int userId = (int) session.getAttribute("USERID");
 				uDao.follow(userId, Integer.parseInt(profileID));

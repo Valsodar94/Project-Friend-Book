@@ -16,6 +16,11 @@
 		</c:when>
 		<c:otherwise>
 			<c:forEach items="${posts}" var="post">
+			<c:if test="${not empty sessionScope.PostMessage}">
+				<c:if test="${sessionScope.postId == post.getId()}">
+					<p>${sessionScope.PostMessage}</p>
+				</c:if>
+			</c:if>
 				<c:out value="${post.text}" /><br>
 				<c:out value="Published on: ${post.time}" /><br>
 				<c:choose>
@@ -24,6 +29,10 @@
 					</c:when>
 				</c:choose>
 				<c:out value="${post.likes.size()} likes" /><br>
+				<form method="POST" action="./like">
+					<input type="hidden" name="postId" value="${post.getId()}"> 
+					<input type="submit" value="like">
+				</form>
 				<a href="./comment/${post.id}">Comments</a><hr>
 			</c:forEach>
 		</c:otherwise>

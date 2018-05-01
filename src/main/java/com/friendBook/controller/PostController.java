@@ -34,6 +34,7 @@ public class PostController {
 	@Autowired
 	private UserDao uDao;
 	
+	
 	@RequestMapping(method=RequestMethod.GET, value="/posts")
 	public String extractFeed(Model model, HttpServletRequest request) throws PostException {
 		HttpSession session = request.getSession();
