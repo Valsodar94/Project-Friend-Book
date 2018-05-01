@@ -47,12 +47,12 @@ public class PostController {
 					feed.addAll(postDao.extractPosts(i));
 				}
 				model.addAttribute("posts", feed);
-				return "index.jsp";
+				return "test";
 			} catch (UserException e) {
-				return "index.jsp";
+				return "test";
 			}
 		} 
-		return "index.jsp";
+		return "test";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
@@ -60,7 +60,7 @@ public class PostController {
 		List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
 		modelAndView.addObject("posts", postsList);
 		modelAndView.addObject("id", id);
-		modelAndView.setViewName("Profile.jsp");
+		modelAndView.setViewName("Profile");
 		return modelAndView;
 	}
 
@@ -88,7 +88,7 @@ public class PostController {
 			return "redirect:ErrorForm.html";
 		} catch (PostException e) {
 			e.printStackTrace();
-			return "redirect:index.jsp";
+			return "redirect:test";
 		}
 	
 	}

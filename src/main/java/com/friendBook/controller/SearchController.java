@@ -34,10 +34,10 @@ public class SearchController {
 				List<User> users = new LinkedList<>();
 		try {
 			users.addAll(uDao.getUsersByString(search));
-			return new ModelAndView("SearchResult.jsp", "users", users);
+			return new ModelAndView("SearchResult", "users", users);
 
 		} catch (UserException e) {
-			return new ModelAndView("index.jsp", "error", "hmmm");
+			return new ModelAndView("test", "error", "hmmm");
 		}
 	}
 	

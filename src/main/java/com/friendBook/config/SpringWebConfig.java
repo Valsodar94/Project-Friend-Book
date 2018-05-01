@@ -32,7 +32,15 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter{
         registry.addResourceHandler("/pdfs/**").addResourceLocations("/static/pdf/");
     }
 	
-
+	@Bean
+	public InternalResourceViewResolver getInternalResourceViewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setViewClass(JstlView.class);
+		resolver.setPrefix("/WEB-INF/views/jsp/");
+		resolver.setSuffix(".jsp");
+		
+		return resolver;
+	}
 	
 	// localization configuration
 	@Bean

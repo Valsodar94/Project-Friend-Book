@@ -48,7 +48,7 @@ public class CommentController {
 			return "redirect:/";
 		} catch (CommentException e) {
 			e.printStackTrace();
-			return "redirect:index.jsp";
+			return "redirect:test";
 		}
 	}
 

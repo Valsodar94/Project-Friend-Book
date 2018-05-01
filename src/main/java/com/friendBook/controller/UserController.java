@@ -41,19 +41,19 @@ public class UserController {
 			session.setAttribute("USERID", userId);
 			
 			session.setMaxInactiveInterval(120);
-			return "redirect:/posts";
+			return "redirect:/";
 
 		}
 		catch (LoginException e) {
 			model.addAttribute("error", "Invalid username or password");
-		    return"index.jsp";
+		    return"test";
 		}
 		
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
-		return "index.jsp";
+		return "test";
 	}
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
@@ -61,7 +61,7 @@ public class UserController {
 			session.setAttribute("USER", null);
 			session.invalidate();
 		}
-		return "index.jsp";
+		return "test";
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -75,24 +75,24 @@ public class UserController {
 		
         if(!(password.equals(password2))){
         	model.addAttribute("error", "passwords missmatch");
-        	return"RegistrationForm.jsp";            
+        	return"RegistrationForm";            
         }
 		try {
 			if(uDao.checkIfUsernameExistsInDB(username)) {
 	            model.addAttribute("error", "Username is taken, please enter a different username");
-	            return"RegistrationForm.jsp";
+	            return"RegistrationForm";
 	            
 			}
 			if(uDao.checkIfEmailExistsInDB(email)) {
 				model.addAttribute("error", "Email is already used, please enter a different email");
-			    return"RegistrationForm.jsp";			}
+			    return"RegistrationForm";			}
 			User u = new User(0,username,password,email);
 			uDao.register(u);
-			return "index.jsp";
+			return "test";
 		}
 		catch(RegisterException | UserException | SQLException e) {
 			e.printStackTrace();
-			return"RegistrationForm.jsp";
+			return"RegistrationForm";
 		}
 	}
 	
@@ -106,14 +106,14 @@ public class UserController {
 				return"redirect:/"+profileID;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-				return "redirect:/index.jsp";
+				return "redirect:/test";
 			} catch (UserException e) {
 				e.printStackTrace();
-				return "redirect:/index.jsp";
+				return "redirect:/test";
 
 			}
 		}
-		return "redirect:/index.jsp";
+		return "redirect:/test";
 	}
 	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
 	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
@@ -124,13 +124,13 @@ public class UserController {
 				return "redirect:/"+profileID;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-				return "redirect:/index.jsp";
+				return "redirect:/test";
 			} catch (UserException e) {
 				e.printStackTrace();
-				return "redirect:/index.jsp";
+				return "redirect:/test";
 			}
 		}
-		return "redirect:/index.jsp";
+		return "redirect:/test";
 	}
 
 }
