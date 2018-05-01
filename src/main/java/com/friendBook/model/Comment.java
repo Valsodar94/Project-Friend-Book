@@ -54,6 +54,12 @@ public class Comment implements Likeable, Comparable<Comment>{
 		}		
 	}
 	
+	public void setTime(LocalDateTime time) {
+		if(time != null) {
+			this.time = time;
+		}	
+	}
+
 	public List<CommentAnswer> getComments() {
 		return Collections.unmodifiableList(answers);
 	}

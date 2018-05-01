@@ -1,7 +1,10 @@
 package com.friendBook.controller;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,6 +24,7 @@ import com.friendBook.model.PostDao;
 
 import exceptions.CommentException;
 import exceptions.PostException;
+import exceptions.UserException;
 
 @Controller
 public class CommentController {
@@ -30,6 +34,24 @@ public class CommentController {
 	
 	@Autowired
 	private CommentDAO commentDao;
+	
+	@RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
+	public String getComments(Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute("POSTID")!=null) {
+			int postId = (int) session.getAttribute("POSTID");
+			try {
+				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
+				Collections.sort(commentsOnPost);
+				model.addAttribute("comments", commentsOnPost);
+				return "test";
+			} catch (CommentException e) {
+				e.printStackTrace();
+				return "redirect:test";
+			}
+		} 
+		return "test";
+	}
 	
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
 	public String putComment(Model model, HttpServletRequest request) {
