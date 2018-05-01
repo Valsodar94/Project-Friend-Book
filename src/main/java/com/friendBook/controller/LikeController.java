@@ -52,4 +52,34 @@ public class LikeController {
 
 	}
 	
+	@RequestMapping(value = "/likeComment", method = RequestMethod.POST)
+	public String likeComment(@RequestParam("commentId") String commentId, HttpSession session, Model model) {
+		if(session.getAttribute("USERID") !=null) {
+			int userId = (int) session.getAttribute("USERID");
+			int commentID = Integer.parseInt(commentId);
+			
+			try {
+				if(likeDao.checkIfLikeCommentExistsInDb(commentID, userId)) {
+					likeDao.dislikeAComment(commentID, userId);
+					session.setAttribute("PostMessage", "The post has been disliked");
+					session.setAttribute("commentId", commentID);
+					return "redirect:/";
+				}
+				else {
+					likeDao.likeAComment(commentID, userId);
+					session.setAttribute("PostMessage", "The post has been liked");
+					session.setAttribute("postId", commentID);
+					return "redirect:/";
+				}
+			} catch (LikeException e) {
+//				sent to a proper error page
+				e.printStackTrace();
+				return "redirect:/";
+			}
+		}
+		model.addAttribute("error", "Your session has expired. You need to login");
+		return "test";
+
+	}
+	
 }

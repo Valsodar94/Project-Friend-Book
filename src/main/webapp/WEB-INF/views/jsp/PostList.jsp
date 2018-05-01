@@ -28,7 +28,7 @@
 						<img class="img" src="./uploaded/${post.pictureUrl}" /><br>
 					</c:when>
 				</c:choose>
-				<c:out value="${post.likes.size()} likes" /><br>
+				<c:out value="${post.getLikes()} likes" /><br>
 				<form method="POST" action="./like">
 					<input type="hidden" name="postId" value="${post.getId()}"> 
 					<input type="submit" value="like">
