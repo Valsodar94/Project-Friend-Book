@@ -33,13 +33,13 @@ public class LikeController {
 					likeDao.dislikeAPost(postID, userId);
 					session.setAttribute("PostMessage", "The post has been disliked");
 					session.setAttribute("postId", postId);
-					return "redirect:/posts";
+					return "redirect:/";
 				}
 				else {
 					likeDao.likeAPost(postID, userId);
 					session.setAttribute("PostMessage", "The post has been liked");
 					session.setAttribute("postId", postId);
-					return "redirect:/posts";
+					return "redirect:/";
 				}
 			} catch (LikeException e) {
 //				sent to a proper error page

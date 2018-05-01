@@ -12,10 +12,11 @@
 			<input type="hidden" name="profileID" value="${id}"> <input
 				type="submit" value="follow">
 		</form>
-		<form method="POST" action="./unfollow">
-			<input type="hidden" name="profileID" value="${id}"> <input
-				type="submit" value="unfollow">
-		</form>
+		<c:if test="${not empty sessionScope.followMessage}">
+			<c:if test="${sessionScope.followedUser == id}">
+				<p><b>${sessionScope.followMessage}</b></p>
+			</c:if>
+		</c:if>
 	</c:otherwise>
 </c:choose>
 

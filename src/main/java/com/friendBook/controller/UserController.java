@@ -63,6 +63,10 @@ public class UserController {
 		}
 		return "test";
 	}
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String showRegistrationForm() {
+		return "RegistrationForm";
+	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
@@ -100,37 +104,44 @@ public class UserController {
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		
 		if(session.getAttribute("USERID") !=null || profileID!=null) {
+			int followerId = (int) session.getAttribute("USERID");
+			int followedId = Integer.parseInt(profileID);
 			try {
-				int userId = (int) session.getAttribute("USERID");
-				uDao.follow(userId, Integer.parseInt(profileID));
-				return"redirect:/"+profileID;
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-				return "redirect:/test";
+				if(uDao.checkIfFollowExistsInDb(followerId, followedId)) {
+					uDao.unfollow(followerId, followedId);
+					session.setAttribute("followedUser", followedId);
+					session.setAttribute("followMessage", "Unfollowed");
+					return "redirect:/"+profileID;
+				}
+				else {
+					uDao.follow(followerId, followedId);
+					session.setAttribute("followMessage", "Followed");
+					return "redirect:/"+profileID;
+				}
 			} catch (UserException e) {
-				e.printStackTrace();
-				return "redirect:/test";
-
+				session.setAttribute("error", "Something went wrong");
+				return "redirect:/";
 			}
 		}
-		return "redirect:/test";
+		session.setAttribute("error", "Your session has expired");
+		return "redirect:/";
 	}
-	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
-	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
-		if(session.getAttribute("USERID") !=null && profileID!=null) {
-			try {
-				int userId = (int) session.getAttribute("USERID");
-				uDao.unfollow(userId, Integer.parseInt(profileID));
-				return "redirect:/"+profileID;
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-				return "redirect:/test";
-			} catch (UserException e) {
-				e.printStackTrace();
-				return "redirect:/test";
-			}
-		}
-		return "redirect:/test";
-	}
+//	@RequestMapping(value = "/unfollow", method = RequestMethod.POST)
+//	public String unfollow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
+//		if(session.getAttribute("USERID") !=null && profileID!=null) {
+//			try {
+//				int userId = (int) session.getAttribute("USERID");
+//				uDao.unfollow(userId, Integer.parseInt(profileID));
+//				return "redirect:/"+profileID;
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//				return "redirect:/test";
+//			} catch (UserException e) {
+//				e.printStackTrace();
+//				return "redirect:/test";
+//			}
+//		}
+//		return "redirect:/test";
+//	}
 
 }

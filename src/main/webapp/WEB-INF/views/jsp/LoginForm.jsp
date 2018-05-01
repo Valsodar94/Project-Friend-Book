@@ -23,7 +23,7 @@
 		<p>Password: <input type="password" name="password" placeholder="Password"><br></p>
 		<input type="submit" value="Login">
 	</form>	
-	<form action="RegistrationForm.jsp">
+	<form action="register">
 		<p>No registration? <input type="submit" value="Click here to sign up"></p>
 	</form>	
 </body>

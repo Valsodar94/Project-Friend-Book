@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import exceptions.LikeException;
 import exceptions.LoginException;
 import exceptions.RegisterException;
 import exceptions.UserException;
@@ -23,6 +24,8 @@ public class UserDao implements IUserDao{
 	private static final String GET_USERS_BY_STRING = "SELECT * FROM users WHERE user_name like ?";
 	private static final String REMOVE_FROM_FOLLOWED_USERS = "DELETE FROM followed_users WHERE user_id = ? AND followed_user_id = ?";
 	private static final String GET_FOLLOWED_USERS = "SELECT * FROM followed_users WHERE user_id = ?";
+	private static final String CHECK_IF_FOLLOW_ALREADY_EXISTS = "SELECT * FROM followed_users WHERE user_id = ? AND followed_user_id =?";
+
 	private final DBConnection db;
 	
 	public UserDao() throws ClassNotFoundException, SQLException {
@@ -182,5 +185,23 @@ public class UserDao implements IUserDao{
 			e.printStackTrace();
 			throw new UserException("DB DOWN", e);
 		}
+	}	
+	public boolean checkIfFollowExistsInDb(int followerId,int followedId) throws UserException {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_FOLLOW_ALREADY_EXISTS);
+				pstmt.setInt(1, followerId);
+				pstmt.setInt(2, followedId);
+				ResultSet rs = pstmt.executeQuery();
+				if(rs.next())
+					return true;
+				else
+					return false;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB", e);
+			}
+
+	
 	}
 }
