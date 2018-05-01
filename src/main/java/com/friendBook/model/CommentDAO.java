@@ -55,10 +55,10 @@ public class CommentDAO implements ICommentDAO {
 	}
 
 	@Override
-	public int putComment(Comment comment) throws CommentException {
+	public boolean putComment(Comment comment) throws CommentException {
 		if (comment == null || comment.getText() == null 
 				|| comment.getText().length() == 0) {
-			return 0;
+			return false;
 		}
 		
 		PreparedStatement pstmt;
@@ -70,7 +70,8 @@ public class CommentDAO implements ICommentDAO {
 			pstmt.executeUpdate();
 
 			ResultSet resultSet = pstmt.getGeneratedKeys();
-			return resultSet.getInt(1);
+			System.out.println(resultSet.toString());
+			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new CommentException("Something went wrong with DB", e);

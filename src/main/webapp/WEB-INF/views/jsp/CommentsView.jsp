@@ -34,9 +34,7 @@
 			type="submit" value="like">
 	</form>
 	</div>
-	
-	<jsp:include page="CommentList.jsp" />
-	<form action="/comment/${post.id}" method="POST">
+	<form action="/Project-Friend-Book/comment/${post.getId()}" method="POST">
 		<div class="comment">
 			<textarea name="commentText" cols="50" rows="4"
 				placeholder="Comment this post"></textarea>
