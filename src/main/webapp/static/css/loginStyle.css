@@ -161,6 +161,10 @@ input, textarea, select, label {
   text-shadow: 0 -1px rgba(0, 0, 0, 0.4);
 }
 
+.login-field{
+	color: white;
+}
+
 .login-input {
   display: block;
   width: 100%;
@@ -223,8 +227,8 @@ input, textarea, select, label {
   text-align: center;
 }
 .login-help > a {
-  font-size: 11px;
-  color: #d4deef;
+  font-size: 16px;
+  color: #3f65b7;
   text-decoration: none;
   text-shadow: 0 -1px rgba(0, 0, 0, 0.4);
 }

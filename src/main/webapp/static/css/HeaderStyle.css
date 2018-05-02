@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+	background: #ebc9a2;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+	width: 100%;
+	position: relative
+}
+
+.searchTerm {
+	float: left;
+	width: 100%;
+	border: 3px solid #3f65b7;
+	padding: 5px;
+	height: 36px;
+	border-radius: 5px;
+	outline: none;
+	color: #9DBFAF;
+}
+
+.searchTerm:focus {
+	color: #3f65b7;
+}
+
+.searchButton {
+	position: absolute;
+	right: -64px;
+	width: 60px;
+	height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #294779;
+	text-align: center;
+	text-shadow: 0 1px rgba(255, 255, 255, 0.3);
+	background: #adcbfa;
+	background-clip: padding-box;
+	border: 1px solid #284473;
+	border-bottom-color: #223b66;
+	border-radius: 4px;
+	cursor: pointer;
+	background-image: -webkit-linear-gradient(top, #d0e1fe, #96b8ed);
+	background-image: -moz-linear-gradient(top, #d0e1fe, #96b8ed);
+	background-image: -o-linear-gradient(top, #d0e1fe, #96b8ed);
+	background-image: linear-gradient(to bottom, #d0e1fe, #96b8ed);
+	-webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), inset 0 0 7px
+		rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.15);
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), inset 0 0 7px
+		rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.searchButton:active {
+  background: #a4c2f3;
+  -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.4), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.4), 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.wrap {
+	width: 30%;
+	position: absolute;
+	top: 5%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

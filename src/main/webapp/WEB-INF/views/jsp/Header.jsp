@@ -4,60 +4,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
-<style>
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
-
-body {
-	background: #f2f2f2;
-	font-family: 'Open Sans', sans-serif;
-}
-
-.search {
-	width: 100%;
-	position: relative
-}
-
-.searchTerm {
-	float: left;
-	width: 100%;
-	border: 3px solid #00B4CC;
-	padding: 5px;
-	height: 36px;
-	border-radius: 5px;
-	outline: none;
-	color: #9DBFAF;
-}
-
-.searchTerm:focus {
-	color: #00B4CC;
-}
-
-.searchButton {
-	position: absolute;
-	right: -50px;
-	width: 40px;
-	height: 36px;
-	border: 1px solid #00B4CC;
-	background: #00B4CC;
-	text-align: center;
-	color: #fff;
-	border-radius: 5px;
-	cursor: pointer;
-	font-size: 20px;
-}
-
-.wrap {
-	width: 30%;
-	position: absolute;
-	top: 5%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-</style>
 <head>
 <title>Friend-Book</title>
 <link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"
 	rel="stylesheet">
+<link href="css/HeaderStyle.css" rel="stylesheet">
 </head>
 <body>
 	<div class="container">
@@ -72,8 +23,8 @@ body {
 				<form method="GET" action="/Project-Friend-Book/SearchResult">
 					<input type="text" name="search" class="searchTerm"
 						placeholder="Search for a user profile?">
-					<button type="submit" class="searchButton">
-						<i class="fa fa-search"></i>
+					<button type="submit" value="Search" class="searchButton">
+						<i class="fa fa-search"></i>Search
 					</button>
 				</form>
 			</div>

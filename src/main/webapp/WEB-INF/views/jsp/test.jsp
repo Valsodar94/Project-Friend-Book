@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Friend Book</title>
-<link rel="stylesheet" href="static/css/loginStyle.css">
+<link href="css/loginStyle.css" rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
@@ -17,18 +17,24 @@
 			<jsp:include page="PostList.jsp" />
 		</c:when>
 		<c:otherwise>
-			<div class="container">
-				<form method="POST" action="login" class="login">
-					<h3>Please login:<br></h3>
-					<p>Username: <input type="text" name="username" class="login-input"	placeholder="Username" autofocus></p><br>
-					<p>Password: <input type="password" name="password" class="login-input"	placeholder="Password"></p><br>
-					<input type="submit" value="Login" class="login-submit">
-				</form>
-				
-				<form action="register" class="login-help">
-					<p>No registration? <input type="submit" value="Click here to sign up"></p>
-				</form>
-			</div>
+			<form method="POST" action="login" class="login">
+				<h3 class="login-field">
+					FriendBook<br>
+				</h3>
+				<p class="login-field">
+					Username: <input type="text" name="username" class="login-input"
+						placeholder="Username" autofocus>
+				</p>
+				<br>
+				<p class="login-field">
+					Password: <input type="password" name="password"
+						class="login-input" placeholder="Password">
+				</p>
+				<br> <input type="submit" value="Login" class="login-submit">
+			</form>
+			<p class="login-help">
+				<a href="register">No registration?</a>
+			</p>
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${not empty error}">
