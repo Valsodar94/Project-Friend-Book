@@ -75,18 +75,19 @@ public class CommentController {
 		}
 	}
 	
-	//TODO getAnswers @RequestMapping(value = "/answer/{id}", method = RequestMethod.GET)
-	//CommentDAO extractAnswers(commentId)
-	
 	@RequestMapping(value = "/comment/{postId}/answer/{commentId}", method = RequestMethod.GET)
-	public String getAnswers(@PathVariable("postId") int postId, Model model, HttpServletRequest request) {
+	public String getAnswers(@PathVariable("postId") int postId, 
+			@PathVariable("postId") int commentId,
+			Model model, HttpServletRequest request) {
 		if(postId >= 0) {
 			try {
-				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
-				Collections.sort(commentsOnPost);
-				model.addAttribute("comments", commentsOnPost);
+				List<Comment> answersOnComment = new LinkedList<>(commentDao.extractAnswers(commentId));
+				Collections.sort(answersOnComment);
+				model.addAttribute("answers", answersOnComment);
 				Post post = postDao.getPostById(postId);
 				model.addAttribute("post", post);
+				Comment comment = commentDao.getCommentById(commentId);
+				model.addAttribute("comment", comment);
 				return "CommentList";
 			} catch (CommentException | LikeException | PostException e) {
 				e.printStackTrace();

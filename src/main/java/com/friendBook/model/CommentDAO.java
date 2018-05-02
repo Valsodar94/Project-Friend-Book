@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import org.springframework.stereotype.Component;
 
 import exceptions.CommentException;
+import exceptions.LikeException;
 import exceptions.PostException;
 
 @Component
@@ -24,6 +25,7 @@ public class CommentDAO implements ICommentDAO {
 			+ "(comment_content, comment_user_id, comment_answer,comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?, ?);";
 	private static final String COMMENT_ANSWERS_SQL = "SELECT * FROM comments WHERE comment_answer = ?;";
+	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
 
 	private final DBConnection db;
 
@@ -133,5 +135,29 @@ public class CommentDAO implements ICommentDAO {
 		}
 		
 	}
+
+	public Comment getCommentById(int commentId) throws CommentException{
+		if(commentId <= 0) {
+			return null;
+		}
+		
+		PreparedStatement pstmt;
+		try {
+			pstmt = db.getConnection().prepareStatement(GET_COMMENT_SQL);
+			pstmt.setInt(1, commentId);
+			ResultSet resultSet = pstmt.executeQuery();
+			resultSet.next();
+			
+			Comment comment = new Comment(resultSet.getInt(1), resultSet.getInt(4), resultSet.getInt(6));
+			comment.setText(resultSet.getString(2));
+			comment.setTime(LocalDateTime.parse(resultSet.getString(3),
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+			
+			return comment;
+		}catch (SQLException e){
+			e.printStackTrace();
+			throw new CommentException("Something went wrong with DB", e);
+		}
+	}						
 
 }
