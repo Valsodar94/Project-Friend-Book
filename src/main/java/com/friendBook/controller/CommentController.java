@@ -30,6 +30,7 @@ import exceptions.UserException;
 
 @Controller
 public class CommentController {
+//	TODO: Required in posts/comment/answer to type text.
 	
 	@Autowired
 	private PostDao postDao;
@@ -39,7 +40,7 @@ public class CommentController {
 	
 	@RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
 	public String getComments(@PathVariable("id") int postId, Model model, HttpServletRequest request) {
-		if(postId >= 0) {
+		try {
 			try {
 				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
 				Collections.sort(commentsOnPost);
@@ -47,12 +48,18 @@ public class CommentController {
 				Post post = postDao.getPostById(postId);
 				model.addAttribute("post", post);
 				return "CommentList";
-			} catch (CommentException | LikeException | PostException e) {
+			} catch (CommentException | PostException e) {
 				e.printStackTrace();
-				return "redirect:test";
+				model.addAttribute("errorMessage", e.getMessage());
+				return "ErrorPage";
+
 			}
-		} 
-		return "CommentList";
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 	
 	@RequestMapping(value = "/comment/{id}", method = RequestMethod.POST)
@@ -68,10 +75,12 @@ public class CommentController {
 				model.addAttribute("comment", newComment);
 				return "redirect:../comment/"+postId;
 			}
-			return "redirect:/";
+			model.addAttribute("errorMessage", "You can't publish an empty comment. Write a text.");
+			return "ErrorPage";
 		} catch (CommentException e) {
 			e.printStackTrace();
-			return "redirect:test";
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
 		}
 	}
 	
@@ -79,7 +88,7 @@ public class CommentController {
 	public ModelAndView getAnswers(@PathVariable("postId") int postId, 
 			@PathVariable("commentId") int commentId,
 			ModelAndView modelAndView, HttpServletRequest request) {
-//		if(postId >= 0) {
+		try {
 			try {
 				List<CommentAnswer> answersOnComment = new LinkedList<>(commentDao.extractAnswers(commentId));
 				Collections.sort(answersOnComment);
@@ -92,31 +101,44 @@ public class CommentController {
 				return modelAndView;
 			} catch (CommentException e) {
 				e.printStackTrace();
-				return new ModelAndView("test", "error", e.getMessage());
+				return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
 			}
-//		} 
-//		return "CommentList";
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
+		}
+
 	}
 	
 	@RequestMapping(value = "/comment/{postId}/answer/{commentId}", method = RequestMethod.POST)
 	public String putAnswer(@PathVariable("commentId") int commentId,
 			@PathVariable("postId") int postId,
 			Model model, HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		String answerText = request.getParameter("answerText");
-		try {			
-			if (!(answerText == null || answerText.length() == 0)) {	
-				int userId = (int) session.getAttribute("USERID");
-				CommentAnswer newAnswer = new CommentAnswer(0, userId, postId, commentId);
-				newAnswer.setText(answerText);
-				commentDao.answerComment(newAnswer);	
-				model.addAttribute("answer", newAnswer);
-				return "redirect:/comment/" + postId;
+		try {
+			HttpSession session = request.getSession();
+			String answerText = request.getParameter("answerText");
+			try {			
+				if (!(answerText == null || answerText.length() == 0)) {	
+					int userId = (int) session.getAttribute("USERID");
+					CommentAnswer newAnswer = new CommentAnswer(0, userId, postId, commentId);
+					newAnswer.setText(answerText);
+					commentDao.answerComment(newAnswer);	
+					model.addAttribute("answer", newAnswer);
+					return "redirect:/comment/" + postId;
+				}
+				model.addAttribute("errorMessage", "You can't publish an empty answer. Write a text.");
+				return "ErrorPage";
+			} catch (CommentException e) {
+				e.printStackTrace();
+				model.addAttribute("errorMessage", e.getMessage());
+				return "ErrorPage";
 			}
-			return "redirect:/";
-		} catch (CommentException e) {
+		}
+		catch(Exception e) {
 			e.printStackTrace();
-			return "redirect:test";
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
 		}
 	}
 

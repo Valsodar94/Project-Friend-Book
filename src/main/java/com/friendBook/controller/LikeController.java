@@ -29,68 +29,80 @@ public class LikeController {
 	
 	@RequestMapping(value = "/like", method = RequestMethod.POST)
 	public String like(@RequestParam("postId") String postId,@RequestParam(value = "profileId", required = false) String profileId, HttpSession session, Model model) {
-		
-		if(session.getAttribute("USERID") !=null) {
-			int userId = (int) session.getAttribute("USERID");
-			int postID = Integer.parseInt(postId);
-			ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-			URI newUri = builder.build().toUri();
-			String url = newUri.toString();
-			url = url.replace("like", "");
-			if(profileId != null)
-				url += profileId;
-			try {
-				if(likeDao.checkIfLikeExistsInDb(postID, userId)) {
-					likeDao.dislikeAPost(postID, userId);
-					session.setAttribute("PostMessage", DISLIKE_MESSAGE);
-					session.setAttribute("postId", postId);
-					return "redirect:"+url;
+		try {
+			if(session.getAttribute("USERID") !=null) {
+				int userId = (int) session.getAttribute("USERID");
+				int postID = Integer.parseInt(postId);
+				ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+				URI newUri = builder.build().toUri();
+				String url = newUri.toString();
+				url = url.replace("like", "");
+				if(profileId != null)
+					url += profileId;
+				try {
+					if(likeDao.checkIfLikeExistsInDb(postID, userId)) {
+						likeDao.dislikeAPost(postID, userId);
+						session.setAttribute("PostMessage", DISLIKE_MESSAGE);
+						session.setAttribute("postId", postId);
+						return "redirect:"+url;
+					}
+					else {
+						likeDao.likeAPost(postID, userId);
+						session.setAttribute("PostMessage", LIKE_MESSAGE);
+						session.setAttribute("postId", postId);
+						return "redirect:"+url;
+					}
+				} catch (LikeException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";
 				}
-				else {
-					likeDao.likeAPost(postID, userId);
-					session.setAttribute("PostMessage", LIKE_MESSAGE);
-					session.setAttribute("postId", postId);
-					return "redirect:"+url;
-				}
-			} catch (LikeException e) {
-//				sent to a proper error page
-				e.printStackTrace();
-				return "redirect:/";
 			}
+			model.addAttribute("error", "Your session has expired. You need to login");
+			return "test";
 		}
-		model.addAttribute("error", "Your session has expired. You need to login");
-		return "test";
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 
 	}
 	
 	@RequestMapping(value = "/comment/like", method = RequestMethod.POST)
 	public String likeComment(@RequestParam("postId") String postId,@RequestParam("commentId") String commentId, HttpSession session, Model model) {
-		if(session.getAttribute("USERID") !=null) {
-			int userId = (int) session.getAttribute("USERID");
-			int commentID = Integer.parseInt(commentId);
-			
-			try {
-				if(likeDao.checkIfLikeCommentExistsInDb(commentID, userId)) {
-					likeDao.dislikeAComment(commentID, userId);
-					session.setAttribute("CommentMessage", "The comment has been disliked");
-					session.setAttribute("commentId", commentID);
-					return "redirect:/comment/"+postId;
-				}
-				else {
-					likeDao.likeAComment(commentID, userId);
-					session.setAttribute("CommentMessage", "The comment has been liked");
-					session.setAttribute("commentId", commentID);
-					return "redirect:/comment/"+postId;
-				}
-			} catch (LikeException e) {
-//				sent to a proper error page
-				e.printStackTrace();
-				return "redirect:/";
+		try {
+			if(session.getAttribute("USERID") !=null) {
+				int userId = (int) session.getAttribute("USERID");
+				int commentID = Integer.parseInt(commentId);
+				
+				try {
+					if(likeDao.checkIfLikeCommentExistsInDb(commentID, userId)) {
+						likeDao.dislikeAComment(commentID, userId);
+						session.setAttribute("CommentMessage", "The comment has been disliked");
+						session.setAttribute("commentId", commentID);
+						return "redirect:/comment/"+postId;
+					}
+					else {
+						likeDao.likeAComment(commentID, userId);
+						session.setAttribute("CommentMessage", "The comment has been liked");
+						session.setAttribute("commentId", commentID);
+						return "redirect:/comment/"+postId;
+					}
+				} catch (LikeException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";				}
 			}
+			model.addAttribute("error", "Your session has expired. You need to login");
+			return "test";
+			
 		}
-		model.addAttribute("error", "Your session has expired. You need to login");
-		return "test";
-
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 	
 }

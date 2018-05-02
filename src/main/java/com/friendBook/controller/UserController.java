@@ -34,24 +34,32 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("username") String username,
 			@RequestParam("password") String password,
-			HttpSession session, Model model, HttpServletResponse response) throws IOException {
-		if(session.getAttribute("USER") == null) {
-			try {
-				int userId = uDao.login(username, password);
-				session.setAttribute("USER", username);
-				session.setAttribute("USERID", userId);
-				
-				session.setMaxInactiveInterval(120);
-				return "redirect:/";
-	
+			HttpSession session, Model model, HttpServletResponse response){
+		try {
+			if(session.getAttribute("USER") == null) {
+				try {
+					int userId = uDao.login(username, password);
+					session.setAttribute("USER", username);
+					session.setAttribute("USERID", userId);
+					
+					session.setMaxInactiveInterval(120);
+					return "redirect:/";
+		
+				}
+				catch (LoginException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";
+				}
+			} else {
+				model.addAttribute("error", "You are already logged in");
+				return "test";
 			}
-			catch (LoginException e) {
-				model.addAttribute("error", "Invalid username or password");
-			    return"test";
-			}
-		} else {
-			model.addAttribute("error", "You are already logged");
-			return "test";
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
 		}
 		
 	}
@@ -62,78 +70,109 @@ public class UserController {
 	}
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
-		if (session.getAttribute("USER") != null) {
-			session.setAttribute("USER", null);
-			session.setAttribute("USERID", null);
-			session.invalidate();
+		try {
+			if (session.getAttribute("USER") != null) {
+				session.setAttribute("USER", null);
+				session.setAttribute("USERID", null);
+				session.invalidate();
+				return"test";
+			}
+			return "test";
 		}
-		return "redirect:/";
+		catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String showRegistrationForm(HttpSession session) {
-		if(session.getAttribute("USER")== null)
-			return "RegistrationForm";
-		else
-			return "redirect:/";
+	public String showRegistrationForm(Model model, HttpSession session) {
+		try {
+			if(session.getAttribute("USER")== null)
+				return "RegistrationForm";
+			else {
+				model.addAttribute("error", "You are already logged");
+				return "test";
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
-
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String password2 = request.getParameter("password2");
-		String email = request.getParameter("email");
-
-		
-        if(!(password.equals(password2))){
-        	model.addAttribute("error", "passwords missmatch");
-        	return"RegistrationForm";            
-        }
 		try {
-			if(uDao.checkIfUsernameExistsInDB(username)) {
-	            model.addAttribute("error", "Username is taken, please enter a different username");
-	            return"RegistrationForm";
-	            
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			String password2 = request.getParameter("password2");
+			String email = request.getParameter("email");
+	
+			
+	        if(!(password.equals(password2))){
+	        	model.addAttribute("error", "passwords missmatch");
+	        	return"RegistrationForm";            
+	        }
+			try {
+				if(uDao.checkIfUsernameExistsInDB(username)) {
+		            model.addAttribute("error", "Username is taken, please enter a different username");
+		            return"RegistrationForm";
+		            
+				}
+				if(uDao.checkIfEmailExistsInDB(email)) {
+					model.addAttribute("error", "Email is already used, please enter a different email");
+				    return"RegistrationForm";			}
+				User u = new User(0,username,password,email);
+				uDao.register(u);
+				return "test";
 			}
-			if(uDao.checkIfEmailExistsInDB(email)) {
-				model.addAttribute("error", "Email is already used, please enter a different email");
-			    return"RegistrationForm";			}
-			User u = new User(0,username,password,email);
-			uDao.register(u);
-			return "test";
+			catch(RegisterException | UserException e) {
+				e.printStackTrace();
+				model.addAttribute("errorMessage", e.getMessage());
+				return "ErrorPage";
+			}
 		}
-		catch(RegisterException | UserException | SQLException e) {
+		catch (Exception e) {
 			e.printStackTrace();
-			return"RegistrationForm";
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
 		}
 	}
 	
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
-		
-		if(session.getAttribute("USERID") !=null && profileID!=null) {
-			int followerId = (int) session.getAttribute("USERID");
-			int followedId = Integer.parseInt(profileID);
-			try {
-				if(uDao.checkIfFollowExistsInDb(followerId, followedId)) {
-					uDao.unfollow(followerId, followedId);
-					session.setAttribute("followedUser", followedId);
-					session.setAttribute("followMessage", "Unfollowed");
-					return "redirect:/"+profileID;
+		try {
+			if(session.getAttribute("USERID") !=null && profileID!=null) {
+				int followerId = (int) session.getAttribute("USERID");
+				int followedId = Integer.parseInt(profileID);
+				try {
+					if(uDao.checkIfFollowExistsInDb(followerId, followedId)) {
+						uDao.unfollow(followerId, followedId);
+						session.setAttribute("followedUser", followedId);
+						session.setAttribute("followMessage", "Unfollowed");
+						return "redirect:/"+profileID;
+					}
+					else {
+						uDao.follow(followerId, followedId);
+						session.setAttribute("followMessage", "Followed");
+						return "redirect:/"+profileID;
+					}
+				} catch (UserException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";
 				}
-				else {
-					uDao.follow(followerId, followedId);
-					session.setAttribute("followMessage", "Followed");
-					return "redirect:/"+profileID;
-				}
-			} catch (UserException e) {
-				session.setAttribute("error", "Something went wrong");
-				return "redirect:/";
 			}
+			session.setAttribute("error", "Your session has expired");
+			return "redirect:/";
 		}
-		session.setAttribute("error", "Your session has expired");
-		return "redirect:/";
+		catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 
 

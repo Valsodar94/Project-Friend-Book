@@ -34,9 +34,9 @@ public class PostDao implements IPostDAO {
 		db = DBConnection.getInstance();
 	}
 
-	public Post getPostById(int postId) throws PostException, LikeException {
+	public Post getPostById(int postId) throws PostException {
 		if (postId <= 0) {
-			return null;
+			throw new PostException("Invalid id");
 		}
 
 		PreparedStatement pstmt;
@@ -54,13 +54,16 @@ public class PostDao implements IPostDAO {
 			List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
 			post.setLikes(likedPostUserIds.size());
 			return post;
-		} catch (SQLException e) {
+		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
 			throw new PostException("Something went wrong with DB", e);
 		}
 	}
 
 	public boolean publish(Post post) throws PostException {
+		if (post == null) {
+			throw new PostException("Post is null");
+		}
 		if ((post.getText() == null || post.getText().length() == 0)
 				&& (post.getPictureUrl() == null || post.getPictureUrl().length() == 0)) {
 			return false;
@@ -84,6 +87,9 @@ public class PostDao implements IPostDAO {
 	}
 
 	public List<Post> extractPosts(int userId) throws PostException {
+		if (userId <= 0) {
+			throw new PostException("Invalid id");
+		}
 		PreparedStatement pstmt;
 		try {
 			pstmt = db.getConnection().prepareStatement(EXTRACT_POSTS_SQL);

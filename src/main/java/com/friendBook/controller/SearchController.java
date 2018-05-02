@@ -31,13 +31,19 @@ public class SearchController {
 	
 	@RequestMapping(value = {"/SearchResult", "/profile/SearchResult"}, method = RequestMethod.GET)
 	public ModelAndView showSearchResults(@RequestParam("search") String search) {
-				List<User> users = new LinkedList<>();
 		try {
-			users.addAll(uDao.getUsersByString(search));
-			return new ModelAndView("SearchResult", "users", users);
-
-		} catch (UserException e) {
-			return new ModelAndView("test", "error", "hmmm");
+			List<User> users = new LinkedList<>();
+			try {
+				users.addAll(uDao.getUsersByString(search));
+				return new ModelAndView("SearchResult", "users", users);
+	
+			} catch (UserException e) {
+				return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
 		}
 	}
 	

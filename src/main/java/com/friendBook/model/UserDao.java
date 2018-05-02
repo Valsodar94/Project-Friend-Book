@@ -42,183 +42,240 @@ public class UserDao implements IUserDao{
 	@Override
 	public int login(String username, String password) throws LoginException {
 		PreparedStatement pstmt;
-		try {
-			pstmt = db.getConnection().prepareStatement(LOGIN_USER_SQL);
-			pstmt.setString(1, username);
-			pstmt.setString(2, password);
-			
-			ResultSet resultSet = pstmt.executeQuery();
-			
-			if (resultSet.next()) {
-				return resultSet.getInt(1);
-			}
-			
-			throw new LoginException("No such user!");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new LoginException("Something went wrong with the database!", e);
-		} 
+		if(username!=null && password!=null) {
+			try {
+				pstmt = db.getConnection().prepareStatement(LOGIN_USER_SQL);
+				pstmt.setString(1, username);
+				pstmt.setString(2, password);
+				
+				ResultSet resultSet = pstmt.executeQuery();
+				
+				if (resultSet.next()) {
+					return resultSet.getInt(1);
+				}
+				throw new LoginException("No such user!");
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new LoginException("Something went wrong with the database!", e);
+			} 
+		}
+		else
+			throw new LoginException("username or password is null!!!");
+
 	}
 	
 	@Override
 	public int register(User u) throws RegisterException {
 		PreparedStatement pstmt;
-		try {
-			pstmt = db.getConnection().prepareStatement(ADD_USER_SQL, Statement.RETURN_GENERATED_KEYS);			
-			
-			pstmt.setString(1, u.getUsername());
-			pstmt.setString(2, u.getPassword());			
-			pstmt.setString(3, u.getEmail());			
-			pstmt.executeUpdate();
-			
-			ResultSet resultSet = pstmt.getGeneratedKeys();
-			resultSet.next();		
-			return resultSet.getInt(1);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RegisterException("Something went wrong with DB", e);
-		} 
+		if(u!=null) {
+			try {
+				pstmt = db.getConnection().prepareStatement(ADD_USER_SQL, Statement.RETURN_GENERATED_KEYS);			
+				
+				pstmt.setString(1, u.getUsername());
+				pstmt.setString(2, u.getPassword());			
+				pstmt.setString(3, u.getEmail());			
+				pstmt.executeUpdate();
+				
+				ResultSet resultSet = pstmt.getGeneratedKeys();
+				resultSet.next();		
+				return resultSet.getInt(1);
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new RegisterException("Something went wrong with DB", e);
+			} 
+		}
+		else
+			throw new RegisterException("User is null!!!");
 	}
 	
-	public boolean checkIfUsernameExistsInDB(String username) throws SQLException {
-		PreparedStatement pstmt = db.getConnection()
-				.prepareStatement(CHECK_FOR_USERNAME);
-			pstmt.setString(1, username);
-			ResultSet resultSet = pstmt.executeQuery();
-			
-			if (resultSet.next()) 
-				return true;
-			 else
-				return false;
+	public boolean checkIfUsernameExistsInDB(String username)throws UserException {
+		if(username!=null) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection()
+						.prepareStatement(CHECK_FOR_USERNAME);
+				pstmt.setString(1, username);
+				ResultSet resultSet = pstmt.executeQuery();
+				
+				if (resultSet.next()) 
+					return true;
+				 else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Problem with DB");
+			}
+
+		}
+		else
+			throw new UserException("username is null");
 	}
 	
-	public boolean checkIfEmailExistsInDB(String email) throws SQLException {
-		PreparedStatement pstmt = db.getConnection()
-				.prepareStatement(CHECK_FOR_EMAIL);
-			pstmt.setString(1, email);
-			ResultSet resultSet = pstmt.executeQuery();
-			
-			if (resultSet.next()) 
-				return true;
-			 else
-				return false;
+	public boolean checkIfEmailExistsInDB(String email) throws UserException {
+		if(email!=null) {
+				try {
+					PreparedStatement pstmt = db.getConnection()
+							.prepareStatement(CHECK_FOR_EMAIL);
+						pstmt.setString(1, email);
+						ResultSet resultSet = pstmt.executeQuery();
+					if (resultSet.next()) 
+						return true;
+					 else
+						return false;
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw new UserException("Problem with DB");
+
+				}
+		}
+		else
+			throw new UserException("email is null");
 	}
 	public User getUserById(int id) throws UserException {
-		PreparedStatement pstmt;
-		try {
-			pstmt = db.getConnection().prepareStatement(SELECT_USER);
-			pstmt.setInt(1, id);
-			
-			ResultSet resultSet = pstmt.executeQuery();
-			String username = resultSet.getString(2); 
-			String password = resultSet.getString(3); 
-			String email = resultSet.getString(4); 
-			return new User(id,username,password,email);
+		if(id>0) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(SELECT_USER);
+				pstmt.setInt(1, id);
+				
+				ResultSet resultSet = pstmt.executeQuery();
+				String username = resultSet.getString(2); 
+				String password = resultSet.getString(3); 
+				String email = resultSet.getString(4); 
+				return new User(id,username,password,email);
+			}
+			catch(SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB");
+			}
 		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Something went wrong with DB");
-		}
+		else
+			throw new UserException("Invalid id");
+
 	}
 	public List<User> getUsersByString(String name) throws UserException{
-		PreparedStatement pstmt;
-		try {
-			pstmt = db.getConnection().prepareStatement(GET_USERS_BY_STRING);
-			pstmt.setString(1, "%"+name+"%");
-			ResultSet resultSet = pstmt.executeQuery();
-			List<User> users = new LinkedList<>();
-			while(resultSet.next()) {
-				int id = resultSet.getInt(1);
-				String username = resultSet.getString(2);
-				String password = resultSet.getString(3);
-				String email = resultSet.getString(4);
-				User u = new User(id,username,password, email);
-				users.add(u);
+		if(name!=null) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(GET_USERS_BY_STRING);
+				pstmt.setString(1, "%"+name+"%");
+				ResultSet resultSet = pstmt.executeQuery();
+				List<User> users = new LinkedList<>();
+				while(resultSet.next()) {
+					int id = resultSet.getInt(1);
+					String username = resultSet.getString(2);
+					String password = resultSet.getString(3);
+					String email = resultSet.getString(4);
+					User u = new User(id,username,password, email);
+					users.add(u);
+				}
+				return users;
 			}
-			return users;
+			catch(SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB");
+			}
 		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Something went wrong with DB");
-		}
+		else
+			throw new UserException("name is null");
+
 	}
 	public boolean follow(int followerID, int followedID) throws UserException {
-		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(INSERT_INTO_FOLLOWED_USERS);
-			pstmt.setInt(1, followerID);
-			pstmt.setInt(2, followedID);
-			int addedRows = pstmt.executeUpdate();
-			if(addedRows>0)
-				return true;
-			else
-				throw new UserException("Already followed!!!");
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Someting went wrong with DB", e);
+		if(followerID > 0 && followedID > 0) {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(INSERT_INTO_FOLLOWED_USERS);
+				pstmt.setInt(1, followerID);
+				pstmt.setInt(2, followedID);
+				int addedRows = pstmt.executeUpdate();
+				if(addedRows>0)
+					return true;
+				else
+					throw new UserException("Already followed!!!");
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Someting went wrong with DB", e);
+			}	
 		}
+		else
+			throw new UserException("Invalid id");
+
 	}
 	
 	public boolean unfollow(int followerID, int followedID) throws UserException {
-		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(REMOVE_FROM_FOLLOWED_USERS);
-			pstmt.setInt(1, followerID);
-			pstmt.setInt(2, followedID);
-			int removedRows = pstmt.executeUpdate();
-			if(removedRows>0)
-				return true;
-			else
-				throw new UserException("Not followed in the first place!!");
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Something went wrong with DB", e);
+		if(followerID > 0 && followedID > 0) {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(REMOVE_FROM_FOLLOWED_USERS);
+				pstmt.setInt(1, followerID);
+				pstmt.setInt(2, followedID);
+				int removedRows = pstmt.executeUpdate();
+				if(removedRows>0)
+					return true;
+				else
+					throw new UserException("Not followed in the first place!!");
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB", e);
+			}
 		}
+		else
+			throw new UserException("Invalid id");
 	}
 	
 	public List<User> getAllFollowedUsers(int id) throws UserException{
-		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(GET_FOLLOWED_USERS);
-			pstmt.setInt(1, id);
-			ResultSet resultSet = pstmt.executeQuery();
-			List<User> followedUsers = new LinkedList<>();
-			while(resultSet.next()) {
-				int id2 = resultSet.getInt(1);
-				String username = resultSet.getString(2);
-				String password = resultSet.getString(3);
-				String email = resultSet.getString(4);
-				User u = new User(id2,username,password, email);
-				followedUsers.add(u);
+		if(id > 0) {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(GET_FOLLOWED_USERS);
+				pstmt.setInt(1, id);
+				ResultSet resultSet = pstmt.executeQuery();
+				List<User> followedUsers = new LinkedList<>();
+				while(resultSet.next()) {
+					int id2 = resultSet.getInt(1);
+					String username = resultSet.getString(2);
+					String password = resultSet.getString(3);
+					String email = resultSet.getString(4);
+					User u = new User(id2,username,password, email);
+					followedUsers.add(u);
+				}
+				return followedUsers;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB", e);
 			}
-			return followedUsers;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Something went wrong with DB", e);
 		}
+		else
+			throw new UserException("Invalid id");
 	}	
 	public List<User> getAllFollowers(int id) throws UserException{
-		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(EXTRACT_ALL_FOLLOWERS);
-			pstmt.setInt(1, id);
-			ResultSet resultSet = pstmt.executeQuery();
-			List<User> followers = new LinkedList<>();
-			while(resultSet.next()) {
-				int id2 = resultSet.getInt(1);
-				String username = resultSet.getString(3);
-				String password = resultSet.getString(4);
-				String email = resultSet.getString(5);
-				User u = new User(id2,username,password, email);
-				followers.add(u);
+		if(id > 0) {
+			try {
+				PreparedStatement pstmt = db.getConnection().prepareStatement(EXTRACT_ALL_FOLLOWERS);
+				pstmt.setInt(1, id);
+				ResultSet resultSet = pstmt.executeQuery();
+				List<User> followers = new LinkedList<>();
+				while(resultSet.next()) {
+					int id2 = resultSet.getInt(1);
+					String username = resultSet.getString(3);
+					String password = resultSet.getString(4);
+					String email = resultSet.getString(5);
+					User u = new User(id2,username,password, email);
+					followers.add(u);
+				}
+				return followers;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException("Something went wrong with DB", e);
 			}
-			return followers;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new UserException("Something went wrong with DB", e);
 		}
+		else
+			throw new UserException("Invalid id");
+
 	}
 	
 	public boolean checkIfFollowExistsInDb(int followerId,int followedId) throws UserException {
+		if(followerId > 0 && followedId > 0) {
 			try {
 				PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_FOLLOW_ALREADY_EXISTS);
 				pstmt.setInt(1, followerId);
@@ -232,11 +289,14 @@ public class UserDao implements IUserDao{
 				e.printStackTrace();
 				throw new UserException("Something went wrong with DB", e);
 			}
+		}
+		else
+			throw new UserException("Invalid id");
 
-	
 	}
 
 	public boolean checkIfUserExistsInDB(Integer id) throws UserException {
+		if(id > 0) {
 			try {
 				PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_USER_EXISTS);
 				pstmt.setInt(1, id);
@@ -249,5 +309,8 @@ public class UserDao implements IUserDao{
 				e.printStackTrace();
 				throw new UserException("Something went wrong with DB",e);
 			}
+		}
+		else
+			throw new UserException("Invalid id");
 	}
 }
