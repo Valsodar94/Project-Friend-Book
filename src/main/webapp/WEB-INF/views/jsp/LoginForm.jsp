@@ -11,20 +11,6 @@
 
 <%@ include file="Header.jsp" %>
 
-		<c:if test="${not empty sessionScope.USER}">
-			<c:redirect url="index.jsp"/>
-		</c:if>
-	<c:if test="${not empty error}">
-			<h4 style=color:red;>${error}</h4>
-	</c:if>
-	<form method="POST" action="login">
-		<h3>Please login:<br></h3> 
-		<p>Username: <input type="text" name="username" placeholder="Username"><br></p>
-		<p>Password: <input type="password" name="password" placeholder="Password"><br></p>
-		<input type="submit" value="Login">
-	</form>	
-	<form action="register">
-		<p>No registration? <input type="submit" value="Click here to sign up"></p>
-	</form>	
+
 </body>
 </html>

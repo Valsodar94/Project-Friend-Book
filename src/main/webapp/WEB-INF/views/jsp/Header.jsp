@@ -48,7 +48,6 @@ body{
   font-size: 20px;
 }
 
-/*Resize the wrap to see the search bar change!*/
 .wrap{
   width: 30%;
   position: absolute;
@@ -62,19 +61,24 @@ body{
 <title>Friend-Book</title>
 </head>
 <body>
-
-<div class="wrap">
-   <div class="search" style="float:left;">
-   	<form method="GET" action="/Project-Friend-Book/SearchResult">
-      <input type="text" name="search" class="searchTerm" placeholder="What are you looking for?">
-      <button type="submit" class="searchButton">
-        <i class="fa fa-search"></i>
-     </button>
-     </form>
-   </div>
-</div>
-<div style="float:right;">
-    <c:choose>
+	<div style="float:left;">
+		<c:if test="${not empty sessionScope.USER}">
+			<a href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a>
+		</c:if>
+		<a href="/Project-Friend-Book/">Home</a>
+	</div>
+	<div class="wrap">
+	   <div class="search" style="float:left;">
+	   	<form method="GET" action="/Project-Friend-Book/SearchResult">
+	      <input type="text" name="search" class="searchTerm" placeholder="Search for a user profile?">
+	      <button type="submit" class="searchButton">
+	        <i class="fa fa-search"></i>
+	     </button>
+	     </form>
+	   </div>
+	</div>
+	<div style="float:right;">
+   	 <c:choose>
 		<c:when test="${not empty fn:trim(sessionScope.USER)}">
 			<p> <a href="/Project-Friend-Book/logOut">logOut</a></p>
 		</c:when>

@@ -8,17 +8,23 @@
 <title>Friend Book</title>
 </head>
 <body>
-	<p>${text}1</p>
+	<jsp:include page="Header.jsp" />
 	<c:choose>
 		<c:when test="${not empty sessionScope.USER}">
-			<jsp:include page="Header.jsp" />
 			<div>Hello ${sessionScope.USER}			
-			<a href="./${sessionScope.USERID}">Home</a></div>
 			<h4>Posts from the people you follow:</h4>
 			<jsp:include page="PostList.jsp" />
 		</c:when>
 		<c:otherwise>
-			<jsp:include page="LoginForm.jsp" />
+			<form method="POST" action="login">
+				<h3>Please login:<br></h3> 
+				<p>Username: <input type="text" name="username" placeholder="Username"><br></p>
+				<p>Password: <input type="password" name="password" placeholder="Password"><br></p>
+				<input type="submit" value="Login">
+			</form>	
+			<form action="register">
+				<p>No registration? <input type="submit" value="Click here to sign up"></p>
+			</form>	
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${not empty error}">
