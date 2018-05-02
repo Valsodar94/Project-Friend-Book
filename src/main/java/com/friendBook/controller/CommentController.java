@@ -45,6 +45,7 @@ public class CommentController {
 				model.addAttribute("comments", commentsOnPost);
 				Post post = postDao.getPostById(postId);
 				model.addAttribute("post", post);
+				return "CommentList";
 			} catch (CommentException | LikeException | PostException e) {
 				e.printStackTrace();
 				return "redirect:test";

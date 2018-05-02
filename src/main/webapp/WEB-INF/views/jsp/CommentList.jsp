@@ -8,13 +8,13 @@
 <title>Comments list</title>
 </head>
 <body>
+	<jsp:include page="CommentsView.jsp" />
 
 	<c:choose>
 		<c:when test="${comments.size() == 0}">
 			<h3>No comments yet</h3>
 		</c:when>
 		<c:otherwise>
-			<jsp:include page="CommentsView.jsp" />
 			<h4>Comments:</h4>
 			<c:forEach items="${comments}" var="comment">
 				<!-- <c:if test="${not empty sessionScope.PostMessage}">

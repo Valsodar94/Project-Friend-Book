@@ -65,7 +65,7 @@ body{
 
 <div class="wrap">
    <div class="search" style="float:left;">
-   	<form method="GET" action="SearchResult">
+   	<form method="GET" action="/Project-Friend-Book/SearchResult">
       <input type="text" name="search" class="searchTerm" placeholder="What are you looking for?">
       <button type="submit" class="searchButton">
         <i class="fa fa-search"></i>
@@ -76,10 +76,10 @@ body{
 <div style="float:right;">
     <c:choose>
 		<c:when test="${not empty fn:trim(sessionScope.USER)}">
-			<p> <a href="./logOut">logOut</a></p>
+			<p> <a href="/Project-Friend-Book/logOut">logOut</a></p>
 		</c:when>
 		<c:otherwise>
-			<p> <a href="./login">login</a></p>
+			<p> <a href="/Project-Friend-Book/login">login</a></p>
 		</c:otherwise>
 	</c:choose>
    </div>

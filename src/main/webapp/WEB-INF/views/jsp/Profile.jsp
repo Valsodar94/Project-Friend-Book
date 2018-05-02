@@ -53,9 +53,9 @@ li a:hover {
 </c:choose>
 
 <ul>
-  <li><a class="active" href="./${id}">Posts</a></li>
-  <li><a href="./${id}/followers">Followers</a></li>
-  <li><a href="./${id}/followed">Followed</a></li>
+  <li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
+  <li><a href="/Project-Friend-Book/${id}/followers">Followers</a></li>
+  <li><a href="/Project-Friend-Book/${id}/followed">Followed</a></li>
 </ul>
 		<c:if test="${not empty users}">
 			<c:forEach items="${users}" var="user">
