@@ -60,17 +60,21 @@ public class Comment implements Likeable, Comparable<Comment>{
 		}	
 	}
 
-	public List<CommentAnswer> getComments() {
+	public List<CommentAnswer> getAnswers() {
 		return Collections.unmodifiableList(answers);
 	}
 	
-	public void addComment(CommentAnswer answer) {
+	public void setAnswers(List<CommentAnswer> answers) {
+		this.answers = answers;
+	}
+
+	public void addAnswer(CommentAnswer answer) {
 		if(answer != null) {
 			this.answers.add(answer);
 		}
 	}
 	
-	public void removeComment(CommentAnswer answer) {
+	public void removeAnswer(CommentAnswer answer) {
 		if(answer != null) {
 			for(CommentAnswer a: answers) {
 				if(a.equals(answer)) {

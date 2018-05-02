@@ -88,7 +88,7 @@ li a:hover {
 					<input type="hidden" name="postId" value="${post.getId()}"> 
 					<input type="submit" value="like">
 				</form>
-				<a href="./comment/${post.id}">Comments</a><hr>
+				<a href="./comment/${post.id}">Comments</a><br><hr>
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>

@@ -50,6 +50,9 @@ public class CommentDAO implements ICommentDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
+				if(resultSet.getInt(5) != 0) {
+					continue;
+				}
 				int commentId = resultSet.getInt(1);
 				Comment comment = new Comment(commentId, resultSet.getInt(4), postId);
 				comment.setText(resultSet.getString(2));
@@ -57,6 +60,7 @@ public class CommentDAO implements ICommentDAO {
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				List<Integer> likedCommentUserIds = new LinkedList<>(likeDao.getUsersIdForLikedComment(commentId));
 				comment.setLikes(likedCommentUserIds.size());
+				comment.setAnswers(extractAnswers(commentId));
 				postsComments.add(comment);
 			}
 			Collections.sort(postsComments);
