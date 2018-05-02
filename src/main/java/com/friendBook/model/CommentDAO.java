@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.PreparedStatement;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import exceptions.CommentException;
@@ -28,6 +30,8 @@ public class CommentDAO implements ICommentDAO {
 	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
 
 	private final DBConnection db;
+	@Autowired
+	private LikeDao likeDao;
 
 	public CommentDAO() throws ClassNotFoundException, SQLException {
 		db = DBConnection.getInstance();
@@ -46,15 +50,18 @@ public class CommentDAO implements ICommentDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				Comment comment = new Comment(resultSet.getInt(1), resultSet.getInt(4), postId);
+				int commentId = resultSet.getInt(1);
+				Comment comment = new Comment(commentId, resultSet.getInt(4), postId);
 				comment.setText(resultSet.getString(2));
 				comment.setTime(LocalDateTime.parse(resultSet.getString(3),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+				List<Integer> likedCommentUserIds = new LinkedList<>(likeDao.getUsersIdForLikedComment(commentId));
+				comment.setLikes(likedCommentUserIds.size());
 				postsComments.add(comment);
 			}
 			Collections.sort(postsComments);
 			return postsComments;
-		} catch (SQLException e) {
+		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
 			throw new CommentException("Something went wrong with DB", e);
 		}

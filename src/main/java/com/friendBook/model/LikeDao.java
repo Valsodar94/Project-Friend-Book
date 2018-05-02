@@ -21,6 +21,7 @@ public class LikeDao {
 	private static final String CHECK_IF_LIKE_ALREADY_EXISTS = "SELECT * FROM likes_post WHERE post_id = ? AND user_id =?";
 	private static final String DISLIKE_A_POST = "DELETE FROM likes_post WHERE post_id = ? AND user_id = ?";
 	private static final String EXTRACT_LIKES_FOR_POST = "SELECT * FROM likes_post WHERE post_id = ?";
+	private static final String EXTRACT_LIKES_FOR_COMMENT = "SELECT * FROM likes_comment WHERE comment_id = ?";
 	private final DBConnection db;
 	
 	
@@ -48,7 +49,7 @@ public class LikeDao {
 	
 	public boolean checkIfLikeCommentExistsInDb(int commentId,int userId) throws LikeException {
 		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_LIKE_ALREADY_EXISTS);
+			PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_LIKE_COMMENT_ALREADY_EXISTS);
 			pstmt.setInt(1, commentId);
 			pstmt.setInt(2, userId);
 			ResultSet rs = pstmt.executeQuery();
@@ -85,7 +86,7 @@ public class LikeDao {
 	public boolean likeAComment(int commentId, int userId) throws LikeException {
 		
 		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(LIKE_A_POST);
+			PreparedStatement pstmt = db.getConnection().prepareStatement(LIKE_A_COMMENT);
 			pstmt.setInt(1, commentId);
 			pstmt.setInt(2, userId);
 			int addedRows = pstmt.executeUpdate();
@@ -119,7 +120,7 @@ public class LikeDao {
 	
 	public boolean dislikeAComment(int commentId, int userId) throws LikeException {
 		try {
-			PreparedStatement pstmt = db.getConnection().prepareStatement(DISLIKE_A_POST);
+			PreparedStatement pstmt = db.getConnection().prepareStatement(DISLIKE_A_COMMENT);
 			pstmt.setInt(1, commentId);
 			pstmt.setInt(2, userId);
 			int addedRows = pstmt.executeUpdate();
@@ -151,6 +152,20 @@ public class LikeDao {
 		}
 
 	}
-	
+	public List<Integer> getUsersIdForLikedComment(int commentId) throws LikeException {
+		try {
+			PreparedStatement pstmt = db.getConnection().prepareStatement(EXTRACT_LIKES_FOR_COMMENT);
+			pstmt.setInt(1, commentId);
+			ResultSet rs = pstmt.executeQuery();
+			List<Integer> userIds = new LinkedList<>();
+			while(rs.next()) {
+				userIds.add(rs.getInt(2));
+			}
+			return userIds;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new LikeException("Something went wrong with DB", e);
+		}
+	}
 	
 }

@@ -17,19 +17,20 @@
 		<c:otherwise>
 			<h4>Comments:</h4>
 			<c:forEach items="${comments}" var="comment">
-				<!-- <c:if test="${not empty sessionScope.PostMessage}">
-				<c:if test="${sessionScope.postId == post.getId()}">
-					<p>${sessionScope.PostMessage}</p>
+				<c:if test="${not empty sessionScope.CommentMessage}">
+					<c:if test="${sessionScope.commentId == comment.getId()}">
+						<p>${sessionScope.CommentMessage}</p>
+					</c:if>
 				</c:if>
-			</c:if> -->
 				<c:out value="${comment.text}" />
 				<br>
 				<c:out value="Published on: ${comment.time}" />
 				<br>
-				<c:out value="${comment.likes} likes" />
+				<c:out value="${comment.getLikes()} likes" />
 				<br>
-				<form method="POST" action="./like">
-					<input type="hidden" name="postId" value="${comment.getId()}">
+				<form method="POST" action="/Project-Friend-Book/comment/like">
+					<input type="hidden" name="commentId" value="${comment.getId()}">
+					<input type="hidden" name="postId" value="${comment.getPostId()}">
 					<input type="submit" value="like">
 				</form>
 				<hr>

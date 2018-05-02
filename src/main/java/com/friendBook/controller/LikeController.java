@@ -63,8 +63,8 @@ public class LikeController {
 
 	}
 	
-	@RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-	public String likeComment(@RequestParam("commentId") String commentId, HttpSession session, Model model) {
+	@RequestMapping(value = "/comment/like", method = RequestMethod.POST)
+	public String likeComment(@RequestParam("postId") String postId,@RequestParam("commentId") String commentId, HttpSession session, Model model) {
 		if(session.getAttribute("USERID") !=null) {
 			int userId = (int) session.getAttribute("USERID");
 			int commentID = Integer.parseInt(commentId);
@@ -72,15 +72,15 @@ public class LikeController {
 			try {
 				if(likeDao.checkIfLikeCommentExistsInDb(commentID, userId)) {
 					likeDao.dislikeAComment(commentID, userId);
-					session.setAttribute("PostMessage", "The post has been disliked");
+					session.setAttribute("CommentMessage", "The comment has been disliked");
 					session.setAttribute("commentId", commentID);
-					return "redirect:/";
+					return "redirect:/comment/"+postId;
 				}
 				else {
 					likeDao.likeAComment(commentID, userId);
-					session.setAttribute("PostMessage", "The post has been liked");
-					session.setAttribute("postId", commentID);
-					return "redirect:/";
+					session.setAttribute("CommentMessage", "The comment has been liked");
+					session.setAttribute("commentId", commentID);
+					return "redirect:/comment/"+postId;
 				}
 			} catch (LikeException e) {
 //				sent to a proper error page
