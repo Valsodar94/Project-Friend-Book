@@ -35,76 +35,70 @@ public class PostController {
 	@Autowired
 	private UserDao uDao;
 	
-	
-	@RequestMapping(method=RequestMethod.GET, value="/posts")
-	public String extractFeed(Model model, HttpServletRequest request) throws PostException {
-		HttpSession session = request.getSession();
-		if(session.getAttribute("USERID")!=null) {
-			int userId = (int) session.getAttribute("USERID");
-			try {
-				List<User> followedUsers = new LinkedList<>(uDao.getAllFollowedUsers(userId));
-				Set<Post> feed = new TreeSet<>();
-				for(User u : followedUsers) {
-					feed.addAll(postDao.extractPosts(u.getId()));
-				}
-				model.addAttribute("posts", feed);
-				return "test";
-			} catch (UserException e) {
-				return "test";
-			}
-		} 
-		return "redirect:/";
-	}
-	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) throws PostException {
-	
+	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session){
 		try {
-			if(uDao.checkIfUserExistsInDB(id)) {
-				List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
-				modelAndView.addObject("posts", postsList);
-				modelAndView.addObject("id", id);
-				modelAndView.setViewName("Profile");
-				return modelAndView;
+			try {
+				if(uDao.checkIfUserExistsInDB(id)) {
+					List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
+					modelAndView.addObject("posts", postsList);
+					modelAndView.addObject("id", id);
+					modelAndView.setViewName("Profile");
+					return modelAndView;
+				}
+				else
+					return new ModelAndView("test", "error", "No such user");
+			} catch (UserException | PostException e) {
+				e.printStackTrace();
+				e.printStackTrace();
+				return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
 			}
-			else
-				return new ModelAndView("test", "error", "No such user");
-		} catch (UserException e) {
+		}
+		catch(Exception e) {
 			e.printStackTrace();
-			return new ModelAndView("test", "error", e.getMessage());
+			return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
 		}
 		
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
 	public String publish(Model model, HttpServletRequest request, HttpSession session) {
-		if(session.getAttribute("USER")!=null) {
-			String text = request.getParameter("postText");
-			String pictureUrl = request.getParameter("pictureUrl");
-			String picture = extractPictureName(pictureUrl);		
-			
-	
-			try {			
-				if (!((text == null || text.length() == 0) 
-						&& (picture == null || picture.length() == 0))) {	
-	
-					int userId = (int) session.getAttribute("USERID");
-					Post newPost = new Post(0, userId);
-					newPost.setText(text);
-					newPost.setPictureUrl(picture);
-					postDao.publish(newPost);	
-					model.addAttribute("post", newPost);
-					return "redirect:/"+userId;
+		try {
+			if(session.getAttribute("USER")!=null) {
+				String text = request.getParameter("postText");
+				String pictureUrl = request.getParameter("pictureUrl");
+				String picture = extractPictureName(pictureUrl);		
+				
+				try {			
+					if (!((text == null || text.length() == 0) 
+							&& (picture == null || picture.length() == 0))) {	
+		
+						int userId = (int) session.getAttribute("USERID");
+						Post newPost = new Post(0, userId);
+						newPost.setText(text);
+						newPost.setPictureUrl(picture);
+						postDao.publish(newPost);	
+						model.addAttribute("post", newPost);
+						return "redirect:/"+userId;
+					}
+					model.addAttribute("errorMessage", "You can't publish an empty post. Write a text or upload a picture.");
+					return "ErrorPage";
+				} catch (PostException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";
 				}
-				return "redirect:ErrorForm.html";
-			} catch (PostException e) {
-				e.printStackTrace();
-				return "redirect:test";
+			}
+			else {
+				session.setAttribute("error", "Your session has expired!");
+				return "redirect:/";
 			}
 		}
-		else
-			return "redirect:/";
-	
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
 	}
 	
 	
@@ -118,17 +112,17 @@ public class PostController {
 	}
 	
 	private String extractPictureName(String pictureUrl) {
-		if(pictureUrl.length() > 0) {
-			int symb = pictureUrl.length()-1;
-			for(;symb>0;symb--) {
-				if(pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
-					symb++;
-					break;
+			if(pictureUrl.length() > 0) {
+				int symb = pictureUrl.length()-1;
+				for(;symb>0;symb--) {
+					if(pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
+						symb++;
+						break;
+					}
 				}
+				return pictureUrl.substring(symb);
 			}
-			return pictureUrl.substring(symb);
-		}
-		return "";
+			return "";
 	}
 
 }

@@ -32,22 +32,31 @@ public class WelcomePageController {
 	private UserDao uDao;
 	
 		@RequestMapping(method = RequestMethod.GET)
-		public String sayHello(Model model, HttpServletRequest request) throws PostException {
-			HttpSession session = request.getSession();
-			if(session.getAttribute("USERID")!=null) {
-				int userId = (int) session.getAttribute("USERID");
-				try {
-					List<User> followedUsers = new LinkedList<>(uDao.getAllFollowedUsers(userId));
-					Set<Post> feed = new TreeSet<>();
-					for(User u : followedUsers) {
-						feed.addAll(postDao.extractPosts(u.getId()));
+		public String sayHello(Model model, HttpServletRequest request){
+			try {
+				HttpSession session = request.getSession();
+				if(session.getAttribute("USERID")!=null) {
+					int userId = (int) session.getAttribute("USERID");
+					try {
+						List<User> followedUsers = new LinkedList<>(uDao.getAllFollowedUsers(userId));
+						Set<Post> feed = new TreeSet<>();
+						for(User u : followedUsers) {
+							feed.addAll(postDao.extractPosts(u.getId()));
+						}
+						model.addAttribute("posts", feed);
+						return "test";
+					} catch (UserException e) {
+						e.printStackTrace();
+						model.addAttribute("errorMessage", e.getMessage());
+						return "ErrorPage";
 					}
-					model.addAttribute("posts", feed);
-					return "test";
-				} catch (UserException e) {
-					return "test";
 				}
+				return "test";
 			}
-			return "test";
+			catch(Exception e) {
+				e.printStackTrace();
+				model.addAttribute("errorMessage", e.getMessage());
+				return "ErrorPage";
+			}
 		}	
 }

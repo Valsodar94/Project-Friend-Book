@@ -40,7 +40,7 @@ public class CommentDAO implements ICommentDAO {
 	public List<Comment> extractComments(int postId) throws CommentException {
 		List<Comment> postsComments = new LinkedList<>();
 		if(postId <= 0) {
-			return postsComments;
+			throw new CommentException("Invalid id");
 		}
 		
 		PreparedStatement pstmt;
@@ -73,9 +73,8 @@ public class CommentDAO implements ICommentDAO {
 	
 	public List<CommentAnswer> extractAnswers(int commentId) throws CommentException {
 		List<CommentAnswer> comentAnswers = new LinkedList<>();
-		if(commentId <= 0) {
-			return comentAnswers;
-		}
+		if(commentId <= 0) 
+			throw new CommentException("Invalid id");
 		
 		PreparedStatement pstmt;
 		try {
@@ -103,7 +102,7 @@ public class CommentDAO implements ICommentDAO {
 	public boolean putComment(Comment comment) throws CommentException {
 		if (comment == null || comment.getText() == null 
 				|| comment.getText().length() == 0) {
-			return false;
+			throw new CommentException("Invalid comment input");
 		}
 		
 		PreparedStatement pstmt;
@@ -126,7 +125,7 @@ public class CommentDAO implements ICommentDAO {
 	public boolean answerComment(CommentAnswer answer) throws CommentException {
 		if (answer == null || answer.getText() == null 
 				|| answer.getText().length() == 0) {
-			return false;
+			throw new CommentException("Invalid answer input");
 		}
 		
 		PreparedStatement pstmt;
@@ -149,7 +148,7 @@ public class CommentDAO implements ICommentDAO {
 
 	public Comment getCommentById(int commentId) throws CommentException{
 		if(commentId <= 0) {
-			return null;
+			throw new CommentException("Invalid id");
 		}
 		
 		PreparedStatement pstmt;
