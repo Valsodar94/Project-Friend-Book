@@ -79,23 +79,16 @@ public class CommentController {
 	public ModelAndView getAnswers(@PathVariable("postId") int postId, 
 			@PathVariable("commentId") int commentId,
 			ModelAndView modelAndView, HttpServletRequest request) {
-//		if(postId >= 0) {
 			try {
 				List<CommentAnswer> answersOnComment = new LinkedList<>(commentDao.extractAnswers(commentId));
 				Collections.sort(answersOnComment);
 				modelAndView.addObject("answers", answersOnComment);
 				modelAndView.setViewName("CommentList");
-//				Post post = postDao.getPostById(postId);
-//				model.addAttribute("post", post);
-//				Comment comment = commentDao.getCommentById(commentId);
-//				model.addAttribute("comment", comment);
 				return modelAndView;
 			} catch (CommentException e) {
 				e.printStackTrace();
 				return new ModelAndView("test", "error", e.getMessage());
 			}
-//		} 
-//		return "CommentList";
 	}
 	
 	@RequestMapping(value = "/comment/{postId}/answer/{commentId}", method = RequestMethod.POST)

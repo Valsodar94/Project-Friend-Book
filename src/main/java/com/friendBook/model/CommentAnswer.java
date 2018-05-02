@@ -18,5 +18,10 @@ public class CommentAnswer extends Comment {
 			this.commentId = commentId;
 		}		
 	}
+	
+	@Override
+	public int compareTo(Comment otherComment) {
+		return this.getTime().compareTo(otherComment.getTime());
+	}
 
 }
