@@ -56,7 +56,7 @@ public class UserDao implements IUserDao{
 			throw new LoginException("No such user!");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LoginException("No such database!", e);
+			throw new LoginException("Something went wrong with the database!", e);
 		} 
 	}
 	
@@ -194,7 +194,7 @@ public class UserDao implements IUserDao{
 			return followedUsers;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UserException("DB DOWN", e);
+			throw new UserException("Something went wrong with DB", e);
 		}
 	}	
 	public List<User> getAllFollowers(int id) throws UserException{
@@ -214,7 +214,7 @@ public class UserDao implements IUserDao{
 			return followers;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UserException("DB DOWN", e);
+			throw new UserException("Something went wrong with DB", e);
 		}
 	}
 	
@@ -228,7 +228,6 @@ public class UserDao implements IUserDao{
 					return true;
 				else
 					return false;
-				
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new UserException("Something went wrong with DB", e);

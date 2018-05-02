@@ -111,7 +111,7 @@ public class CommentController {
 				newAnswer.setText(answerText);
 				commentDao.answerComment(newAnswer);	
 				model.addAttribute("answer", newAnswer);
-				return "redirect:../comment/" + postId + "/answer/" + commentId;
+				return "redirect:/comment/" + postId;
 			}
 			return "redirect:/";
 		} catch (CommentException e) {
