@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.friendBook.model.Comment;
+import com.friendBook.model.CommentAnswer;
 import com.friendBook.model.CommentDAO;
 import com.friendBook.model.Post;
 import com.friendBook.model.PostDao;
@@ -66,6 +67,49 @@ public class CommentController {
 				commentDao.putComment(newComment);	
 				model.addAttribute("comment", newComment);
 				return "redirect:../comment/"+postId;
+			}
+			return "redirect:/";
+		} catch (CommentException e) {
+			e.printStackTrace();
+			return "redirect:test";
+		}
+	}
+	
+	//TODO getAnswers @RequestMapping(value = "/answer/{id}", method = RequestMethod.GET)
+	//CommentDAO extractAnswers(commentId)
+	
+	@RequestMapping(value = "/comment/{postId}/answer/{commentId}", method = RequestMethod.GET)
+	public String getAnswers(@PathVariable("postId") int postId, Model model, HttpServletRequest request) {
+		if(postId >= 0) {
+			try {
+				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
+				Collections.sort(commentsOnPost);
+				model.addAttribute("comments", commentsOnPost);
+				Post post = postDao.getPostById(postId);
+				model.addAttribute("post", post);
+				return "CommentList";
+			} catch (CommentException | LikeException | PostException e) {
+				e.printStackTrace();
+				return "redirect:test";
+			}
+		} 
+		return "CommentList";
+	}
+	
+	@RequestMapping(value = "/comment/{postId}/answer/{commentId}", method = RequestMethod.POST)
+	public String putAnswer(@PathVariable("commentId") int commentId,
+			@PathVariable("postId") int postId,
+			Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String answerText = request.getParameter("answerText");
+		try {			
+			if (!(answerText == null || answerText.length() == 0)) {	
+				int userId = (int) session.getAttribute("USERID");
+				CommentAnswer newAnswer = new CommentAnswer(0, userId, postId, commentId);
+				newAnswer.setText(answerText);
+				commentDao.answerComment(newAnswer);	
+				model.addAttribute("answer", newAnswer);
+				return "redirect:../comment/" + postId + "/answer/" + commentId;
 			}
 			return "redirect:/";
 		} catch (CommentException e) {

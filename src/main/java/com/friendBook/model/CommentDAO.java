@@ -17,15 +17,19 @@ import exceptions.PostException;
 @Component
 public class CommentDAO implements ICommentDAO {
 	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
-			+ "(comment_content, comment_user_id, comment_post_id)\r\n" + "VALUES(?, ?, ?);";
+			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
+			+ "VALUES(?, ?, ?);";
 	private static final String POST_COMMENTS_SQL = "SELECT * FROM comments WHERE comment_post_id = ?;";
+	private static final String ANSWER_COMMENT_SQL = "INSERT INTO comments\r\n" 
+			+ "(comment_content, comment_user_id, comment_answer,comment_post_id)\r\n" 
+			+ "VALUES(?, ?, ?, ?);";
+	private static final String COMMENT_ANSWERS_SQL = "SELECT * FROM comments WHERE comment_answer = ?;";
 
 	private final DBConnection db;
 
 	public CommentDAO() throws ClassNotFoundException, SQLException {
 		db = DBConnection.getInstance();
-	}
-	
+	}	
 	
 	public List<Comment> extractComments(int postId) throws CommentException {
 		List<Comment> postsComments = new LinkedList<>();
@@ -53,6 +57,34 @@ public class CommentDAO implements ICommentDAO {
 			throw new CommentException("Something went wrong with DB", e);
 		}
 	}
+	
+	public List<CommentAnswer> extractAnswers(int commentId) throws CommentException {
+		List<CommentAnswer> comentAnswers = new LinkedList<>();
+		if(commentId <= 0) {
+			return comentAnswers;
+		}
+		
+		PreparedStatement pstmt;
+		try {
+			pstmt = db.getConnection().prepareStatement(COMMENT_ANSWERS_SQL);
+			pstmt.setInt(1, commentId);
+
+			ResultSet resultSet = pstmt.executeQuery();
+			while (resultSet.next()) {
+				CommentAnswer answer = new CommentAnswer(resultSet.getInt(1), 
+						resultSet.getInt(4), resultSet.getInt(6),commentId);
+				answer.setText(resultSet.getString(2));
+				answer.setTime(LocalDateTime.parse(resultSet.getString(3),
+						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+				comentAnswers.add(answer);
+			}
+			Collections.sort(comentAnswers);
+			return comentAnswers;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CommentException("Something went wrong with DB", e);
+		}
+	}
 
 	@Override
 	public boolean putComment(Comment comment) throws CommentException {
@@ -70,7 +102,30 @@ public class CommentDAO implements ICommentDAO {
 			pstmt.executeUpdate();
 
 			ResultSet resultSet = pstmt.getGeneratedKeys();
-			System.out.println(resultSet.toString());
+			return resultSet.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CommentException("Something went wrong with DB", e);
+		}
+		
+	}
+	
+	public boolean answerComment(CommentAnswer answer) throws CommentException {
+		if (answer == null || answer.getText() == null 
+				|| answer.getText().length() == 0) {
+			return false;
+		}
+		
+		PreparedStatement pstmt;
+		try {
+			pstmt = db.getConnection().prepareStatement(ANSWER_COMMENT_SQL, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, answer.getText());
+			pstmt.setInt(2, answer.getUserId());
+			pstmt.setInt(3, answer.getCommentId());
+			pstmt.setInt(4, answer.getPostId());
+			pstmt.executeUpdate();
+
+			ResultSet resultSet = pstmt.getGeneratedKeys();
 			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();

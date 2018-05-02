@@ -6,11 +6,17 @@ public class CommentAnswer extends Comment {
 
 	public CommentAnswer(int id, int userId, int postId, int commentId) {
 		super(id, userId, postId);
-		this.commentId = commentId;
+		this.setCommentId(commentId);
 	}
 	
 	public int getCommentId() {
 		return commentId;
+	}
+	
+	public void setCommentId(int commentId) {
+		if(commentId > 0) {
+			this.commentId = commentId;
+		}		
 	}
 
 }
