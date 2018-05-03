@@ -73,27 +73,37 @@ li a:hover {
 			<h3>No posts yet</h3>
 		</c:when>
 		<c:otherwise>
-			<c:forEach items="${posts}" var="post">
-			<c:if test="${not empty sessionScope.PostMessage}">
-				<c:if test="${sessionScope.postId == post.getId()}">
-					<p>${sessionScope.PostMessage}</p>
-				</c:if>
-			</c:if>
-				<c:out value="${post.text}" /><br>
-				<c:out value="Published on: ${post.time}" /><br>
-				<c:choose>
-					<c:when test="${post.pictureUrl.length() > 0}">
-						<img class="img" src="./uploaded/${post.pictureUrl}" /><br>
-					</c:when>
-				</c:choose>
-				<c:out value="${post.getLikes()} likes" /><br>
-				<form method="POST" action="/Project-Friend-Book/like">
-					<input type="hidden" name="profileId" value="${id}"> 
-					<input type="hidden" name="postId" value="${post.getId()}"> 
-					<input type="submit" value="like">
-				</form>
-				<a href="./comment/${post.id}">Comments</a><br><hr>
-			</c:forEach>
+			<div class="profile">
+				<c:forEach items="${posts}" var="post">
+					<c:if test="${not empty sessionScope.PostMessage}">
+						<c:if test="${sessionScope.postId == post.getId()}">
+							<p class="login-field">${sessionScope.PostMessage}</p>
+						</c:if>
+					</c:if>
+					<p class="login-field">
+						<c:out value="${post.text}" />
+					</p>
+					<c:choose>
+						<c:when test="${post.pictureUrl.length() > 0}">
+							<div class="post-image">
+								<img class="img" src="./uploaded/${post.pictureUrl}" />
+							</div><br>
+						</c:when>
+					</c:choose>
+					<p class="login-field">
+						<c:out value="Published on: ${post.time}" />
+					</p>
+					<p class="login-field">
+					<c:out value="${post.getLikes()} likes" /></p>
+					<form method="POST" action="./like">
+						<input type="hidden" name="postId" value="${post.getId()}">
+						<input type="hidden" name="profileId" value="${id}"> 
+						<input type="submit" value="like" class="like-submit">
+					</form>					
+					<a href="./comment/${post.id}" class="login-field">Comments</a>
+					<hr>
+				</c:forEach>
+			</div>
 		</c:otherwise>
 	</c:choose>
 
