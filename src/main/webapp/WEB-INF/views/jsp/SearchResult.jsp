@@ -14,7 +14,10 @@
 	<c:choose>
 		<c:when test="${not empty users}">
 			<c:forEach items="${users}" var="user">
-				<a href="./${user.getId()}">${user.getUsername()}</a>
+				<ul>
+					<li style = "display: flex;
+    align-items: center;"><a href="./${user.getId()}">${user.getUsername()}</a></li>
+				</ul>
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
