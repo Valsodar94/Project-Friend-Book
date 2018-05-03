@@ -16,7 +16,6 @@ public class Post implements Likeable, Comparable<Post>{
 	private int userId;
 	private List<Comment> comments;
 	private int likes;
-	private String userUserName;
 	
 	public Post(int id, int userId) {
 		this.id = id;
@@ -105,10 +104,5 @@ public class Post implements Likeable, Comparable<Post>{
 	public int compareTo(Post otherPost) {
 		return otherPost.getTime().compareTo(this.getTime());
 	}
-	public String getUserUserName() {
-		return userUserName;
-	}
-	public void setUserUserName(String userUserName) {
-		this.userUserName = userUserName;
-	}
+	
 }
