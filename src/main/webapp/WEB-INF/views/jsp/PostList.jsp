@@ -27,10 +27,8 @@
 						<c:out value="${post.text}" />
 					</p>
 					<c:choose>
-						<c:when test="${post.pictureUrl.length() > 0}">
-							<div class="post-image">
-								<img class="img" src="./uploaded/${post.pictureUrl}" />
-							</div><br>
+						<c:when test="${post.pictureUrl.length() > 0}">							
+							<img class="post-image" src="./uploaded/${post.pictureUrl}" />							
 						</c:when>
 					</c:choose>
 					<p class="login-field">
