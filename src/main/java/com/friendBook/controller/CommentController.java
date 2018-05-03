@@ -69,18 +69,25 @@ public class CommentController {
 	public String putComment(@PathVariable("id") int postId, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String commentText = request.getParameter("commentText");
-		try {			
-			if (!(commentText == null || commentText.length() == 0)) {	
-				int userId = (int) session.getAttribute("USERID");
-				Comment newComment = new Comment(0, userId, postId);
-				newComment.setText(commentText);
-				commentDao.putComment(newComment);	
-				model.addAttribute("comment", newComment);
-				return "redirect:../comment/"+postId;
+		try {
+			try {			
+				if (!(commentText == null || commentText.length() == 0)) {	
+					int userId = (int) session.getAttribute("USERID");
+					Comment newComment = new Comment(0, userId, postId);
+					newComment.setText(commentText);
+					commentDao.putComment(newComment);	
+					model.addAttribute("comment", newComment);
+					return "redirect:../comment/"+postId;
+				}
+				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
+				return "ErrorPage";
+			} catch (CommentException e) {
+				e.printStackTrace();
+				model.addAttribute("errorMessage", e.getMessage());
+				return "ErrorPage";
 			}
-			model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
-			return "ErrorPage";
-		} catch (CommentException e) {
+		}
+		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
 			return "ErrorPage";

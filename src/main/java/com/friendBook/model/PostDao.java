@@ -27,7 +27,10 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "
 			+ "VALUES (?, ?, localtime(), ?);";
-	private static final String EXTRACT_POSTS_SQL = "SELECT * FROM posts WHERE post_user_id=?";
+	private static final String EXTRACT_POSTS_SQL = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id\r\n" + 
+			"from users u join posts p\r\n" + 
+			"on(u.user_id = p.post_user_id)\r\n" + 
+			"where u.user_id = ?";
 	private static final String GET_POST_SQL = "SELECT * FROM posts WHERE post_id=?";
 
 	@Autowired
@@ -101,14 +104,15 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				int postId = resultSet.getInt(1);
+				int postId = resultSet.getInt(2);
 				Post post = new Post(postId, userId);
-				post.setText(resultSet.getString(2));
-				post.setPictureUrl(resultSet.getString(3));
-				post.setTime(LocalDateTime.parse(resultSet.getString(4),
+				post.setText(resultSet.getString(3));
+				post.setPictureUrl(resultSet.getString(4));
+				post.setTime(LocalDateTime.parse(resultSet.getString(5),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
 				post.setLikes(likedPostUserIds.size());
+				post.setUserUserName(resultSet.getString(1));
 				usersPosts.add(post);
 			}
 			Collections.sort(usersPosts);
