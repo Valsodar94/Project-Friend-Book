@@ -14,9 +14,9 @@
 	<div class="container">
 		<div style="float: left;">
 			<c:if test="${not empty sessionScope.USER}">
-				<a href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a>
+				<h3><a href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a></h3>
 			</c:if>
-			<a href="/Project-Friend-Book/">Home</a>
+			<h3><a href="/Project-Friend-Book/">Home</a></h3>
 		</div>
 		<div class="wrap">
 			<div class="search" style="float: left;">

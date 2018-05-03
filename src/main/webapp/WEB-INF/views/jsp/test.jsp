@@ -13,7 +13,7 @@
 	<jsp:include page="Header.jsp" />
 	<c:choose>
 		<c:when test="${not empty sessionScope.USER}">
-				Hello ${sessionScope.USER}
+				<h2>Hello ${sessionScope.USER}</h2>
 				<h4>Posts from the people you follow:</h4>
 			<jsp:include page="PostList.jsp" />
 		</c:when>

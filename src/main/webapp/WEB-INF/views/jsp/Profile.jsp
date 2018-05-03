@@ -80,6 +80,7 @@ li a:hover {
 							<p class="login-field">${sessionScope.PostMessage}</p>
 						</c:if>
 					</c:if>
+					<h3>Published by: ${post.getUserUserName()}</h3>
 					<p class="login-field">
 						<c:out value="${post.text}" />
 					</p>
