@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 <title>Comments list</title>
 </head>
 <body>

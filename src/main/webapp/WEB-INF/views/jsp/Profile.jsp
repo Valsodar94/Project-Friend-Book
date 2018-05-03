@@ -4,6 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Friend Book</title>
+<link href="css/loginStyle.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 <style>
 ul {
     list-style-type: none;
@@ -30,6 +33,7 @@ li a:hover {
 }
 </style>
 </head>
+<body>
 <jsp:include page="Header.jsp" />
 	<c:if test="${not empty error}">
 		<h4 style="color: red;">${error}</h4>

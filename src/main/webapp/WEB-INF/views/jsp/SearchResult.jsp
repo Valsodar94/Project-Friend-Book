@@ -3,6 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
+<html>
+<head>
+<title>Friend Book</title>
+<link href="css/loginStyle.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
+</head>
+<body>
 	<jsp:include page="Header.jsp" />
 	<c:choose>
 		<c:when test="${not empty users}">

@@ -4,8 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="static/css/IndexStyle.css"
+<link rel="stylesheet" type="text/css" href="css/IndexStyle.css"
 	media="screen" />
+<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Posts list</title>
 </head>
