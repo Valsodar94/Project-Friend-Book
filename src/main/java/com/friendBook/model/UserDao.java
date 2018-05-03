@@ -16,6 +16,14 @@ import exceptions.RegisterException;
 import exceptions.UserException;
 @Component
 public class UserDao implements IUserDao{
+//	constants
+	private static final String ERROR_MESSAGE_FOR_FOLLOW = "Already followed!!!";
+	private static final String ERROR_MESSAGE_FOR_UNFOLLOW = "Not followed in the first place!!";
+	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
+	private static final String ERROR_MESSAGE_FOR_NULL = "username or password is null!!!";
+	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
+	private static final String FAIL_LOGIN_MESSAGE = "No such user!";
+//DB statements	
 	private static final String INSERT_INTO_FOLLOWED_USERS = "INSERT INTO followed_users VALUES (?, ?)";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?)";
@@ -53,14 +61,14 @@ public class UserDao implements IUserDao{
 				if (resultSet.next()) {
 					return resultSet.getInt(1);
 				}
-				throw new LoginException("No such user!");
+				throw new LoginException(FAIL_LOGIN_MESSAGE);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new LoginException("Something went wrong with the database!", e);
+				throw new LoginException(DB_ERROR_MESSAGE, e);
 			} 
 		}
 		else
-			throw new LoginException("username or password is null!!!");
+			throw new LoginException(ERROR_MESSAGE_FOR_NULL);
 
 	}
 	
@@ -82,7 +90,7 @@ public class UserDao implements IUserDao{
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new RegisterException("Something went wrong with DB", e);
+				throw new RegisterException(DB_ERROR_MESSAGE, e);
 			} 
 		}
 		else
@@ -104,7 +112,7 @@ public class UserDao implements IUserDao{
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Problem with DB");
+				throw new UserException(DB_ERROR_MESSAGE);
 			}
 
 		}
@@ -125,7 +133,7 @@ public class UserDao implements IUserDao{
 						return false;
 				} catch (SQLException e) {
 					e.printStackTrace();
-					throw new UserException("Problem with DB");
+					throw new UserException(DB_ERROR_MESSAGE);
 
 				}
 		}
@@ -147,11 +155,11 @@ public class UserDao implements IUserDao{
 			}
 			catch(SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB");
+				throw new UserException(DB_ERROR_MESSAGE);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
 	public List<User> getUsersByString(String name) throws UserException{
@@ -174,7 +182,7 @@ public class UserDao implements IUserDao{
 			}
 			catch(SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB");
+				throw new UserException(DB_ERROR_MESSAGE);
 			}
 		}
 		else
@@ -191,15 +199,15 @@ public class UserDao implements IUserDao{
 				if(addedRows>0)
 					return true;
 				else
-					throw new UserException("Already followed!!!");
+					throw new UserException(ERROR_MESSAGE_FOR_FOLLOW);
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Someting went wrong with DB", e);
+				throw new UserException(DB_ERROR_MESSAGE, e);
 			}	
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
 	
@@ -213,15 +221,15 @@ public class UserDao implements IUserDao{
 				if(removedRows>0)
 					return true;
 				else
-					throw new UserException("Not followed in the first place!!");
+					throw new UserException(ERROR_MESSAGE_FOR_UNFOLLOW);
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB", e);
+				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}
 	
 	public List<User> getAllFollowedUsers(int id) throws UserException{
@@ -242,11 +250,11 @@ public class UserDao implements IUserDao{
 				return followedUsers;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB", e);
+				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}	
 	public List<User> getAllFollowers(int id) throws UserException{
 		if(id > 0) {
@@ -266,11 +274,11 @@ public class UserDao implements IUserDao{
 				return followers;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB", e);
+				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
 	
@@ -287,11 +295,11 @@ public class UserDao implements IUserDao{
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB", e);
+				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
 
@@ -307,10 +315,10 @@ public class UserDao implements IUserDao{
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new UserException("Something went wrong with DB",e);
+				throw new UserException(DB_ERROR_MESSAGE,e);
 			}
 		}
 		else
-			throw new UserException("Invalid id");
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}
 }

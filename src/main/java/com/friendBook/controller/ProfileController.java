@@ -20,6 +20,9 @@ import exceptions.UserException;
 @Controller
 @RequestMapping(value="/{id}")
 public class ProfileController {
+	private static final String LOGIN_REQUIRED_ERROR = "You need to be logged in to see this menu.";
+	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+
 	@Autowired
 	private UserDao uDao;
 	
@@ -34,10 +37,10 @@ public class ProfileController {
 					return modelAndView;
 				} catch (UserException e) {
 					e.printStackTrace();
-					return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
+					return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 				}
 			}
-			modelAndView.addObject("error", "You need to be logged in to see this menu.");
+			modelAndView.addObject("error", LOGIN_REQUIRED_ERROR);
 			return modelAndView;
 		}
 		catch(Exception e) {
@@ -57,10 +60,10 @@ public class ProfileController {
 					return modelAndView;
 				} catch (UserException e) {
 					e.printStackTrace();
-					return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
+					return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 				}
 			}
-			modelAndView.addObject("error", "You need to be logged in to see this menu.");
+			modelAndView.addObject("error", LOGIN_REQUIRED_ERROR);
 			return modelAndView;
 		}
 		catch(Exception e) {

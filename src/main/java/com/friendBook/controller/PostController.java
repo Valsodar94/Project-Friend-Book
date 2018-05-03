@@ -28,7 +28,11 @@ import exceptions.UserException;
 
 @Controller
 public class PostController {
+private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an empty post. Write a text or upload a picture.";
 
+	// constants
+	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+	private static final String SESSION_EXPIRED_MESSAGE = "Your session has expired. You need to login";
 	@Autowired
 	private PostDao postDao;
 	
@@ -47,11 +51,11 @@ public class PostController {
 					return modelAndView;
 				}
 				else
-					return new ModelAndView("test", "error", "No such user");
+					return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			} catch (UserException | PostException e) {
 				e.printStackTrace();
 				e.printStackTrace();
-				return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
+				return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		}
 		catch(Exception e) {
@@ -81,7 +85,7 @@ public class PostController {
 						model.addAttribute("post", newPost);
 						return "redirect:/"+userId;
 					}
-					model.addAttribute("errorMessage", "You can't publish an empty post. Write a text or upload a picture.");
+					model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_POST);
 					return "ErrorPage";
 				} catch (PostException e) {
 					e.printStackTrace();
@@ -90,7 +94,7 @@ public class PostController {
 				}
 			}
 			else {
-				session.setAttribute("error", "Your session has expired!");
+				session.setAttribute("error", SESSION_EXPIRED_MESSAGE);
 				return "redirect:/";
 			}
 		}

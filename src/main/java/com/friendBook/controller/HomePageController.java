@@ -24,7 +24,8 @@ import exceptions.UserException;
 
 @Controller
 @RequestMapping(value="/index")
-public class WelcomePageController {
+public class HomePageController {
+
 	@Autowired
 	private PostDao postDao;
 	
@@ -32,7 +33,7 @@ public class WelcomePageController {
 	private UserDao uDao;
 	
 		@RequestMapping(method = RequestMethod.GET)
-		public String sayHello(Model model, HttpServletRequest request){
+		public String home(Model model, HttpServletRequest request){
 			try {
 				HttpSession session = request.getSession();
 				if(session.getAttribute("USERID")!=null) {
