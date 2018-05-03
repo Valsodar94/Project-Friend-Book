@@ -305,8 +305,8 @@ input, textarea, select, label {
 	padding: 18px 20px;
 	position: absolute;
 	word-wrap: break-word;
-	width: 625px;
-	left: 30%;
+	width: 700px;
+	left: 25%;
 	float: left;
 	background: #3f65b7;
 	background-clip: padding-box;
@@ -325,4 +325,7 @@ input, textarea, select, label {
 
 .post-image {
 	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 650px;
 }

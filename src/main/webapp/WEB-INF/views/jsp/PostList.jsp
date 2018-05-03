@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/IndexStyle.css"
+<link rel="stylesheet" type="text/css" href="css/loginStyle.css"
 	media="screen" />
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -28,20 +28,19 @@
 					</p>
 					<c:choose>
 						<c:when test="${post.pictureUrl.length() > 0}">
-							<div class="post-image">
-								<img class="img" src="./uploaded/${post.pictureUrl}" />
-							</div><br>
+							<img class="post-image" src="./uploaded/${post.pictureUrl}" />
 						</c:when>
 					</c:choose>
 					<p class="login-field">
 						<c:out value="Published on: ${post.time}" />
 					</p>
 					<p class="login-field">
-					<c:out value="${post.getLikes()} likes" /></p>
+						<c:out value="${post.getLikes()} likes" />
+					</p>
 					<form method="POST" action="./like">
 						<input type="hidden" name="postId" value="${post.getId()}">
 						<input type="submit" value="like" class="like-submit">
-					</form>					
+					</form>
 					<a href="./comment/${post.id}" class="login-field">Comments</a>
 					<hr>
 				</c:forEach>
