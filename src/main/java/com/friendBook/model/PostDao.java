@@ -19,6 +19,11 @@ import exceptions.PostException;
 
 @Component
 public class PostDao implements IPostDAO {
+private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
+//constants
+	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
+	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
+//	DB statements
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "
 			+ "VALUES (?, ?, localtime(), ?);";
@@ -34,7 +39,7 @@ public class PostDao implements IPostDAO {
 
 	public Post getPostById(int postId) throws PostException {
 		if (postId <= 0) {
-			throw new PostException("Invalid id");
+			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 
 		PreparedStatement pstmt;
@@ -54,13 +59,13 @@ public class PostDao implements IPostDAO {
 			return post;
 		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
-			throw new PostException("Something went wrong with DB", e);
+			throw new PostException(DB_ERROR_MESSAGE, e);
 		}
 	}
 
 	public boolean publish(Post post) throws PostException {
 		if (post == null) {
-			throw new PostException("Post is null");
+			throw new PostException(ERROR_MESSAGE_FOR_NULL_POST);
 		}
 		if ((post.getText() == null || post.getText().length() == 0)
 				&& (post.getPictureUrl() == null || post.getPictureUrl().length() == 0)) {
@@ -80,13 +85,13 @@ public class PostDao implements IPostDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new PostException("Something went wrong with DB", e);
+			throw new PostException(DB_ERROR_MESSAGE, e);
 		}
 	}
 
 	public List<Post> extractPosts(int userId) throws PostException {
 		if (userId <= 0) {
-			throw new PostException("Invalid id");
+			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 		PreparedStatement pstmt;
 		try {
@@ -110,7 +115,7 @@ public class PostDao implements IPostDAO {
 			return usersPosts;
 		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
-			throw new PostException("Something went wrong with DB", e);
+			throw new PostException(DB_ERROR_MESSAGE, e);
 		}
 	}
 

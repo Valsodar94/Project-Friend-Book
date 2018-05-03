@@ -21,8 +21,11 @@ import exceptions.UserException;
 @Controller
 public class LikeController {
 	
+	private static final String LIKED_COMMENT_MESSAGE = "The comment has been liked";
+	private static final String SESSION_EXPIRED_MESSAGE = "Your session has expired. You need to login";
 	private static final Object DISLIKE_MESSAGE = "The post has been disliked";
 	private static final Object LIKE_MESSAGE = "The post has been liked";
+	private static final Object DISLIKED_COMMENT_MESSAGE = "The comment has been disliked";
 	@Autowired
 	private LikeDao likeDao;
 	
@@ -58,7 +61,7 @@ public class LikeController {
 					return "ErrorPage";
 				}
 			}
-			model.addAttribute("error", "Your session has expired. You need to login");
+			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
 			return "test";
 		}
 		catch(Exception e) {
@@ -79,13 +82,13 @@ public class LikeController {
 				try {
 					if(likeDao.checkIfLikeCommentExistsInDb(commentID, userId)) {
 						likeDao.dislikeAComment(commentID, userId);
-						session.setAttribute("CommentMessage", "The comment has been disliked");
+						session.setAttribute("CommentMessage", DISLIKED_COMMENT_MESSAGE);
 						session.setAttribute("commentId", commentID);
 						return "redirect:/comment/"+postId;
 					}
 					else {
 						likeDao.likeAComment(commentID, userId);
-						session.setAttribute("CommentMessage", "The comment has been liked");
+						session.setAttribute("CommentMessage", LIKED_COMMENT_MESSAGE);
 						session.setAttribute("commentId", commentID);
 						return "redirect:/comment/"+postId;
 					}
@@ -94,7 +97,7 @@ public class LikeController {
 					model.addAttribute("errorMessage", e.getMessage());
 					return "ErrorPage";				}
 			}
-			model.addAttribute("error", "Your session has expired. You need to login");
+			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
 			return "test";
 			
 		}

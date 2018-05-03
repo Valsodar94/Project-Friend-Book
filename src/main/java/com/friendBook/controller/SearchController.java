@@ -25,6 +25,8 @@ import exceptions.UserException;
 
 @Controller
 public class SearchController {
+	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+
 
 	@Autowired
 	private UserDao uDao;
@@ -38,7 +40,7 @@ public class SearchController {
 				return new ModelAndView("SearchResult", "users", users);
 	
 			} catch (UserException e) {
-				return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
+				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		}
 		catch(Exception e) {

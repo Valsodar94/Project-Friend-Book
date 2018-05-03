@@ -14,7 +14,12 @@ import exceptions.UserException;
 
 @Component
 public class LikeDao {
-
+//constants
+	private static final String ERROR_MESSAGE_FOR_FAILED_LIKE = "Like failed";
+	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
+	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
+	
+// DB statements	
 	private static final String LIKE_A_POST = "INSERT INTO likes_post VALUES (?, ?)";
 	private static final String LIKE_A_COMMENT = "INSERT INTO likes_comment VALUES (?, ?)";
 	private static final String DISLIKE_A_COMMENT = "DELETE FROM likes_comment WHERE comment_id = ? AND user_id = ?";
@@ -30,7 +35,7 @@ public class LikeDao {
 	
 	public boolean checkIfLikeExistsInDb(int postId,int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_LIKE_ALREADY_EXISTS);
 			pstmt.setInt(1, postId);
@@ -43,14 +48,14 @@ public class LikeDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Something went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 
 	}
 	
 	public boolean checkIfLikeCommentExistsInDb(int commentId,int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(CHECK_IF_LIKE_COMMENT_ALREADY_EXISTS);
 			pstmt.setInt(1, commentId);
@@ -63,14 +68,14 @@ public class LikeDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Something went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 
 	}
 	
 	public boolean likeAPost(int postId, int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(LIKE_A_POST);
 			pstmt.setInt(1, postId);
@@ -79,17 +84,17 @@ public class LikeDao {
 			if(addedRows>0)
 				return true;
 			else
-				throw new LikeException("Like failed");
+				throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Someting went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	
 	public boolean likeAComment(int commentId, int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(LIKE_A_COMMENT);
 			pstmt.setInt(1, commentId);
@@ -98,17 +103,17 @@ public class LikeDao {
 			if(addedRows>0)
 				return true;
 			else
-				throw new LikeException("Like failed");
+				throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Someting went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	
 	public boolean dislikeAPost(int postId, int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(DISLIKE_A_POST);
 			pstmt.setInt(1, postId);
@@ -117,17 +122,17 @@ public class LikeDao {
 			if(addedRows>0)
 				return true;
 			else
-				throw new LikeException("Like failed");
+				throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Someting went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	
 	public boolean dislikeAComment(int commentId, int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(DISLIKE_A_COMMENT);
 			pstmt.setInt(1, commentId);
@@ -136,11 +141,11 @@ public class LikeDao {
 			if(addedRows>0)
 				return true;
 			else
-				throw new LikeException("Like failed");
+				throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Someting went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	
@@ -159,13 +164,13 @@ public class LikeDao {
 			return userIds;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Something went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 
 	}
 	public List<Integer> getUsersIdForLikedComment(int commentId) throws LikeException {
 		if(commentId <=0)
-			throw new LikeException("Invalid id");
+			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
 		try {
 			PreparedStatement pstmt = db.getConnection().prepareStatement(EXTRACT_LIKES_FOR_COMMENT);
 			pstmt.setInt(1, commentId);
@@ -177,7 +182,7 @@ public class LikeDao {
 			return userIds;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new LikeException("Something went wrong with DB", e);
+			throw new LikeException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	

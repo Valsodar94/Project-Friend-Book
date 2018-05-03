@@ -31,7 +31,10 @@ import exceptions.UserException;
 @Controller
 public class CommentController {
 //	TODO: Required in posts/comment/answer to type text.
-	
+//	constants
+	private static final String ERROR_MESSAGE_FOR_EMPTY_COMMENT = "You can't publish an empty content. Write a text.";
+	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+
 	@Autowired
 	private PostDao postDao;
 	
@@ -50,7 +53,7 @@ public class CommentController {
 				return "CommentList";
 			} catch (CommentException | PostException e) {
 				e.printStackTrace();
-				model.addAttribute("errorMessage", e.getMessage());
+				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 				return "ErrorPage";
 
 			}
@@ -75,7 +78,7 @@ public class CommentController {
 				model.addAttribute("comment", newComment);
 				return "redirect:../comment/"+postId;
 			}
-			model.addAttribute("errorMessage", "You can't publish an empty comment. Write a text.");
+			model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
 			return "ErrorPage";
 		} catch (CommentException e) {
 			e.printStackTrace();
@@ -97,7 +100,7 @@ public class CommentController {
 				return modelAndView;
 			} catch (CommentException e) {
 				e.printStackTrace();
-				return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
+				return new ModelAndView("ErrorPage","errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		}
 		catch(Exception e){
@@ -122,7 +125,7 @@ public class CommentController {
 					model.addAttribute("answer", newAnswer);
 					return "redirect:/comment/" + postId;
 				}
-				model.addAttribute("errorMessage", "You can't publish an empty answer. Write a text.");
+				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
 				return "ErrorPage";
 			} catch (CommentException e) {
 				e.printStackTrace();

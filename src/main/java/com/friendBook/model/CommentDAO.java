@@ -19,6 +19,14 @@ import exceptions.PostException;
 
 @Component
 public class CommentDAO implements ICommentDAO {
+
+//	constants
+	private static final String ERROR_MESSAGE_FOR_ANSWER_INPUT = "Invalid answer input";
+	private static final String ERROR_FOR_COMMENT_INPUT = "Invalid comment input";
+	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
+	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
+
+// DB statements
 	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
 			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?);";
@@ -38,7 +46,7 @@ public class CommentDAO implements ICommentDAO {
 	public List<Comment> extractComments(int postId) throws CommentException {
 		List<Comment> postsComments = new LinkedList<>();
 		if(postId <= 0) {
-			throw new CommentException("Invalid id");
+			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 		
 		PreparedStatement pstmt;
@@ -65,14 +73,14 @@ public class CommentDAO implements ICommentDAO {
 			return postsComments;
 		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
-			throw new CommentException("Something went wrong with DB", e);
+			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
 	}
 	
 	public List<CommentAnswer> extractAnswers(int commentId) throws CommentException {
 		List<CommentAnswer> comentAnswers = new LinkedList<>();
 		if(commentId <= 0) 
-			throw new CommentException("Invalid id");
+			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
 		
 		PreparedStatement pstmt;
 		try {
@@ -92,7 +100,7 @@ public class CommentDAO implements ICommentDAO {
 			return comentAnswers;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CommentException("Something went wrong with DB", e);
+			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
 	}
 
@@ -100,7 +108,7 @@ public class CommentDAO implements ICommentDAO {
 	public boolean putComment(Comment comment) throws CommentException {
 		if (comment == null || comment.getText() == null 
 				|| comment.getText().length() == 0) {
-			throw new CommentException("Invalid comment input");
+			throw new CommentException(ERROR_FOR_COMMENT_INPUT);
 		}
 		
 		PreparedStatement pstmt;
@@ -115,7 +123,7 @@ public class CommentDAO implements ICommentDAO {
 			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CommentException("Something went wrong with DB", e);
+			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
 		
 	}
@@ -123,7 +131,7 @@ public class CommentDAO implements ICommentDAO {
 	public boolean answerComment(CommentAnswer answer) throws CommentException {
 		if (answer == null || answer.getText() == null 
 				|| answer.getText().length() == 0) {
-			throw new CommentException("Invalid answer input");
+			throw new CommentException(ERROR_MESSAGE_FOR_ANSWER_INPUT);
 		}
 		
 		PreparedStatement pstmt;
@@ -139,14 +147,14 @@ public class CommentDAO implements ICommentDAO {
 			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CommentException("Something went wrong with DB", e);
+			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
 		
 	}
 
 	public Comment getCommentById(int commentId) throws CommentException{
 		if(commentId <= 0) {
-			throw new CommentException("Invalid id");
+			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 		
 		PreparedStatement pstmt;
@@ -164,7 +172,7 @@ public class CommentDAO implements ICommentDAO {
 			return comment;
 		}catch (SQLException e){
 			e.printStackTrace();
-			throw new CommentException("Something went wrong with DB", e);
+			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
 	}						
 

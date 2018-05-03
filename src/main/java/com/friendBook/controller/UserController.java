@@ -28,6 +28,12 @@ import exceptions.UserException;
 
 @Controller
 public class UserController {
+	private static final String EXPIRED_SESSION_ERROR_MESSAGE = "Your session has expired";
+	private static final String ERROR_MESSAGE_FOR_TAKEN_EMAIL = "Email is already used, please enter a different email";
+	private static final String ERROR_MESSAGE_FOR_USERNAME_TAKEN = "Username is taken, please enter a different username";
+	private static final String ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH = "passwords missmatch";
+	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+	private static final String LOGOUT_REQUIRED_ERROR = "You are already logged in";
 	@Autowired
 	private UserDao uDao;
 	
@@ -48,11 +54,11 @@ public class UserController {
 				}
 				catch (LoginException e) {
 					e.printStackTrace();
-					model.addAttribute("errorMessage", e.getMessage());
+					model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 					return "ErrorPage";
 				}
 			} else {
-				model.addAttribute("error", "You are already logged in");
+				model.addAttribute("error", LOGOUT_REQUIRED_ERROR);
 				return "test";
 			}
 		}
@@ -91,7 +97,7 @@ public class UserController {
 			if(session.getAttribute("USER")== null)
 				return "RegistrationForm";
 			else {
-				model.addAttribute("error", "You are already logged");
+				model.addAttribute("error", LOGOUT_REQUIRED_ERROR);
 				return "test";
 			}
 		}
@@ -112,17 +118,17 @@ public class UserController {
 	
 			
 	        if(!(password.equals(password2))){
-	        	model.addAttribute("error", "passwords missmatch");
+	        	model.addAttribute("error", ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH);
 	        	return"RegistrationForm";            
 	        }
 			try {
 				if(uDao.checkIfUsernameExistsInDB(username)) {
-		            model.addAttribute("error", "Username is taken, please enter a different username");
+		            model.addAttribute("error", ERROR_MESSAGE_FOR_USERNAME_TAKEN);
 		            return"RegistrationForm";
 		            
 				}
 				if(uDao.checkIfEmailExistsInDB(email)) {
-					model.addAttribute("error", "Email is already used, please enter a different email");
+					model.addAttribute("error", ERROR_MESSAGE_FOR_TAKEN_EMAIL);
 				    return"RegistrationForm";			}
 				User u = new User(0,username,password,email);
 				uDao.register(u);
@@ -165,7 +171,7 @@ public class UserController {
 					return "ErrorPage";
 				}
 			}
-			session.setAttribute("error", "Your session has expired");
+			session.setAttribute("error", EXPIRED_SESSION_ERROR_MESSAGE);
 			return "redirect:/";
 		}
 		catch (Exception e) {
