@@ -54,12 +54,11 @@ public class UserController {
 				}
 				catch (LoginException e) {
 					e.printStackTrace();
-					model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-					return "ErrorPage";
+					model.addAttribute("error", "Username or password missmatch");
+					return "test";
 				}
 			} else {
-				model.addAttribute("error", LOGOUT_REQUIRED_ERROR);
-				return "test";
+				return "redirect:/";
 			}
 		}
 		catch (Exception e) {
@@ -81,9 +80,9 @@ public class UserController {
 				session.setAttribute("USER", null);
 				session.setAttribute("USERID", null);
 				session.invalidate();
-				return"test";
+				return"redirect:/";
 			}
-			return "test";
+			return "redirect:/";
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -97,8 +96,7 @@ public class UserController {
 			if(session.getAttribute("USER")== null)
 				return "RegistrationForm";
 			else {
-				model.addAttribute("error", LOGOUT_REQUIRED_ERROR);
-				return "test";
+				return "/redirect";
 			}
 		}
 		catch (Exception e) {
