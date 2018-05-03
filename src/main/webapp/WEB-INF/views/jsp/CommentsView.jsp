@@ -4,15 +4,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Post comments</title>
 <style type="text/css">
 .post {
     padding: 70px 0;
     text-align: center;
 }
 </style>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
-<title>Post comments</title>
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
