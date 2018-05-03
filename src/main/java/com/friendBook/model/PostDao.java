@@ -25,14 +25,12 @@ public class PostDao implements IPostDAO {
 	private static final String EXTRACT_POSTS_SQL = "SELECT * FROM posts WHERE post_user_id=?";
 	private static final String GET_POST_SQL = "SELECT * FROM posts WHERE post_id=?";
 
-	private final DBConnection db;
+	@Autowired
+	private DBConnection db;
 	
 	@Autowired
 	private LikeDao likeDao;
 
-	public PostDao() throws ClassNotFoundException, SQLException {
-		db = DBConnection.getInstance();
-	}
 
 	public Post getPostById(int postId) throws PostException {
 		if (postId <= 0) {

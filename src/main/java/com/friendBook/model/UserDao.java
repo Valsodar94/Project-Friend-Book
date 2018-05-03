@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import exceptions.LikeException;
@@ -33,11 +34,10 @@ public class UserDao implements IUserDao{
 			"from followed_users f join users u\n" + 
 			"using(user_id)\n" + 
 			"where followed_user_id = ?";
-	private final DBConnection db;
 	
-	public UserDao() throws ClassNotFoundException, SQLException {
-		db = DBConnection.getInstance();
-	}
+	@Autowired
+	private DBConnection db;
+	
 	
 	@Override
 	public int login(String username, String password) throws LoginException {

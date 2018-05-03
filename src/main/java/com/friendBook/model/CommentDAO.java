@@ -28,14 +28,12 @@ public class CommentDAO implements ICommentDAO {
 			+ "VALUES(?, ?, ?, ?);";
 	private static final String COMMENT_ANSWERS_SQL = "SELECT * FROM comments WHERE comment_answer = ?;";
 	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
-
-	private final DBConnection db;
+	
+	@Autowired
+	private DBConnection db;
 	@Autowired
 	private LikeDao likeDao;
 
-	public CommentDAO() throws ClassNotFoundException, SQLException {
-		db = DBConnection.getInstance();
-	}	
 	
 	public List<Comment> extractComments(int postId) throws CommentException {
 		List<Comment> postsComments = new LinkedList<>();

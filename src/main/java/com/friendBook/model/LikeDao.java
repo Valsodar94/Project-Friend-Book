@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import exceptions.LikeException;
@@ -22,12 +23,10 @@ public class LikeDao {
 	private static final String DISLIKE_A_POST = "DELETE FROM likes_post WHERE post_id = ? AND user_id = ?";
 	private static final String EXTRACT_LIKES_FOR_POST = "SELECT * FROM likes_post WHERE post_id = ?";
 	private static final String EXTRACT_LIKES_FOR_COMMENT = "SELECT * FROM likes_comment WHERE comment_id = ?";
-	private final DBConnection db;
 	
+	@Autowired
+	private DBConnection db;
 	
-	public LikeDao() throws ClassNotFoundException, SQLException {
-		db = DBConnection.getInstance();	
-	}
 	
 	public boolean checkIfLikeExistsInDb(int postId,int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
