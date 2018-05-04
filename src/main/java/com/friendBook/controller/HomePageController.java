@@ -45,14 +45,14 @@ public class HomePageController {
 							feed.addAll(postDao.extractPosts(u.getId()));
 						}
 						model.addAttribute("posts", feed);
-						return "test";
+						return "index";
 					} catch (UserException e) {
 						e.printStackTrace();
 						model.addAttribute("errorMessage", e.getMessage());
 						return "ErrorPage";
 					}
 				}
-				return "test";
+				return "index";
 			}
 			catch(Exception e) {
 				e.printStackTrace();

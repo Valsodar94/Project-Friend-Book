@@ -47,7 +47,7 @@
 				<form action="/Project-Friend-Book/comment/${post.getId()}/answer/${comment.getId()}"
 					method="POST">
 					<div class="answer">
-						<textarea name="answerText" cols="40" rows="1"
+						<textarea required name="answerText" cols="40" rows="1"
 							placeholder="Answer to this comment"></textarea>
 						<input type="submit" value="Answer" />
 					</div>

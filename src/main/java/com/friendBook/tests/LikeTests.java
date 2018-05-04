@@ -34,10 +34,10 @@ public class LikeTests {
 	}
 	@Test
 	public void testLikeSuccess() throws LikeException {
-		assertTrue(lDao.likeAPost(188, 12));
+		assertTrue(lDao.likeAPost(187, 3));
 	}
 	@Test(expected = LikeException.class)
 	public void testLikeFailDuplicate() throws LikeException {
-		assertFalse(lDao.likeAPost(99, 7));
+		assertFalse(lDao.likeAPost(99, 3));
 	}
 }

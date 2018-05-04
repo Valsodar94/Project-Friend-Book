@@ -45,14 +45,15 @@ li a:hover {
 	</c:when>
 	<c:otherwise>
 		<form method="POST" action="./follow">
+			<c:if test="${not empty sessionScope.followMessage}">
+				<c:if test="${sessionScope.followedUser == id}">
+					<p><b>${sessionScope.followMessage}</b></p>
+				</c:if>
+			</c:if>
 			<input type="hidden" name="profileID" value="${id}"> <input
 				type="submit" value="follow">
 		</form>
-		<c:if test="${not empty sessionScope.followMessage}">
-			<c:if test="${sessionScope.followedUser == id}">
-				<p><b>${sessionScope.followMessage}</b></p>
-			</c:if>
-		</c:if>
+		
 	</c:otherwise>
 </c:choose>
 

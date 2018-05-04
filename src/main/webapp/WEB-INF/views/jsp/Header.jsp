@@ -37,9 +37,9 @@
 					</p>
 				</c:when>
 				<c:otherwise>
-					<p>
+					<h3>
 						<a href="/Project-Friend-Book/login">login</a>
-					</p>
+					</h3>
 				</c:otherwise>
 			</c:choose>
 		</div>

@@ -36,7 +36,7 @@
 	</div>
 	<form action="/Project-Friend-Book/comment/${post.getId()}" method="POST">
 		<div class="comment">
-			<textarea name="commentText" cols="50" rows="4"
+			<textarea required name="commentText" cols="50" rows="4"
 				placeholder="Comment this post"></textarea>
 			<input type="submit" value="Comment" />
 		</div>

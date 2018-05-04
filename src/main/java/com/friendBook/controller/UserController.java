@@ -96,7 +96,7 @@ public class UserController {
 			if(session.getAttribute("USER")== null)
 				return "RegistrationForm";
 			else {
-				return "/redirect";
+				return "redirect:/";
 			}
 		}
 		catch (Exception e) {
