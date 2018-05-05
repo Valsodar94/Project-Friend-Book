@@ -25,7 +25,8 @@ public class DBConnection {
 		String DB_SCHEMA = null;
 		InputStream input = null;
 		try {
-			input = new FileInputStream("C:\\Users\\Радо\\Desktop\\java projects\\Friend-Book-Final\\src\\main\\resources\\config.properties");
+//			input = new FileInputStream("C:\\Users\\Радо\\Desktop\\java projects\\Friend-Book-Final\\src\\main\\resources\\config.properties");
+			input = new FileInputStream("C:\\Users\\Rossen\\Documents\\GitHub\\Project-Friend-Book\\src\\main\\resources\\config.properties");
 			prop.load(input);	
 			DB_HOST = prop.getProperty("DB_HOST");
 			DB_USER = prop.getProperty("DB_USER");
