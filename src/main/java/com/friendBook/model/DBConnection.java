@@ -25,6 +25,7 @@ public class DBConnection {
 		String DB_SCHEMA = null;
 		InputStream input = null;
 		try {
+//TODO relative path
 			input = new FileInputStream("C:\\Users\\Rossen\\Documents\\GitHub\\Project-Friend-Book\\src\\main\\resources\\config.properties");
 //			input = new FileInputStream("C:\\Users\\User\\Desktop\\rado2\\Project-Friend-Book\\src\\main\\resources\\config.properties");
 			prop.load(input);	
