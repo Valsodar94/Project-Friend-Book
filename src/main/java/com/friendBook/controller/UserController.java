@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.friendBook.model.EmailSender;
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
 import com.mysql.fabric.Response;
@@ -28,14 +30,16 @@ import exceptions.UserException;
 
 @Controller
 public class UserController {
+	private static final String INVALID_CONFIRMATION_CODE = "The code is invalid. Please try again";
 	private static final String EXPIRED_SESSION_ERROR_MESSAGE = "Your session has expired";
 	private static final String ERROR_MESSAGE_FOR_TAKEN_EMAIL = "Email is already used, please enter a different email";
 	private static final String ERROR_MESSAGE_FOR_USERNAME_TAKEN = "Username is taken, please enter a different username";
 	private static final String ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH = "passwords missmatch";
-	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
-	private static final String LOGOUT_REQUIRED_ERROR = "You are already logged in";
+
 	@Autowired
 	private UserDao uDao;
+	@Autowired
+	private EmailSender eSender;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("username") String username,
@@ -45,11 +49,16 @@ public class UserController {
 			if(session.getAttribute("USER") == null) {
 				try {
 					int userId = uDao.login(username, password);
-					session.setAttribute("USER", username);
-					session.setAttribute("USERID", userId);
-					
-					session.setMaxInactiveInterval(120);
-					return "redirect:/";
+					if(uDao.checkIfAccountVerified(username)) {
+						session.setAttribute("USER", username);
+						session.setAttribute("USERID", userId);
+						session.setMaxInactiveInterval(120);
+						return "redirect:/";
+					}
+					else {
+						model.addAttribute("username", username);
+						return "AccountConfirmation";
+					}
 		
 				}
 				catch (LoginException e) {
@@ -127,9 +136,15 @@ public class UserController {
 				}
 				if(uDao.checkIfEmailExistsInDB(email)) {
 					model.addAttribute("error", ERROR_MESSAGE_FOR_TAKEN_EMAIL);
-				    return"RegistrationForm";			}
+				    return"RegistrationForm";
+				}
+			    Random rand = new Random();
+				Integer confirmationCode =rand.nextInt(10000) + 10000;
 				User u = new User(0,username,password,email);
+				u.setConfirmationCode(confirmationCode);
 				uDao.register(u);
+				
+				eSender.sendEmail(email, "Friend-Book email confirmation", confirmationCode.toString());
 				return "index";
 			}
 			catch(RegisterException | UserException e) {
@@ -179,5 +194,26 @@ public class UserController {
 		}
 	}
 
-
+	@RequestMapping(value = "/confirmAccount", method = RequestMethod.POST)
+	public String confirmAccount(Model model, @RequestParam("code") String confirmationsCode, @RequestParam("username") String username, HttpSession session) {
+		try {
+			int confirmationCode = Integer.parseInt(confirmationsCode);
+			if(uDao.checkConfirmationCode(confirmationCode, username)) {
+				if(uDao.verifyAccount(username)) {
+					session.setAttribute("USER", username);
+					return "redirect:/";
+				}
+				session.setAttribute("error", "Something went wrong, please try again");
+				return "redirect:/";
+			}
+			model.addAttribute("username", username);
+			model.addAttribute("confirmationError", INVALID_CONFIRMATION_CODE);
+			return "AccountConfirmation";
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
 }

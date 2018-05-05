@@ -26,7 +26,7 @@ public class UserDao implements IUserDao{
 //DB statements	
 	private static final String INSERT_INTO_FOLLOWED_USERS = "INSERT INTO followed_users VALUES (?, ?)";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
-	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?)";
+	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?, ?, 0)";
 	private static final String CHECK_FOR_USERNAME = "SELECT * FROM users WHERE user_name=?";
 	private static final String CHECK_FOR_EMAIL = "SELECT * FROM users WHERE user_email=?";
 	private static final String SELECT_USER = "SELECT * FROM users WHERE user_id=?;";
@@ -42,9 +42,13 @@ public class UserDao implements IUserDao{
 			"from followed_users f join users u\n" + 
 			"using(user_id)\n" + 
 			"where followed_user_id = ?";
+	private static final String VERIFY_ACCOUNT = "UPDATE users\r\n" + 
+			"SET is_confirmed = 1\r\n" + 
+			"WHERE user_name =?";
 	
 	@Autowired
 	private DBConnection db;
+
 	
 	
 	@Override
@@ -81,7 +85,8 @@ public class UserDao implements IUserDao{
 				
 				pstmt.setString(1, u.getUsername());
 				pstmt.setString(2, u.getPassword());			
-				pstmt.setString(3, u.getEmail());			
+				pstmt.setString(3, u.getEmail());	
+				pstmt.setInt(4, u.getConfirmationCode());
 				pstmt.executeUpdate();
 				
 				ResultSet resultSet = pstmt.getGeneratedKeys();
@@ -320,5 +325,70 @@ public class UserDao implements IUserDao{
 		}
 		else
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
+	}
+
+	public boolean checkIfAccountVerified(String username) throws UserException {
+		PreparedStatement pstmt;
+		if(username!=null) {
+			try {
+				pstmt = db.getConnection().prepareStatement(CHECK_FOR_USERNAME);
+				pstmt.setString(1, username);				
+				ResultSet resultSet = pstmt.executeQuery();
+				
+				if (resultSet.next()) {
+					return resultSet.getBoolean(6);
+				}
+				throw new UserException(FAIL_LOGIN_MESSAGE);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			} 
+		}
+		else
+			throw new UserException(ERROR_MESSAGE_FOR_NULL);
+	}
+
+	public boolean checkConfirmationCode(int confirmationCode, String username) throws UserException {
+		PreparedStatement pstmt;
+		if(username!=null) {
+			try {
+				pstmt = db.getConnection().prepareStatement(CHECK_FOR_USERNAME);
+				pstmt.setString(1, username);				
+				ResultSet resultSet = pstmt.executeQuery();
+				
+				if (resultSet.next()) {
+					int accountVerificationCode = resultSet.getInt(5);
+					if(confirmationCode == accountVerificationCode) {
+						return true;
+					}
+					return false;
+				}
+				throw new UserException(FAIL_LOGIN_MESSAGE);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			} 
+		}
+		else
+			throw new UserException(ERROR_MESSAGE_FOR_NULL);
+	}
+
+	public boolean verifyAccount(String username) throws UserException {
+		if(username!=null) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(VERIFY_ACCOUNT);
+				pstmt.setString(1, username);
+				int rowsUpdated = pstmt.executeUpdate();
+				if(rowsUpdated>0)
+					return true;
+				else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			}
+		}
+		throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 }
