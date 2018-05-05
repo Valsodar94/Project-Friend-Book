@@ -20,6 +20,7 @@ public class User {
 	private String email;
 	private Set<User> followedUsers;
 	private List<Post> posts;
+	private int confirmationCode;
 	
 	public User(int id, String username, String password, String email) throws UserException {
 		this.id = id;
@@ -28,6 +29,12 @@ public class User {
 		this.email = email;
 		this.followedUsers = new HashSet<>();
 		this.posts = new ArrayList<>();		
+	}
+	public void setConfirmationCode(int confirmationCode) {
+		this.confirmationCode = confirmationCode;
+	}
+	public int getConfirmationCode() {
+		return confirmationCode;
 	}
 	
 	public int getId() {

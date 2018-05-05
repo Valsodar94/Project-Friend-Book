@@ -36,10 +36,12 @@
 						class="login-input" placeholder="Password">
 				</p>
 				<br> <input type="submit" value="Login" class="login-submit">
+				<p class="login-help">
+					<a href="register">Sign up</a>
+				</p>
+				<p class = "login-help"><a href = "forgottenPass">Forgotten Password</a></p>
 			</form>
-			<p class="login-help">
-				<a href="register">No registration?</a>
-			</p>
+
 		</c:otherwise>
 	</c:choose>
 

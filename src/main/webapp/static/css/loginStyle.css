@@ -291,7 +291,7 @@ input, textarea, select, label {
 
 .login-help>a {
 	font-size: 16px;
-	color: #3f65b7;
+	color: #000000;
 	text-decoration: none;
 	text-shadow: 0 -1px rgba(0, 0, 0, 0.4);
 }
