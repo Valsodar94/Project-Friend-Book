@@ -43,6 +43,7 @@ public class CommentController {
 	
 	@RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
 	public String getComments(@PathVariable("id") int postId, Model model, HttpServletRequest request) {
+//		TODO:check if post with that id is deleted
 		try {
 			try {
 				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));

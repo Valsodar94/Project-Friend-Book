@@ -62,7 +62,7 @@ public class LikeController {
 				}
 			}
 			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
-			return "test";
+			return "index";
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class LikeController {
 					return "ErrorPage";				}
 			}
 			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
-			return "test";
+			return "index";
 			
 		}
 		catch(Exception e) {

@@ -55,7 +55,7 @@ public class UserController {
 				catch (LoginException e) {
 					e.printStackTrace();
 					model.addAttribute("error", "Username or password missmatch");
-					return "test";
+					return "index";
 				}
 			} else {
 				return "redirect:/";
@@ -130,7 +130,7 @@ public class UserController {
 				    return"RegistrationForm";			}
 				User u = new User(0,username,password,email);
 				uDao.register(u);
-				return "test";
+				return "index";
 			}
 			catch(RegisterException | UserException e) {
 				e.printStackTrace();
