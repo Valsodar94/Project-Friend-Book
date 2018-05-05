@@ -45,6 +45,9 @@ public class UserDao implements IUserDao{
 	private static final String VERIFY_ACCOUNT = "UPDATE users\r\n" + 
 			"SET is_confirmed = 1\r\n" + 
 			"WHERE user_name =?";
+	private static final String RESET_PASS = "UPDATE users\n" + 
+			"SET user_pass = sha1(?)\n" + 
+			"WHERE user_email = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -379,6 +382,26 @@ public class UserDao implements IUserDao{
 			try {
 				pstmt = db.getConnection().prepareStatement(VERIFY_ACCOUNT);
 				pstmt.setString(1, username);
+				int rowsUpdated = pstmt.executeUpdate();
+				if(rowsUpdated>0)
+					return true;
+				else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			}
+		}
+		throw new UserException(ERROR_MESSAGE_FOR_NULL);
+	}
+
+	public boolean resetPassword(String email, String newPassword) throws UserException {
+		if(email!=null) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(RESET_PASS);
+				pstmt.setString(1, newPassword);
+				pstmt.setString(2, email);
 				int rowsUpdated = pstmt.executeUpdate();
 				if(rowsUpdated>0)
 					return true;

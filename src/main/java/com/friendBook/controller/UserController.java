@@ -30,6 +30,7 @@ import exceptions.UserException;
 
 @Controller
 public class UserController {
+	private static final String INVALID_EMAIL_ERROR = "No user with such mail has been registered";
 	private static final String INVALID_CONFIRMATION_CODE = "The code is invalid. Please try again";
 	private static final String EXPIRED_SESSION_ERROR_MESSAGE = "Your session has expired";
 	private static final String ERROR_MESSAGE_FOR_TAKEN_EMAIL = "Email is already used, please enter a different email";
@@ -139,7 +140,7 @@ public class UserController {
 				    return"RegistrationForm";
 				}
 			    Random rand = new Random();
-				Integer confirmationCode =rand.nextInt(10000) + 10000;
+				Integer confirmationCode =rand.nextInt(8000000) + 1000000;
 				User u = new User(0,username,password,email);
 				u.setConfirmationCode(confirmationCode);
 				uDao.register(u);
@@ -209,6 +210,46 @@ public class UserController {
 			model.addAttribute("username", username);
 			model.addAttribute("confirmationError", INVALID_CONFIRMATION_CODE);
 			return "AccountConfirmation";
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
+	@RequestMapping(value = "/forgottenPass", method = RequestMethod.GET)
+	public String showForgottenPassView(HttpSession session,Model model) {
+		try {
+			if(session.getAttribute("USER")!=null) {
+				return "redirect:/";
+			}
+			else {
+				return "ForgottenPassword";
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
+	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
+	public String resetPass(Model model, @RequestParam("email") String email) {
+		try {
+			if(uDao.checkIfEmailExistsInDB(email)) {
+				Random rand = new Random();
+				String newPass = ""+rand.nextInt(8000000)+1000000;
+				if(uDao.resetPassword(email, newPass)) {
+					eSender.sendEmail(email, "Friend-Book password reset", newPass);
+					return "index";
+				}
+				model.addAttribute("error", "Something went wrong");
+				return "index";
+			}
+			else {
+				model.addAttribute("resetPassError", INVALID_EMAIL_ERROR);
+				return"ForgottenPassword";
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
