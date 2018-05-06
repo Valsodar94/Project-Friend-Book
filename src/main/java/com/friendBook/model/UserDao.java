@@ -17,6 +17,7 @@ import exceptions.UserException;
 @Component
 public class UserDao implements IUserDao{
 //	constants
+	private static final String NO_SUCH_USER_ERROR = "No such User";
 	private static final String ERROR_MESSAGE_FOR_FOLLOW = "Already followed!!!";
 	private static final String ERROR_MESSAGE_FOR_UNFOLLOW = "Not followed in the first place!!";
 	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
@@ -48,6 +49,9 @@ public class UserDao implements IUserDao{
 	private static final String RESET_PASS = "UPDATE users\n" + 
 			"SET user_pass = sha1(?)\n" + 
 			"WHERE user_email = ?";
+	private static final String EDIT_PROFILE = "UPDATE users \r\n" + 
+			"SET user_email = ?, user_pass = sha1(?)\r\n" + 
+			"WHERE user_id = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -156,10 +160,16 @@ public class UserDao implements IUserDao{
 				pstmt.setInt(1, id);
 				
 				ResultSet resultSet = pstmt.executeQuery();
-				String username = resultSet.getString(2); 
-				String password = resultSet.getString(3); 
-				String email = resultSet.getString(4); 
-				return new User(id,username,password,email);
+				if(resultSet.next()) {
+					String username = resultSet.getString(2); 
+					String password = resultSet.getString(3); 
+					String email = resultSet.getString(4); 
+					return new User(id,username,password,email);
+				}
+				else {
+					throw new UserException(NO_SUCH_USER_ERROR);
+
+				}
 			}
 			catch(SQLException e) {
 				e.printStackTrace();
@@ -413,5 +423,29 @@ public class UserDao implements IUserDao{
 			}
 		}
 		throw new UserException(ERROR_MESSAGE_FOR_NULL);
+	}
+
+	public boolean editProfile(int id, String pass, String email) throws UserException {
+		if(id>0 && pass !=null && email!=null) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(EDIT_PROFILE);
+				pstmt.setString(1, email);
+				pstmt.setString(2, pass);
+				pstmt.setInt(3, id);
+				int rowsUpdated = pstmt.executeUpdate();
+				if(rowsUpdated>0)
+					return true;
+				else
+					return false;
+			}
+			catch(SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			}
+			
+		}
+		throw new UserException(ERROR_MESSAGE_FOR_NULL);
+
 	}
 }
