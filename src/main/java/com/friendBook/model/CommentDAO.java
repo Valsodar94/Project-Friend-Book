@@ -39,13 +39,16 @@ public class CommentDAO implements ICommentDAO {
 	private static final String ANSWER_COMMENT_SQL = "INSERT INTO comments\r\n" 
 			+ "(comment_content, comment_user_id, comment_answer,comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?, ?)";
-	private static final String EXTRACT_ANSWERS_FOR_COMMENT = "select u.user_name,c.comment_answer ,c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id\n" + 
+	private static final String EXTRACT_ANSWERS_FOR_COMMENT = "select u.user_name,c.comment_answer ,c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id, c.is_deleted\n" + 
 			"			from comments c join posts p \n" + 
 			"			on(c.comment_post_id = p.post_id)\n" + 
 			"			join users u\n" + 
 			"			on(c.comment_user_id = u.user_id)\n" + 
 			"			where c.comment_answer = ?";
 	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
+	private static final String DELETE_ANSWER_BY_ID = "UPDATE comments \n" + 
+			"SET is_deleted = 1\n" + 
+			"WHERE comment_id = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -100,6 +103,9 @@ public class CommentDAO implements ICommentDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
+				if(resultSet.getBoolean("is_deleted")) {
+					continue;
+				}
 				CommentAnswer answer = new CommentAnswer(resultSet.getInt("comment_id"), 
 						resultSet.getInt("comment_user_id"), resultSet.getInt("comment_post_id"),commentId);
 				answer.setText(resultSet.getString("comment_content"));
@@ -186,6 +192,31 @@ public class CommentDAO implements ICommentDAO {
 			e.printStackTrace();
 			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
+	}
+
+	public boolean deleteAnwer(int answerId) throws CommentException {
+		if(answerId > 0) {
+			PreparedStatement pstmt;
+			try {
+				pstmt = db.getConnection().prepareStatement(DELETE_ANSWER_BY_ID);
+				pstmt.setInt(1, answerId);
+				int updatedRows = pstmt.executeUpdate();
+				if(updatedRows > 0)
+					return true;
+				else
+					return false;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new CommentException(DB_ERROR_MESSAGE, e);
+			}
+
+
+		}
+		else {
+			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
+		}
+		
 	}						
 
 }

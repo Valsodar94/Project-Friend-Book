@@ -41,6 +41,13 @@
 						<c:forEach items="${comment.getAnswers()}" var="answer">
 							<p>Published by: <a href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
 							<c:out value="${answer.text}" />
+							<c:if test="${sessionScope.USERID == answer.getUserId()}">
+								<form action="/Project-Friend-Book/comment/${post.getId()}/delete" method = "POST">
+									<input type = "hidden" name = "answerAuthorId" value = ${answer.getUserId()}>
+									<input type = "hidden" name = "answerId" value = ${answer.getId()}>
+									<input type="submit" value="Delete answer">
+								</form>
+							</c:if>
 							<br>
 						</c:forEach>
 					</c:when>

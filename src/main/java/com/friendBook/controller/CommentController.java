@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.friendBook.model.Comment;
@@ -139,5 +140,32 @@ public class CommentController {
 			return "ErrorPage";
 		}
 	}
-
+	@RequestMapping(value = "/comment/{postId}/delete", method = RequestMethod.POST)
+	public String deleteAnswer(@PathVariable("postId") int postId, @RequestParam("answerId")int answerId, @RequestParam("answerAuthorId")int answerAuthorId, Model model, HttpSession session) {
+		try {
+			if(session.getAttribute("USER")!=null) {
+				int sessionUserId = (int) session.getAttribute("USERID");
+				if(sessionUserId!= answerAuthorId) {
+					return "redirect:/";
+				}
+				else {
+					if(commentDao.deleteAnwer(answerId)) {
+						return "redirect:/comment/"+postId;
+					}
+					else {
+						session.setAttribute("CommentMessage", "As you can see something went wrong and the comment is still there");
+						return "redirect:/comment/"+postId;
+					}
+				}
+			}
+			else {
+				return "redirect:/";
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
 }
