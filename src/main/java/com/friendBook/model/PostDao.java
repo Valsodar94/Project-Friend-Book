@@ -1,5 +1,8 @@
 package com.friendBook.model;
 
+import static org.hamcrest.CoreMatchers.containsString;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import java.sql.ResultSet;
@@ -14,6 +17,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import exceptions.CommentException;
 import exceptions.LikeException;
 import exceptions.PostException;
 
@@ -27,11 +31,17 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
 	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "
 			+ "VALUES (?, ?, localtime(), ?);";
-	private static final String EXTRACT_POSTS_SQL = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id\r\n" + 
+	private static final String EXTRACT_POSTS_SQL = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id, p.is_deleted\r\n" + 
 						"from users u join posts p\r\n" + 
 						"on(u.user_id = p.post_user_id)\r\n" + 
 						"where u.user_id = ?";
 	private static final String GET_POST_SQL = "SELECT * FROM posts WHERE post_id=?";
+	private static final String DELETE_POST_BY_ID = "update posts\r\n" + 
+			"set is_deleted =1\r\n" + 
+			"where post_id = ?";
+	private static final String DELETE_COMMENTS_BY_POST_ID = "update comments\r\n" + 
+			"set is_deleted =1\r\n" + 
+			"where comment_post_id = ?";
 
 	@Autowired
 	private DBConnection db;
@@ -105,6 +115,9 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
+				if(resultSet.getBoolean("is_deleted")) {
+					continue;
+				}
 				int postId = resultSet.getInt(2);
 				Post post = new Post(postId, userId);
 				post.setText(resultSet.getString(3));
@@ -131,6 +144,42 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 
 	public void edit() throws PostException {
 
+	}
+
+	public boolean deletePost(int postId) throws PostException {
+		if(postId > 0) {
+			PreparedStatement pstmt;
+			Connection con = db.getConnection();
+			try {
+				con.setAutoCommit(false);
+				pstmt = con.prepareStatement(DELETE_POST_BY_ID);
+				pstmt.setInt(1, postId);
+				int updatedRows = pstmt.executeUpdate();
+				pstmt = con.prepareStatement(DELETE_COMMENTS_BY_POST_ID);
+				pstmt.setInt(1, postId);
+				pstmt.executeUpdate();
+				con.commit();
+				if(updatedRows > 0)
+					return true;
+				else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new PostException(DB_ERROR_MESSAGE, e);
+			}
+			finally {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw new PostException(DB_ERROR_MESSAGE, e);
+				}
+			}
+
+		}
+		else {
+			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
+		}
 	}
 
 }

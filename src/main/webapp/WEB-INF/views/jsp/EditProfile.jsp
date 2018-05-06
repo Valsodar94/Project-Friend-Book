@@ -16,7 +16,11 @@
 				<p>Email: <input type="email" name="email" required value = "${user.getEmail()}"><br></p>		
 				<p>Old Password: <input type="password" name="old password" pattern=".{5,15}" required title="5 to 15 characters" placeholder="5 to 15 characters"></p>
 				
-				<input type="submit" value="editProfile">
+				<input type="submit" value="Edit profile">
+			</form>
+			<form method="POST" action="/Project-Friend-Book/${id}/deleteProfile">
+				<p>Password: <input type="password" name="password" pattern=".{5,15}" required title="5 to 15 characters" placeholder="Enter your password"></p>
+				<input type="submit" value="Delete profle">
 			</form>
 		</c:if>
 	</c:if>

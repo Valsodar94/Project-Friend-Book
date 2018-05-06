@@ -1,5 +1,6 @@
 package com.friendBook.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import exceptions.LikeException;
 import exceptions.LoginException;
+import exceptions.PostException;
 import exceptions.RegisterException;
 import exceptions.UserException;
 @Component
@@ -52,6 +54,15 @@ public class UserDao implements IUserDao{
 	private static final String EDIT_PROFILE = "UPDATE users \r\n" + 
 			"SET user_email = ?, user_pass = sha1(?)\r\n" + 
 			"WHERE user_id = ?";
+	private static final String DELETE_USER_BY_ID = "update users\r\n" + 
+			"set is_deleted = 1\r\n" + 
+			"where user_id = ?";
+	private static final String DELETE_POSTS_BY_USER_ID = "update posts\r\n" + 
+			"set is_deleted = 1\r\n" + 
+			"where post_user_id = ?";
+	private static final String DELETE_COMMENTS_BY_USER_ID = "update comments\r\n" + 
+			"set is_deleted = 1\r\n" + 
+			"where comment_user_id = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -69,7 +80,7 @@ public class UserDao implements IUserDao{
 				
 				ResultSet resultSet = pstmt.executeQuery();
 				
-				if (resultSet.next()) {
+				if (resultSet.next() && resultSet.getBoolean("is_deleted")!=true) {
 					return resultSet.getInt(1);
 				}
 				throw new LoginException(FAIL_LOGIN_MESSAGE);
@@ -447,5 +458,44 @@ public class UserDao implements IUserDao{
 		}
 		throw new UserException(ERROR_MESSAGE_FOR_NULL);
 
+	}
+
+	public boolean deleteProfile(int userId) throws UserException {
+		if(userId > 0) {
+			PreparedStatement pstmt;
+			Connection con = db.getConnection();
+			try {
+				con.setAutoCommit(false);
+				pstmt = con.prepareStatement(DELETE_USER_BY_ID);
+				pstmt.setInt(1, userId);
+				int updatedRows = pstmt.executeUpdate();
+				pstmt = con.prepareStatement(DELETE_POSTS_BY_USER_ID);
+				pstmt.setInt(1, userId);
+				pstmt.executeUpdate();
+				pstmt = con.prepareStatement(DELETE_COMMENTS_BY_USER_ID);
+				pstmt.setInt(1, userId);
+				pstmt.executeUpdate();
+				con.commit();
+				if(updatedRows > 0)
+					return true;
+				else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			}
+			finally {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw new UserException(DB_ERROR_MESSAGE, e);
+				}
+			}
+
+		}
+		else {
+			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
+		}
 	}
 }
