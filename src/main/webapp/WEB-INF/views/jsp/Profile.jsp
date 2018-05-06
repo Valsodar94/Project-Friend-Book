@@ -44,7 +44,7 @@ li a:hover {
 		<jsp:include page="PostForm.jsp" />
 	</c:when>
 	<c:otherwise>
-		<form method="POST" action="./follow">
+		<form method="POST" action="/Project-Friend-Book/${id}/follow">
 			<c:if test="${not empty sessionScope.followMessage}">
 				<c:if test="${sessionScope.followedUser == id}">
 					<p><b>${sessionScope.followMessage}</b></p>
@@ -61,11 +61,12 @@ li a:hover {
   <li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
   <li><a href="/Project-Friend-Book/${id}/followers">Followers</a></li>
   <li><a href="/Project-Friend-Book/${id}/followed">Followed</a></li>
+  <li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
 </ul>
 		<c:if test="${not empty users}">
 			<c:forEach items="${users}" var="user">
 				<ul>
-					<li><a href="../${user.getId()}">${user.getUsername()}</a></li>
+					<li><a href="/Project-Friend-Book/${user.getId()}">${user.getUsername()}</a></li>
 				</ul>
 			</c:forEach>
 		</c:if>

@@ -160,40 +160,6 @@ public class UserController {
 			return "ErrorPage";
 		}
 	}
-	
-	@RequestMapping(value = "/follow", method = RequestMethod.POST)
-	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
-		try {
-			if(session.getAttribute("USERID") !=null && profileID!=null) {
-				int followerId = (int) session.getAttribute("USERID");
-				int followedId = Integer.parseInt(profileID);
-				try {
-					if(uDao.checkIfFollowExistsInDb(followerId, followedId)) {
-						uDao.unfollow(followerId, followedId);
-						session.setAttribute("followedUser", followedId);
-						session.setAttribute("followMessage", "Unfollowed");
-						return "redirect:/"+profileID;
-					}
-					else {
-						uDao.follow(followerId, followedId);
-						session.setAttribute("followMessage", "Followed");
-						return "redirect:/"+profileID;
-					}
-				} catch (UserException e) {
-					e.printStackTrace();
-					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
-				}
-			}
-			session.setAttribute("error", EXPIRED_SESSION_ERROR_MESSAGE);
-			return "redirect:/";
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
-		}
-	}
 
 	@RequestMapping(value = "/confirmAccount", method = RequestMethod.POST)
 	public String confirmAccount(Model model, @RequestParam("code") String confirmationsCode, @RequestParam("username") String username, HttpSession session) {
