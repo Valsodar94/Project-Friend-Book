@@ -22,6 +22,7 @@
 						<p>${sessionScope.CommentMessage}</p>
 					</c:if>
 				</c:if>
+				<p>Published by: <a href = "/Project-Friend-Book/${comment.getUserId()}">${comment.getAuthorName()}</a></p>
 				<c:out value="${comment.text}" />
 				<br>
 				<c:out value="Published on: ${comment.time}" />

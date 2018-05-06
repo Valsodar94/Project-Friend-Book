@@ -113,6 +113,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
 				post.setLikes(likedPostUserIds.size());
+				post.setUserId(resultSet.getInt("post_user_id"));
 				post.setUserUserName(resultSet.getString(1));
 				usersPosts.add(post);
 			}
