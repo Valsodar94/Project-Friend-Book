@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +66,15 @@ private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an
 		
 	}
 
-	@RequestMapping(value = "/publish", method = RequestMethod.POST)
-	public String publish(Model model, HttpServletRequest request, HttpSession session) {
+	@RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+	public String publish(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {		
 		try {
+			response.setContentType("text/html; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			request.setCharacterEncoding("utf-8");
 			if(session.getAttribute("USER")!=null) {
 				String text = request.getParameter("postText");
+				System.out.println("[DEBUG] PostController .publish " + text);
 				String pictureUrl = request.getParameter("pictureUrl");
 				String picture = extractPictureName(pictureUrl);		
 				

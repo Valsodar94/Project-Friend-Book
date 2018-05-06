@@ -74,6 +74,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 				&& (post.getPictureUrl() == null || post.getPictureUrl().length() == 0)) {
 			return false;
 		}
+		System.out.println("[DEBUG] PostDAO .publish " + post.getText());
 		PreparedStatement pstmt;
 		try {
 			pstmt = db.getConnection().prepareStatement(ADD_POST_SQL, Statement.RETURN_GENERATED_KEYS);

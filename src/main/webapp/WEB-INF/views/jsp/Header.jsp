@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Friend-Book</title>
 <link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"
 	rel="stylesheet">

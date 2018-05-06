@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="css/loginStyle.css"
 	media="screen" />
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
