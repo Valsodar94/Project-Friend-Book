@@ -103,6 +103,13 @@ li a:hover {
 						<input type="submit" value="like" class="like-submit">
 					</form>					
 					<a href="./comment/${post.id}" class="login-field">Comments</a>
+					<c:if test="${sessionScope.USERID == post.getUserId()}">
+						<form action="/Project-Friend-Book/deletePost" method = "POST">
+							<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
+							<input type = "hidden" name = "postId" value = ${post.getId()}>
+							<input type="submit" value="Delete post">
+						</form>
+					</c:if>
 					<hr>
 				</c:forEach>
 			</div>

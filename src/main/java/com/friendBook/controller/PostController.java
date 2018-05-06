@@ -133,5 +133,34 @@ private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an
 			}
 			return "";
 	}
+	
+	@RequestMapping(value = "/deletePost", method = RequestMethod.POST)
+	public String deletePost(@RequestParam("postId")int postId, @RequestParam("postAuthorId")int postAuthorId, Model model, HttpSession session) {
+		try {
+			if(session.getAttribute("USER")!=null) {
+				int sessionUserId = (int) session.getAttribute("USERID");
+				if(sessionUserId!= postAuthorId) {
+					return "redirect:/";
+				}
+				else {
+					if(postDao.deletePost(postId)) {
+						return "redirect:/"+postAuthorId;
+					}
+					else {
+						session.setAttribute("CommentMessage", "As you can see something went wrong and the comment is still there");
+						return "redirect:/comment/"+postId;
+					}
+				}
+			}
+			else {
+				return "redirect:/";
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
 
 }
