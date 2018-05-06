@@ -17,6 +17,7 @@ public class Comment implements Likeable, Comparable<Comment>{
 	private int postId;
 	private List<CommentAnswer> answers;
 	private int likes;
+	private String authorName;
 	
 	public Comment(int id, int userId, int postId) {
 		this.id = id;
@@ -24,10 +25,20 @@ public class Comment implements Likeable, Comparable<Comment>{
 		this.time = LocalDateTime.now();
 		this.userId = userId;
 		this.postId = postId;
-		this.answers = new ArrayList();
+		this.answers = new ArrayList<>();
 		this.likes = 0;
 	}
-
+	
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public String getAuthorName() {
+		return authorName;
+	}
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
+	}
+	
 	public int getId() {
 		return id;
 	}

@@ -30,7 +30,12 @@ public class CommentDAO implements ICommentDAO {
 	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
 			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?);";
-	private static final String POST_COMMENTS_SQL = "SELECT * FROM comments WHERE comment_post_id = ?;";
+	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id\n" + 
+			"from comments c join posts p \n" + 
+			"on(c.comment_post_id = p.post_id)\n" + 
+			"join users u\n" + 
+			"on(c.comment_user_id = u.user_id)\n" + 
+			"where c.comment_post_id = ?";
 	private static final String ANSWER_COMMENT_SQL = "INSERT INTO comments\r\n" 
 			+ "(comment_content, comment_user_id, comment_answer,comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?, ?);";
@@ -51,22 +56,20 @@ public class CommentDAO implements ICommentDAO {
 		
 		PreparedStatement pstmt;
 		try {
-			pstmt = db.getConnection().prepareStatement(POST_COMMENTS_SQL);
+			pstmt = db.getConnection().prepareStatement(EXTRACT_COMMENTS_FOR_POST);
 			pstmt.setInt(1, postId);
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				if(resultSet.getInt(5) != 0) {
-					continue;
-				}
-				int commentId = resultSet.getInt(1);
-				Comment comment = new Comment(commentId, resultSet.getInt(4), postId);
-				comment.setText(resultSet.getString(2));
-				comment.setTime(LocalDateTime.parse(resultSet.getString(3),
+				int commentId = resultSet.getInt(2);
+				Comment comment = new Comment(commentId, resultSet.getInt(5), postId);
+				comment.setText(resultSet.getString(3));
+				comment.setTime(LocalDateTime.parse(resultSet.getString(4),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				List<Integer> likedCommentUserIds = new LinkedList<>(likeDao.getUsersIdForLikedComment(commentId));
 				comment.setLikes(likedCommentUserIds.size());
 				comment.setAnswers(extractAnswers(commentId));
+				comment.setAuthorName(resultSet.getString(1));
 				postsComments.add(comment);
 			}
 			Collections.sort(postsComments);
