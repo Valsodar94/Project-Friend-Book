@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class CommentDAO implements ICommentDAO {
 	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
 			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?);";
-	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id, c.comment_answer\n" + 
+	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id, c.comment_answer, c.is_deleted\n" + 
 			"from comments c join posts p \n" + 
 			"on(c.comment_post_id = p.post_id)\n" + 
 			"join users u\n" + 
@@ -46,9 +47,12 @@ public class CommentDAO implements ICommentDAO {
 			"			on(c.comment_user_id = u.user_id)\n" + 
 			"			where c.comment_answer = ?";
 	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
-	private static final String DELETE_ANSWER_BY_ID = "UPDATE comments \n" + 
+	private static final String DELETE_COMMENT_BY_ID = "UPDATE comments \n" + 
 			"SET is_deleted = 1\n" + 
 			"WHERE comment_id = ?";
+	private static final String DELETE_ANSWERS_BY_COMMENT_ID = "UPDATE comments \n" + 
+			"			SET is_deleted = 1\n" + 
+			"		WHERE comment_answer = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -69,7 +73,7 @@ public class CommentDAO implements ICommentDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				if(resultSet.getInt("comment_answer") > 0) {
+				if(resultSet.getInt("comment_answer") > 0 || resultSet.getBoolean("is_deleted")) {
 					continue;
 				}
 				int commentId = resultSet.getInt(2);
@@ -198,7 +202,7 @@ public class CommentDAO implements ICommentDAO {
 		if(answerId > 0) {
 			PreparedStatement pstmt;
 			try {
-				pstmt = db.getConnection().prepareStatement(DELETE_ANSWER_BY_ID);
+				pstmt = db.getConnection().prepareStatement(DELETE_COMMENT_BY_ID);
 				pstmt.setInt(1, answerId);
 				int updatedRows = pstmt.executeUpdate();
 				if(updatedRows > 0)
@@ -217,6 +221,42 @@ public class CommentDAO implements ICommentDAO {
 			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 		
+	}
+
+	public boolean deleteComment(int commentId) throws CommentException {
+		if(commentId > 0) {
+			PreparedStatement pstmt;
+			Connection con = db.getConnection();
+			try {
+				con.setAutoCommit(false);
+				pstmt = con.prepareStatement(DELETE_COMMENT_BY_ID);
+				pstmt.setInt(1, commentId);
+				int updatedRows = pstmt.executeUpdate();
+				pstmt = con.prepareStatement(DELETE_ANSWERS_BY_COMMENT_ID);
+				pstmt.setInt(1, commentId);
+				pstmt.executeUpdate();
+				con.commit();
+				if(updatedRows > 0)
+					return true;
+				else
+					return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new CommentException(DB_ERROR_MESSAGE, e);
+			}
+			finally {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw new CommentException(DB_ERROR_MESSAGE, e);
+				}
+			}
+
+		}
+		else {
+			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
+		}
 	}						
 
 }

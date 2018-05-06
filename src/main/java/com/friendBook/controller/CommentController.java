@@ -153,6 +153,34 @@ public class CommentController {
 						return "redirect:/comment/"+postId;
 					}
 					else {
+						session.setAttribute("CommentMessage", "As you can see something went wrong and the answer is still there");
+						return "redirect:/comment/"+postId;
+					}
+				}
+			}
+			else {
+				return "redirect:/";
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
+	@RequestMapping(value = "/comment/{postId}/deleteComment", method = RequestMethod.POST)
+	public String deleteComment(@PathVariable("postId") int postId, @RequestParam("commentId")int commentId, @RequestParam("commentAuthorId")int commentAuthorId, Model model, HttpSession session) {
+		try {
+			if(session.getAttribute("USER")!=null) {
+				int sessionUserId = (int) session.getAttribute("USERID");
+				if(sessionUserId!= commentAuthorId) {
+					return "redirect:/";
+				}
+				else {
+					if(commentDao.deleteComment(commentId)) {
+						return "redirect:/comment/"+postId;
+					}
+					else {
 						session.setAttribute("CommentMessage", "As you can see something went wrong and the comment is still there");
 						return "redirect:/comment/"+postId;
 					}

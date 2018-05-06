@@ -34,6 +34,13 @@
 					<input type="hidden" name="postId" value="${comment.getPostId()}">
 					<input type="submit" value="like">
 				</form>
+				<c:if test="${sessionScope.USERID == comment.getUserId()}">
+					<form action="/Project-Friend-Book/comment/${post.getId()}/deleteComment" method = "POST">
+						<input type = "hidden" name = "commentAuthorId" value = ${comment.getUserId()}>
+						<input type = "hidden" name = "commentId" value = ${comment.getId()}>
+						<input type="submit" value="Delete comment">
+					</form>
+				</c:if>
 				<c:out value="${comment.getAnswers().size()} answers" />
 				<c:choose>
 					<c:when test="${comment.getAnswers().size() > 0}">
