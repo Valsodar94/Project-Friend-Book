@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
 
+import exceptions.LoginException;
 import exceptions.UserException;
 
 @Controller
@@ -24,7 +25,8 @@ import exceptions.UserException;
 public class ProfileController {
 	private static final String LOGIN_REQUIRED_ERROR = "You need to be logged in to see this menu.";
 	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
-
+	@Autowired
+	private UserController userController;
 	@Autowired
 	private UserDao uDao;
 	
@@ -183,5 +185,41 @@ public class ProfileController {
 					return "ErrorPage";
 				}
 	}
-
+	@RequestMapping(method=RequestMethod.POST, value = "/deleteProfile")
+	public String deleteProfile(@PathVariable int id,@RequestParam("password") String password, Model model, HttpSession session) {
+		try {
+			if(session.getAttribute("USER")!=null) {
+				int sessionId = (int) session.getAttribute("USERID");
+				if(id != sessionId) {
+					return"redirect:/";
+				}
+				try {
+					User u = uDao.getUserById(id);
+					uDao.login(u.getUsername(), password);
+					if(uDao.deleteProfile(id)) {
+						return userController.logOut(session, model);
+					}
+					else {
+						model.addAttribute("message", "Something went wrong");
+						return"EditProfile";
+					}
+					
+				} catch (UserException | LoginException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", e.getMessage());
+					return "ErrorPage";
+				}
+			}
+			else {
+				session.setAttribute("error", LOGIN_REQUIRED_ERROR);
+				return "redirect:/";
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "ErrorPage";
+		}
+	}
+	
 }
