@@ -64,7 +64,9 @@ public class Post implements Likeable, Comparable<Post>{
 	public int getUserId() {
 		return userId;
 	}
-	
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	public List<Comment> getComments() {
 		return Collections.unmodifiableList(comments);
 	}

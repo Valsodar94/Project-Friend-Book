@@ -23,7 +23,7 @@
 							<p class="login-field">${sessionScope.PostMessage}</p>
 						</c:if>
 					</c:if>
-					<h3>Published by: ${post.getUserUserName()}</h3>
+					<h3>Published by: <a href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
 					<p class="login-field">
 						<c:out value="${post.text}" />
 					</p>
