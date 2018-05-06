@@ -30,7 +30,7 @@ public class CommentDAO implements ICommentDAO {
 	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
 			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?);";
-	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id\n" + 
+	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id, c.comment_answer\n" + 
 			"from comments c join posts p \n" + 
 			"on(c.comment_post_id = p.post_id)\n" + 
 			"join users u\n" + 
@@ -38,8 +38,13 @@ public class CommentDAO implements ICommentDAO {
 			"where c.comment_post_id = ?";
 	private static final String ANSWER_COMMENT_SQL = "INSERT INTO comments\r\n" 
 			+ "(comment_content, comment_user_id, comment_answer,comment_post_id)\r\n" 
-			+ "VALUES(?, ?, ?, ?);";
-	private static final String COMMENT_ANSWERS_SQL = "SELECT * FROM comments WHERE comment_answer = ?;";
+			+ "VALUES(?, ?, ?, ?)";
+	private static final String EXTRACT_ANSWERS_FOR_COMMENT = "select u.user_name,c.comment_answer ,c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id\n" + 
+			"			from comments c join posts p \n" + 
+			"			on(c.comment_post_id = p.post_id)\n" + 
+			"			join users u\n" + 
+			"			on(c.comment_user_id = u.user_id)\n" + 
+			"			where c.comment_answer = ?";
 	private static final String GET_COMMENT_SQL = "SELECT * FROM comments WHERE comment_id=?";
 	
 	@Autowired
@@ -61,6 +66,9 @@ public class CommentDAO implements ICommentDAO {
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
+				if(resultSet.getInt("comment_answer") > 0) {
+					continue;
+				}
 				int commentId = resultSet.getInt(2);
 				Comment comment = new Comment(commentId, resultSet.getInt(5), postId);
 				comment.setText(resultSet.getString(3));
@@ -87,16 +95,17 @@ public class CommentDAO implements ICommentDAO {
 		
 		PreparedStatement pstmt;
 		try {
-			pstmt = db.getConnection().prepareStatement(COMMENT_ANSWERS_SQL);
+			pstmt = db.getConnection().prepareStatement(EXTRACT_ANSWERS_FOR_COMMENT);
 			pstmt.setInt(1, commentId);
 
 			ResultSet resultSet = pstmt.executeQuery();
 			while (resultSet.next()) {
-				CommentAnswer answer = new CommentAnswer(resultSet.getInt(1), 
-						resultSet.getInt(4), resultSet.getInt(6),commentId);
-				answer.setText(resultSet.getString(2));
-				answer.setTime(LocalDateTime.parse(resultSet.getString(3),
+				CommentAnswer answer = new CommentAnswer(resultSet.getInt("comment_id"), 
+						resultSet.getInt("comment_user_id"), resultSet.getInt("comment_post_id"),commentId);
+				answer.setText(resultSet.getString("comment_content"));
+				answer.setTime(LocalDateTime.parse(resultSet.getString("comment_time"),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+				answer.setAuthorName(resultSet.getString("user_name"));
 				comentAnswers.add(answer);
 			}
 			Collections.sort(comentAnswers);

@@ -39,6 +39,7 @@
 					<c:when test="${comment.getAnswers().size() > 0}">
 						<h4>Answers:</h4>
 						<c:forEach items="${comment.getAnswers()}" var="answer">
+							<p>Published by: <a href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
 							<c:out value="${answer.text}" />
 							<br>
 						</c:forEach>

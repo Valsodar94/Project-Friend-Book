@@ -123,7 +123,6 @@ public class CommentController {
 					CommentAnswer newAnswer = new CommentAnswer(0, userId, postId, commentId);
 					newAnswer.setText(answerText);
 					commentDao.answerComment(newAnswer);	
-					model.addAttribute("answer", newAnswer);
 					return "redirect:/comment/" + postId;
 				}
 				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
