@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.friendBook.model.Post;
@@ -29,66 +30,63 @@ import exceptions.UserException;
 
 @Controller
 public class PostController {
-private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an empty post. Write a text or upload a picture.";
+	private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an empty post. Write a text or upload a picture.";
 
 	// constants
 	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
 	private static final String SESSION_EXPIRED_MESSAGE = "Your session has expired. You need to login";
 	@Autowired
 	private PostDao postDao;
-	
+
 	@Autowired
 	private UserDao uDao;
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session){
+
+	@RequestMapping(value ="/{id}", method = RequestMethod.GET)
+	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
 		try {
-			try {
-				if(uDao.checkIfUserExistsInDB(id)) {
-					List <Post> postsList = new LinkedList<>(postDao.extractPosts(id));
+			try {			
+				if (uDao.checkIfUserExistsInDB(id)) {
+					List<Post> postsList = new LinkedList<>(postDao.extractPosts(id));
 					modelAndView.addObject("posts", postsList);
 					modelAndView.addObject("id", id);
 					modelAndView.setViewName("Profile");
 					return modelAndView;
-				}
-				else
+				} else
 					return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			} catch (UserException | PostException e) {
 				e.printStackTrace();
 				e.printStackTrace();
-				return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
+			return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
 		}
-		
+
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	public String publish(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {		
+	public String publish(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			request.setCharacterEncoding("utf-8");
-			if(session.getAttribute("USER")!=null) {
+			if (session.getAttribute("USER") != null) {
 				String text = request.getParameter("postText");
 				System.out.println("[DEBUG] PostController .publish " + text);
 				String pictureUrl = request.getParameter("pictureUrl");
-				String picture = extractPictureName(pictureUrl);		
-				
-				try {			
-					if (!((text == null || text.length() == 0) 
-							&& (picture == null || picture.length() == 0))) {	
-		
+				String picture = extractPictureName(pictureUrl);
+
+				try {
+					if (!((text == null || text.length() == 0) && (picture == null || picture.length() == 0))) {
+
 						int userId = (int) session.getAttribute("USERID");
 						Post newPost = new Post(0, userId);
 						newPost.setText(text);
 						newPost.setPictureUrl(picture);
-						postDao.publish(newPost);	
+						postDao.publish(newPost);
 						model.addAttribute("post", newPost);
-						return "redirect:/"+userId;
+						return "redirect:/" + userId;
 					}
 					model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_POST);
 					return "ErrorPage";
@@ -97,21 +95,18 @@ private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an
 					model.addAttribute("errorMessage", e.getMessage());
 					return "ErrorPage";
 				}
-			}
-			else {
+			} else {
 				session.setAttribute("error", SESSION_EXPIRED_MESSAGE);
 				return "redirect:/";
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
 			return "ErrorPage";
 		}
 	}
-	
-	
-	//TODO da se napravqt pyrvo v PostDAO
+
+	// TODO da se napravqt pyrvo v PostDAO
 	public void delete() throws PostException {
 
 	}
@@ -119,19 +114,19 @@ private static final String ERROR_MESSAGE_FOR_EMPTY_POST = "You can't publish an
 	public void edit() throws PostException {
 
 	}
-	
+
 	private String extractPictureName(String pictureUrl) {
-			if(pictureUrl.length() > 0) {
-				int symb = pictureUrl.length()-1;
-				for(;symb>0;symb--) {
-					if(pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
-						symb++;
-						break;
-					}
+		if (pictureUrl.length() > 0) {
+			int symb = pictureUrl.length() - 1;
+			for (; symb > 0; symb--) {
+				if (pictureUrl.charAt(symb) == '/' || pictureUrl.charAt(symb) == '\\') {
+					symb++;
+					break;
 				}
-				return pictureUrl.substring(symb);
 			}
-			return "";
+			return pictureUrl.substring(symb);
+		}
+		return "";
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.friendBook.config;
 
-
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 
@@ -18,6 +17,7 @@ public class WebInitializer extends  AbstractAnnotationConfigDispatcherServletIn
   
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/", "*.html", "*.pdf" };
+        return new String[] { "/", "/**", "*.html", "*.pdf" };
     }
+    
 }

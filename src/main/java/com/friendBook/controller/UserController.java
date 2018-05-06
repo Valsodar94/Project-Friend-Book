@@ -83,6 +83,7 @@ public class UserController {
 	public String login() {
 		return "redirect:/";
 	}
+	
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
 		try {

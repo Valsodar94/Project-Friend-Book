@@ -22,7 +22,7 @@ id="WebApp_ID" version="3.1">
      <filter-name>encoding-filter</filter-name>
      <url-pattern>/*</url-pattern>
  </filter-mapping>
- 
+  
   <display-name>Friend Book</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
