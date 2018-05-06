@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,8 +41,13 @@ public class PostController {
 
 	@Autowired
 	private UserDao uDao;
+	
+	@RequestMapping
+	public String fallbackMethod(){
+		return "redirect:/index";
+	}
 
-	@RequestMapping(value ="/{id}", method = RequestMethod.GET)
+	@RequestMapping(value ="/{id:[\\d]+}", method = RequestMethod.GET)
 	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
 		try {
 			try {			
