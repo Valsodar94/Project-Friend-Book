@@ -47,29 +47,7 @@ public class PostController {
 //		return "redirect:/index";
 //	}
 
-	@RequestMapping(value ="/{id:[\\d]+}", method = RequestMethod.GET)
-	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
-		try {
-			try {			
-				if (uDao.checkIfUserExistsInDB(id)) {
-					List<Post> postsList = new LinkedList<>(postDao.extractPosts(id));
-					modelAndView.addObject("posts", postsList);
-					modelAndView.addObject("id", id);
-					modelAndView.setViewName("Profile");
-					return modelAndView;
-				} else
-					return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-			} catch (UserException | PostException e) {
-				e.printStackTrace();
-				e.printStackTrace();
-				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
-		}
 
-	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
 	public String publish(@RequestParam("tags") String tags, Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {

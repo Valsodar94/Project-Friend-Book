@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.friendBook.model.Post;
+import com.friendBook.model.PostDao;
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
 
 import exceptions.LoginException;
+import exceptions.PostException;
 import exceptions.UserException;
 
 @Controller
@@ -29,52 +32,51 @@ public class ProfileController {
 	private UserController userController;
 	@Autowired
 	private UserDao uDao;
+	@Autowired
+	private PostDao postDao;
 	
-	@RequestMapping(method =RequestMethod.GET, value = "/followers")
-	public ModelAndView showFollowers(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
+	
+	
+	@RequestMapping(method =RequestMethod.GET)
+	public ModelAndView showProfile(@RequestParam(value = "show", required = false) String show, @PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
 		try {
-			modelAndView.setViewName("Profile");
-			if(session.getAttribute("USER")!=null) {
-				try {
-					List<User> followers = new LinkedList<>(uDao.getAllFollowers(id));
-					modelAndView.addObject("users", followers);
+			try {		
+				modelAndView.setViewName("Profile");
+				if (uDao.checkIfUserExistsInDB(id)) {
+					if(show!=null) {
+						switch(show) {
+							case "followed":
+								List<User> followed = new LinkedList<>(uDao.getAllFollowedUsers(id));
+								modelAndView.addObject("users", followed);
+								modelAndView.setViewName("Profile");
+								return modelAndView;
+							case "followers":
+								List<User> followers = new LinkedList<>(uDao.getAllFollowers(id));
+								modelAndView.addObject("users", followers);
+								return modelAndView;
+
+						}
+						
+					}
+					List<Post> postsList = new LinkedList<>(postDao.extractPosts(id));
+					modelAndView.addObject("posts", postsList);
+					modelAndView.addObject("id", id);
 					return modelAndView;
-				} catch (UserException e) {
-					e.printStackTrace();
-					return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-				}
+				} else
+					return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+			} catch (UserException | PostException e) {
+				e.printStackTrace();
+				e.printStackTrace();
+				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
-			modelAndView.addObject("error", LOGIN_REQUIRED_ERROR);
-			return modelAndView;
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
+			return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
 		}
+
 	}
 	
-	@RequestMapping(method =RequestMethod.GET, value = "/followed")
-	public ModelAndView showFollowed(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
-		try {
-			modelAndView.setViewName("Profile");
-			if(session.getAttribute("USER")!=null) {
-				try {
-					List<User> followed = new LinkedList<>(uDao.getAllFollowedUsers(id));
-					modelAndView.addObject("users", followed);
-					return modelAndView;
-				} catch (UserException e) {
-					e.printStackTrace();
-					return new ModelAndView("ErrorPage" ,"errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-				}
-			}
-			modelAndView.addObject("error", LOGIN_REQUIRED_ERROR);
-			return modelAndView;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return new ModelAndView("ErrorPage" ,"errorMessage", e.getMessage());
-		}
-	}
+	
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
 		try {
