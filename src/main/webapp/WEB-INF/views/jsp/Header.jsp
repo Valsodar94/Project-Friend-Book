@@ -7,18 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Friend-Book</title>
-<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" type="text/css"
+<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="css/HeaderStyle.css" type="text/css" rel="stylesheet">
-<style>
-.homePage{
-	position: fixed;
-    top: 10 px;
-    left: 30 px;
-    border: 3px solid #3f65b7;
-}
-</style>
-
+<link href="css/HeaderStyle.css" rel="stylesheet">
 </head>
 <body>	
 		<div class="homePage">

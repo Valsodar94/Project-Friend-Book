@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Friend Book</title>
-<link href="css/loginStyle.css" type="text/css" rel="stylesheet">
+<link href="css/loginStyle.css" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 </head>
 <body>
