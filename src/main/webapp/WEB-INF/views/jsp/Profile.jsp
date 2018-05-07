@@ -60,18 +60,20 @@ li a:hover {
 
 <ul>
   <li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
-  <li><a href="/Project-Friend-Book/${id}/followers">Followers</a></li>
-  <li><a href="/Project-Friend-Book/${id}/followed">Followed</a></li>
+  <li><a href="/Project-Friend-Book/${id}?show=followers">Followers</a></li>
+  <li><a href="/Project-Friend-Book/${id}?show=followed">Followed</a></li>
   <li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
 </ul>
-		<c:if test="${not empty users}">
+
+		<c:choose>
+		<c:when test="${not empty users}">
 			<c:forEach items="${users}" var="user">
 				<ul>
 					<li><a href="/Project-Friend-Book/${user.getId()}">${user.getUsername()}</a></li>
 				</ul>
 			</c:forEach>
-		</c:if>
-	<c:choose>
+		</c:when>
+	
 		<c:when test="${posts.size() == 0}">
 			<h3>No posts yet</h3>
 		</c:when>
