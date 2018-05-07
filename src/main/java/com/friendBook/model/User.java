@@ -21,6 +21,7 @@ public class User {
 	private Set<User> followedUsers;
 	private List<Post> posts;
 	private int confirmationCode;
+	private boolean isAdmin;
 	
 	public User(int id, String username, String password, String email) throws UserException {
 		this.id = id;
@@ -30,6 +31,15 @@ public class User {
 		this.followedUsers = new HashSet<>();
 		this.posts = new ArrayList<>();		
 	}
+	
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+	
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
 	public void setConfirmationCode(int confirmationCode) {
 		this.confirmationCode = confirmationCode;
 	}

@@ -63,6 +63,8 @@ public class UserDao implements IUserDao{
 	private static final String DELETE_COMMENTS_BY_USER_ID = "update comments\r\n" + 
 			"set is_deleted = 1\r\n" + 
 			"where comment_user_id = ?";
+	private static final String CHECK_IF_ADMIN = "select * from users\r\n" + 
+			"where user_id = ?";
 	
 	@Autowired
 	private DBConnection db;
@@ -497,5 +499,26 @@ public class UserDao implements IUserDao{
 		else {
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
+	}
+
+	public boolean checkifAdmin(int userId) throws UserException {
+		PreparedStatement pstmt;
+		if(userId>0) {
+			try {
+				pstmt = db.getConnection().prepareStatement(CHECK_IF_ADMIN);
+				pstmt.setInt(1, userId);				
+				ResultSet resultSet = pstmt.executeQuery();
+				
+				if (resultSet.next()) {
+					return resultSet.getBoolean("is_admin");
+				}
+				throw new UserException(FAIL_LOGIN_MESSAGE);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new UserException(DB_ERROR_MESSAGE, e);
+			} 
+		}
+		else
+			throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 }

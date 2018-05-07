@@ -190,7 +190,7 @@ public class ProfileController {
 		try {
 			if(session.getAttribute("USER")!=null) {
 				int sessionId = (int) session.getAttribute("USERID");
-				if(id != sessionId) {
+				if(id != sessionId && (boolean)session.getAttribute("isAdmin") == false) {
 					return"redirect:/";
 				}
 				try {

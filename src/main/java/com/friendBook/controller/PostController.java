@@ -114,9 +114,6 @@ public class PostController {
 	}
 
 	// TODO da se napravqt pyrvo v PostDAO
-	public void delete() throws PostException {
-
-	}
 
 	public void edit() throws PostException {
 
@@ -141,7 +138,7 @@ public class PostController {
 		try {
 			if(session.getAttribute("USER")!=null) {
 				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= postAuthorId) {
+				if(sessionUserId!= postAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
 					return "redirect:/";
 				}
 				else {

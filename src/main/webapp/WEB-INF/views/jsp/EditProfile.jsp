@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <jsp:include page="Header.jsp" />
-	<c:if test="${sessionScope.USERID == id}">
+	<c:if test="${sessionScope.USERID == id or sessionScope.isAdmin == true}">
 						<c:if test="${not empty message}">
 					<h4 style=color:red;>${message}</h4>
 				</c:if>

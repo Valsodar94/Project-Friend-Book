@@ -145,7 +145,7 @@ public class CommentController {
 		try {
 			if(session.getAttribute("USER")!=null) {
 				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= answerAuthorId) {
+				if(sessionUserId!= answerAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
 					return "redirect:/";
 				}
 				else {
@@ -173,7 +173,7 @@ public class CommentController {
 		try {
 			if(session.getAttribute("USER")!=null) {
 				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= commentAuthorId) {
+				if(sessionUserId!= commentAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
 					return "redirect:/";
 				}
 				else {

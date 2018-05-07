@@ -52,10 +52,13 @@ public class UserController {
 			if(session.getAttribute("USER") == null) {
 				try {
 					int userId = uDao.login(username, password);
+					boolean isAdmin = uDao.checkifAdmin(userId);
 					if(uDao.checkIfAccountVerified(username)) {
 						session.setAttribute("USER", username);
 						session.setAttribute("USERID", userId);
+						session.setAttribute("isAdmin", isAdmin);
 						session.setMaxInactiveInterval(120);
+						
 						return "redirect:/";
 					}
 					else {
