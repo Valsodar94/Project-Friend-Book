@@ -22,7 +22,7 @@
 		<div class="wrap">
 			<div class="search" style="float: left;">
 				<form method="GET" action="/Project-Friend-Book/SearchResult">
-					<input type="text" name="search" class="searchTerm"
+					<input required type="text" name="search" class="searchTerm"
 						placeholder="Search for a user profile?">
 					<button type="submit" value="Search" class="searchButton">
 						<i class="fa fa-search"></i>Search

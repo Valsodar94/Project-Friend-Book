@@ -35,7 +35,7 @@ li a:hover {
 </style>
 </head>
 <body>
-<jsp:include page="Header.jsp" />
+<%@ include file="Header.jsp" %>
 	<c:if test="${not empty error}">
 		<h4 style="color: red;">${error}</h4>
 	</c:if>
