@@ -29,9 +29,9 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
 //	DB statements
 	private static final String EDIT_POST_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
-	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id) "
-			+ "VALUES (?, ?, localtime(), ?);";
-	private static final String EXTRACT_POSTS_SQL = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id, p.is_deleted\r\n" + 
+	private static final String ADD_POST_SQL = "INSERT INTO posts (post_text, post_picture, post_time, post_user_id, post_tags) "
+			+ "VALUES (?, ?, localtime(), ?, ?)";
+	private static final String EXTRACT_POSTS_SQL = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id, p.is_deleted, p.post_tags\r\n" + 
 						"from users u join posts p\r\n" + 
 						"on(u.user_id = p.post_user_id)\r\n" + 
 						"where u.user_id = ?";
@@ -42,6 +42,10 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 	private static final String DELETE_COMMENTS_BY_POST_ID = "update comments\r\n" + 
 			"set is_deleted =1\r\n" + 
 			"where comment_post_id = ?";
+	private static final String SEARCH_POSTS_BY_TAG = "select u.user_name, p.post_id, p.post_text, p.post_picture, p.post_time, p.post_user_id, p.is_deleted, p.post_tags\r\n" + 
+			"from users u join posts p\r\n" + 
+			"on(u.user_id = p.post_user_id)\r\n" + 
+			"where p.post_tags like ?";
 
 	@Autowired
 	private DBConnection db;
@@ -92,6 +96,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 			pstmt.setString(1, post.getText());
 			pstmt.setString(2, post.getPictureUrl());
 			pstmt.setInt(3, post.getUserId());
+			pstmt.setString(4, post.getTags());
 			pstmt.executeUpdate();
 
 			ResultSet resultSet = pstmt.getGeneratedKeys();
@@ -120,6 +125,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 				}
 				int postId = resultSet.getInt(2);
 				Post post = new Post(postId, userId);
+				post.setTags(resultSet.getString("post_tags"));
 				post.setText(resultSet.getString(3));
 				post.setPictureUrl(resultSet.getString(4));
 				post.setTime(LocalDateTime.parse(resultSet.getString(5),
@@ -136,6 +142,57 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 			e.printStackTrace();
 			throw new PostException(DB_ERROR_MESSAGE, e);
 		}
+	}
+	public List<Post> extractPostsByTag(String tag) throws PostException {
+		if(tag == null || tag.length() < 1) {
+			return null;
+		}
+		PreparedStatement pstmt;
+		try {
+			pstmt = db.getConnection().prepareStatement(SEARCH_POSTS_BY_TAG);
+			pstmt.setString(1, "%"+tag+"%");
+			List<Post> usersPosts = new LinkedList<>();
+	
+			ResultSet resultSet = pstmt.executeQuery();
+			while(resultSet.next()) {
+				
+				if(resultSet.getBoolean("is_deleted")) {
+					continue;
+				}
+				if(checkIfTagMatchAnyOfPostTags(resultSet.getString("post_tags"), tag)) {	
+					int postId = resultSet.getInt(2);
+					Post post = new Post(postId, resultSet.getInt("post_user_id"));
+					post.setTags(resultSet.getString("post_tags"));
+					post.setText(resultSet.getString(3));
+					post.setPictureUrl(resultSet.getString(4));
+					post.setTime(LocalDateTime.parse(resultSet.getString(5),
+							DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+					List<Integer> likedPostUserIds = new LinkedList<>(likeDao.getUsersIdForLikedPost(postId));
+					post.setLikes(likedPostUserIds.size());
+					post.setUserId(resultSet.getInt("post_user_id"));
+					post.setUserUserName(resultSet.getString(1));
+					usersPosts.add(post);
+				}
+			}
+			Collections.sort(usersPosts);
+			return usersPosts;
+		}
+		catch(SQLException | LikeException e) {
+			e.printStackTrace();
+			throw new PostException(DB_ERROR_MESSAGE, e);
+		}
+		
+	}
+	public boolean checkIfTagMatchAnyOfPostTags(String postTags, String tag) {
+		if(postTags == null || postTags.length() < 1) {
+			return false;
+		}
+		String[] singlePostTags = postTags.split(" ");
+		for(String tag1: singlePostTags) {
+			if(tag.equalsIgnoreCase(tag1))
+				return true;
+		}
+		return false;
 	}
 
 	public void delete() throws PostException {
@@ -181,5 +238,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
 		}
 	}
+	
+
 
 }

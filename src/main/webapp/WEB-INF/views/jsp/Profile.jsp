@@ -84,6 +84,9 @@ li a:hover {
 						</c:if>
 					</c:if>
 					<h3>Published by: <a href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
+					<c:if test="${not empty post.getTags()}">
+						<p>Tags: ${post.getTags()} </p>
+					</c:if>
 					<p class="login-field">
 						<c:out value="${post.text}" />
 					</p>

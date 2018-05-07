@@ -17,6 +17,7 @@ public class Post implements Likeable, Comparable<Post>{
 	private List<Comment> comments;
 	private int likes;
 	private String userUserName;
+	private String tags;
 	
 	public Post(int id, int userId) {
 		this.id = id;
@@ -26,7 +27,12 @@ public class Post implements Likeable, Comparable<Post>{
 		this.userId = userId;
 		this.comments = new ArrayList<>();
 	}
-	
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 	public int getId() {
 		return id;
 	}
@@ -36,7 +42,7 @@ public class Post implements Likeable, Comparable<Post>{
 	}
 	
 	public void setText(String text) {
-		if(text != null & text.length() > 0) {
+		if(text != null && text.length() > 0) {
 			this.text = text;
 		}		
 	}
@@ -46,7 +52,7 @@ public class Post implements Likeable, Comparable<Post>{
 	}
 	
 	public void setPictureUrl(String pictureUrl) {
-		if(pictureUrl != null & pictureUrl.length() > 0) {
+		if(pictureUrl != null && pictureUrl.length() > 0) {
 			this.pictureUrl = pictureUrl;
 		}		
 	}

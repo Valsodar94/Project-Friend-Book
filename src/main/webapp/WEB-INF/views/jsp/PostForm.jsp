@@ -22,9 +22,11 @@ a {
 </head>
 <body>	
 	<p>Enter your post text here</p>
-	<form method="POST" action="/Project-Friend-Book/publish">		
+	<form method="POST" action="/Project-Friend-Book/publish">
+		<textarea name="tags" cols="50" rows="1" 
+		placeholder="Place for tags/> ?"  autofocus></textarea>		
 		<textarea name="postText" cols="50" rows="5" 
-		placeholder="What's on your mind <c:out value = "${USER}"/> ?"  autofocus></textarea>
+		placeholder="What's on your mind <c:out value = "${USER}"/> ?" ></textarea>
 		<input type="file" name="pictureUrl" placeholder="Upload image"/>
 		<input type="submit" value="Publish" />
 	</form>

@@ -2,6 +2,9 @@ package com.friendBook.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +32,19 @@ public class PostTests {
 	}
 	
 	@Test()
-	public void publishSuccess() throws PostException {
-		Post post = new Post(0, 3);
-		post.setText("test");
-		assertTrue(pDao.publish(post));
-	}
-	
-	@Test()
 	public void publishFailNoTextOrPicture() throws PostException {
 		Post post = new Post(0, 3);
 		assertFalse(pDao.publish(post));
+	}
+	@Test()
+	public void testExtractingPostsByTag() throws PostException {
+		List<Post> postList = new LinkedList<Post>(pDao.extractPostsByTag("Ra"));
+		assertTrue(postList.size()==0);
+	}
+	@Test()
+	public void testStringSplit() {
+		boolean b = pDao.checkIfTagMatchAnyOfPostTags("Ko staa be", "be");
+		assertTrue(b);
 	}
 
 }

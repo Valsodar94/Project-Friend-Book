@@ -72,7 +72,7 @@ public class PostController {
 	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	public String publish(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public String publish(@RequestParam("tags") String tags, Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
@@ -90,6 +90,7 @@ public class PostController {
 						Post newPost = new Post(0, userId);
 						newPost.setText(text);
 						newPost.setPictureUrl(picture);
+						newPost.setTags(tags);
 						postDao.publish(newPost);
 						model.addAttribute("post", newPost);
 						return "redirect:/" + userId;
