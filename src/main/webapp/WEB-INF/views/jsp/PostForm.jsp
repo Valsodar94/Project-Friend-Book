@@ -8,28 +8,23 @@
 <title>Friend Book</title>
 <link href="css/loginStyle.css" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
-<STYLE type="text/css">
-.main {
-    text-align: center;
-}
-h1 {
-    display: inline-block;
-}
-a {
-    float: right;
-}
-</STYLE>
 </head>
 <body>	
-	<p>Enter your post text here</p>
-	<form method="POST" action="/Project-Friend-Book/publish">			
-		<textarea name="postText" cols="50" rows="5" 
-		placeholder="What's on your mind <c:out value = "${USER}"/> ?" ></textarea><br>
-		<textarea name="tags" cols="50" rows="1" 
-		placeholder="Place for tags"  autofocus></textarea>
-
-		<input type="file" name="pictureUrl" placeholder="Upload image"/>
-		<input type="submit" value="Publish" />
+	<div class="profile">
+	<p class="title-text post-textContent">Enter your post text here</p>
+	<form method="POST" action="/Project-Friend-Book/publish">	
+			
+		<textarea name="postText" cols="50" rows="5" class="postText-input"
+		placeholder="What's on your mind <c:out value = "${USER}"/> ?" autofocus></textarea><br>
+		
+		<textarea name="tags" cols="50" rows="1" class="tags-input" 
+		placeholder="Place for tags"></textarea>
+		
+		<div class="delete-button">
+		<input class="login-submit" type="file" name="pictureUrl" placeholder="Upload image"/>
+		<input class="login-submit" type="submit" value="Publish" />
+		</div>
 	</form>
+	</div>
 </body>
 </html>

@@ -11,10 +11,8 @@
 <style>
 ul {
     list-style-type: none;
-    margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
 }
 
 li {
@@ -27,6 +25,7 @@ li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    background-color: #111;
 }
 
 li a:hover {
@@ -35,37 +34,39 @@ li a:hover {
 </style>
 </head>
 <body>
-<%@ include file="Header.jsp" %>
+	<jsp:include page="Header.jsp" />
 	<c:if test="${not empty error}">
 		<h4 style="color: red;">${error}</h4>
 	</c:if>
 
-<c:choose>
-	<c:when test="${sessionScope.USERID == id}">
-		<jsp:include page="PostForm.jsp" />
-	</c:when>
-	<c:otherwise>
-		<form method="POST" action="/Project-Friend-Book/${id}/follow">
-			<c:if test="${not empty sessionScope.followMessage}">
-				<c:if test="${sessionScope.followedUser == id}">
-					<p><b>${sessionScope.followMessage}</b></p>
+	<c:choose>
+		<c:when test="${sessionScope.USERID == id}">
+				<jsp:include page="PostForm.jsp" />
+		</c:when>
+		<c:otherwise>
+			<form method="POST" action="/Project-Friend-Book/${id}/follow">
+				<c:if test="${not empty sessionScope.followMessage}">
+					<c:if test="${sessionScope.followedUser == id}">
+						<p>
+							<b>${sessionScope.followMessage}</b>
+						</p>
+					</c:if>
 				</c:if>
-			</c:if>
-			<input type="hidden" name="profileID" value="${id}"> <input
-				type="submit" value="follow">
-		</form>
-		
-	</c:otherwise>
-</c:choose>
+				<div class="follow-button">
+					<input type="hidden" name="profileID" value="${id}"> <input
+						class="login-submit" type="submit" value="follow">
+				</div>
+			</form>
 
-<ul>
-  <li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
-  <li><a href="/Project-Friend-Book/${id}?show=followers">Followers</a></li>
-  <li><a href="/Project-Friend-Book/${id}?show=followed">Followed</a></li>
-  <li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
-</ul>
-
-		<c:choose>
+		</c:otherwise>
+	</c:choose>
+		<ul>
+			<li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
+			<li><a href="/Project-Friend-Book/${id}?show=followers">Followers</a></li>
+			<li><a href="/Project-Friend-Book/${id}?show=followed">Followed</a></li>
+			<li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
+		</ul>
+	<c:choose>
 		<c:when test="${not empty users}">
 			<c:forEach items="${users}" var="user">
 				<ul>
@@ -73,9 +74,9 @@ li a:hover {
 				</ul>
 			</c:forEach>
 		</c:when>
-	
+
 		<c:when test="${posts.size() == 0}">
-			<h3>No posts yet</h3>
+			<h3 class="announce-text announce-smaller">No posts yet</h3>
 		</c:when>
 		<c:otherwise>
 			<div class="profile">
@@ -85,15 +86,18 @@ li a:hover {
 							<p class="login-field">${sessionScope.PostMessage}</p>
 						</c:if>
 					</c:if>
-					<h3>Published by: <a href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
-					<c:if test="${not empty post.getTags()}">
-						<p>Tags: ${post.getTags()} </p>
-					</c:if>
 					<p class="login-field">
+						Published by: <a class="link-text"
+							href="/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a>
+					</p>
+					<c:if test="${not empty post.getTags()}">
+						<p class="login-field">Tags: ${post.getTags()}</p>
+					</c:if>
+					<p class="login-field post-textContent">
 						<c:out value="${post.text}" />
 					</p>
 					<c:choose>
-						<c:when test="${post.pictureUrl.length() > 0}">							
+						<c:when test="${post.pictureUrl.length() > 0}">
 							<img class="post-image" src="./uploaded/${post.pictureUrl}" />
 						</c:when>
 					</c:choose>
@@ -101,18 +105,23 @@ li a:hover {
 						<c:out value="Published on: ${post.time}" />
 					</p>
 					<p class="login-field">
-					<c:out value="${post.getLikes()} likes" /></p>
+						<c:out value="${post.getLikes()} likes" />
+					</p>
 					<form method="POST" action="./like">
 						<input type="hidden" name="postId" value="${post.getId()}">
-						<input type="hidden" name="profileId" value="${id}"> 
-						<input type="submit" value="like" class="like-submit">
-					</form>					
-					<a href="./comment/${post.id}" class="login-field">Comments</a>
-					<c:if test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
-						<form action="/Project-Friend-Book/deletePost" method = "POST">
-							<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
-							<input type = "hidden" name = "postId" value = ${post.getId()}>
-							<input type="submit" value="Delete post">
+						<input type="hidden" name="profileId" value="${id}"> <input
+							type="submit" value="like" class="like-submit">
+					</form>
+					<a href="./comment/${post.id}" class="link-text">Comments</a>
+					<c:if
+						test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
+						<form action="/Project-Friend-Book/deletePost" method="POST">
+							<div class="delete-button">
+								<input type="hidden" name="postAuthorId"
+									value="${post.getUserId()}"> <input type="hidden"
+									name="postId" value="${post.getId()}"> <input
+									class="login-submit" type="submit" value="Delete">
+							</div>
 						</form>
 					</c:if>
 					<hr>

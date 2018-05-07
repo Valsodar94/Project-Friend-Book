@@ -1,6 +1,17 @@
 @charset "UTF-8";
-
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+div.homePageLink{
+    float:left;
+    margin-top: 15px;
+    margin-left: 80px;
+}
+
+div.loginLogoutlink{
+	float:right;
+	 margin-top: 15px;
+	margin-right: 50px;
+}
 
 body {
 	background: #ebc9a2;
@@ -64,4 +75,19 @@ body {
 	top: 5%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.hyperlink-text{
+	color:  #3f65b7;
+	text-align: center;
+	text-decoration: underline;
+	margin-right: 10px;
+}
+
+.hyperlink-bigger{
+	font-size: 24px;
+}
+
+.hyperlink-smaller{
+	font-size: 20px;
 }

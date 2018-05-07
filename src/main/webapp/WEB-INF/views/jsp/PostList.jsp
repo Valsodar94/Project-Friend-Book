@@ -5,16 +5,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/loginStyle.css"
-	media="screen" />
+<link rel="stylesheet" type="text/css" href="css/loginStyle.css" media="screen" />
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Posts list</title>
 </head>
 <body>
 	<c:choose>
 		<c:when test="${posts.size() == 0}">
-			<h3 class="login-field">No posts yet</h3>
+			<h3 class="announce-text">No posts yet</h3>
 		</c:when>
 		<c:otherwise>
 			<div class="profile">
@@ -24,11 +22,11 @@
 							<p class="login-field">${sessionScope.PostMessage}</p>
 						</c:if>
 					</c:if>
-					<h3>Published by: <a href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
+					<h3 class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
 					<c:if test="${not empty post.getTags()}">
 						<p>Post tags: ${post.getTags()} </p>
 					</c:if>
-					<p class="login-field">
+					<p class="login-field post-textContent">
 						<c:out value="${post.text}" />
 					</p>
 					<c:choose>
@@ -45,12 +43,14 @@
 						<input type="hidden" name="postId" value="${post.getId()}">
 						<input type="submit" value="like" class="like-submit">
 					</form>					
-					<a href="./comment/${post.id}" class="login-field">Comments</a>
+					<a href="./comment/${post.id}" class="link-text">Comments</a>
 					<c:if test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
 						<form action="/Project-Friend-Book/deletePost" method = "POST">
-							<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
-							<input type = "hidden" name = "postId" value = ${post.getId()}>
-							<input type="submit" value="Delete post">
+							<div class="delete-button">
+								<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
+								<input type = "hidden" name = "postId" value = ${post.getId()}>
+								<input class="login-submit" type="submit" value="Delete post">
+							</div>
 						</form>
 					</c:if>
 					<hr>

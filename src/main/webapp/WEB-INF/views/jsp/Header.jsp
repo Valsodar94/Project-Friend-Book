@@ -10,13 +10,17 @@
 <link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"
 	rel="stylesheet">
 <link href="css/HeaderStyle.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 </head>
-<body>	
-		<div class="homePage">
-			<h3 ><a href="/Project-Friend-Book/">Home</a></h3>
+<body>
+	<div class="container">
+		<div class="homePageLink">
+			<a class="hyperlink-text hyperlink-bigger"
+				href="/Project-Friend-Book/">Home</a>
 			<c:if test="${not empty sessionScope.USER}">
-				<h3><a href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a></h3>
-			</c:if>			
+				<a class="hyperlink-text hyperlink-bigger"
+					href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a>
+			</c:if>
 		</div>
 		<div class="wrap">
 			<div class="search" style="float: left;">
@@ -29,20 +33,19 @@
 				</form>
 			</div>
 		</div>
-		<div class="loginlink">
+		<div class="loginLogoutlink">
 			<c:choose>
 				<c:when test="${not empty fn:trim(sessionScope.USER)}">
-					<p>
-						<a href="/Project-Friend-Book/logOut">LogOut</a>
-					</p>
+					<a class="hyperlink-text hyperlink-bigger"
+						href="/Project-Friend-Book/logOut">LogOut</a>
 				</c:when>
 				<c:otherwise>
-					<h3>
-						<a href="/Project-Friend-Book/login">Login</a>
-					</h3>
+					<a class="hyperlink-text hyperlink-bigger"
+						href="/Project-Friend-Book/login">Login</a>
 				</c:otherwise>
 			</c:choose>
 		</div>
+	</div>
 	<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
 	<script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
 </body>

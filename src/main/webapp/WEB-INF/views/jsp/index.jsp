@@ -13,8 +13,8 @@
 	<jsp:include page="Header.jsp" />
 	<c:choose>
 		<c:when test="${not empty sessionScope.USER}">
-				<h2>Hello ${sessionScope.USER}</h2>
-				<h4>Posts from the people you follow:</h4>
+				<h2 class="announce-text announce-bigger">Hello ${sessionScope.USER}</h2>
+				<h4 class="announce-text announce-smaller">Posts from the people you follow:</h4>
 			<jsp:include page="PostList.jsp" />
 		</c:when>
 		<c:otherwise>
@@ -23,7 +23,7 @@
 					<h4 style=color:red;>${error}</h4>
 				</c:if>
 			
-				<h3 class="login-field">
+				<h3 class="title-text">
 					FriendBook<br>
 				</h3>
 				<p class="login-field">

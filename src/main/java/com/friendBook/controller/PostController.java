@@ -41,13 +41,11 @@ public class PostController {
 
 	@Autowired
 	private UserDao uDao;
-	
-	@RequestMapping
-	public String fallbackMethod(){
-		return "redirect:/index";
-	}
-
-
+    
+//	@RequestMapping
+//	public String fallbackMethod(){
+//		return "redirect:/index";
+//	}
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
 	public String publish(@RequestParam("tags") String tags, Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
