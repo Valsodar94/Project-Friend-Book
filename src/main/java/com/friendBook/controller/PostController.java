@@ -42,10 +42,10 @@ public class PostController {
 	@Autowired
 	private UserDao uDao;
 	
-	@RequestMapping
-	public String fallbackMethod(){
-		return "redirect:/index";
-	}
+//	@RequestMapping
+//	public String fallbackMethod(){
+//		return "redirect:/index";
+//	}
 
 	@RequestMapping(value ="/{id:[\\d]+}", method = RequestMethod.GET)
 	public ModelAndView showProfile(@PathVariable Integer id, ModelAndView modelAndView, HttpSession session) {
@@ -78,7 +78,8 @@ public class PostController {
 			response.setCharacterEncoding("UTF-8");
 			request.setCharacterEncoding("utf-8");
 			if (session.getAttribute("USER") != null) {
-				String text = request.getParameter("postText");
+				String text = request.getParameter("postText");				
+				
 				System.out.println("[DEBUG] PostController .publish " + text);
 				String pictureUrl = request.getParameter("pictureUrl");
 				String picture = extractPictureName(pictureUrl);
@@ -111,6 +112,20 @@ public class PostController {
 			model.addAttribute("errorMessage", e.getMessage());
 			return "ErrorPage";
 		}
+	}
+
+	private String extractUrlFromTextContent(String textContent) {
+		StringBuilder builder = new StringBuilder();
+		String[] words = textContent.split(" ");
+		for(String word: words) {
+			if(word.matches("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")) {
+				builder.append("<a href=\"" + word + "\">" + word + "</a>");
+			}else {
+				builder.append(word);
+			}
+			builder.append(" ");
+		}
+		return builder.toString().trim();
 	}
 
 	// TODO da se napravqt pyrvo v PostDAO

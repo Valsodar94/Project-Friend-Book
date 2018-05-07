@@ -9,6 +9,18 @@
 	media="screen" />
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<script type="text/javascript">
+function convert()
+{
+  var text=document.getElementById("url").value;
+  var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  var text1=text.replace(exp, "<a href='$1'>$1</a>");
+  var exp2 =/(^|[^\/])(www\.[\S]+(\b|$))/gim;
+  document.getElementById("converted_url").innerHTML=text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>');
+}
+</script>
+
 <title>Posts list</title>
 </head>
 <body>
@@ -28,9 +40,14 @@
 					<c:if test="${not empty post.getTags()}">
 						<p>Post tags: ${post.getTags()} </p>
 					</c:if>
+					
 					<p class="login-field">
+					<input type = "hidden" id="url" name = "postTextContent" 
+					value = "${post.getText()}" onload="convert();">
 						<c:out value="${post.text}" />
+						<p id="converted_url"></p>
 					</p>
+					
 					<c:choose>
 						<c:when test="${post.pictureUrl.length() > 0}">							
 							<img class="post-image" src="./uploaded/${post.pictureUrl}" />							
@@ -48,8 +65,8 @@
 					<a href="./comment/${post.id}" class="login-field">Comments</a>
 					<c:if test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
 						<form action="/Project-Friend-Book/deletePost" method = "POST">
-							<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
-							<input type = "hidden" name = "postId" value = ${post.getId()}>
+							<input type = "hidden" name = "postAuthorId" value = "${post.getUserId()}">
+							<input type = "hidden" name = "postId" value = "${post.getId()}">
 							<input type="submit" value="Delete post">
 						</form>
 					</c:if>

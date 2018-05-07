@@ -19,6 +19,7 @@ a {
     float: right;
 }
 </STYLE>
+
 </head>
 <body>	
 	<p>Enter your post text here</p>
@@ -27,8 +28,9 @@ a {
 		placeholder="Place for tags/> ?"  autofocus></textarea>		
 		<textarea name="postText" cols="50" rows="5" 
 		placeholder="What's on your mind <c:out value = "${USER}"/> ?" ></textarea>
+		
 		<input type="file" name="pictureUrl" placeholder="Upload image"/>
-		<input type="submit" value="Publish" />
+		<input type="submit" value="Publish"/>
 	</form>
 </body>
 </html>

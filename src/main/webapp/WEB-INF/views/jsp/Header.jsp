@@ -7,9 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Friend-Book</title>
-<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"
+<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" type="text/css"
 	rel="stylesheet">
-<link href="css/HeaderStyle.css" rel="stylesheet">
+<link href="css/HeaderStyle.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 	<div class="container">
