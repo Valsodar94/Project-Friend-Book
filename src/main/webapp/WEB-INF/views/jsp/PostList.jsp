@@ -24,7 +24,7 @@
 					</c:if>
 					<h3 class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
 					<c:if test="${not empty post.getTags()}">
-						<p>Post tags: ${post.getTags()} </p>
+						<p class="login-field">Post tags: ${post.getTags()} </p>
 					</c:if>
 					<p class="login-field post-textContent">
 						<c:out value="${post.text}" />

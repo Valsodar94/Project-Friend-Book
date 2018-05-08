@@ -11,49 +11,55 @@
 </head>
 <body>
 	<jsp:include page="CommentsView.jsp" /><br>
+	
+	<div class="profile">
 	<c:choose>
 		<c:when test="${comments.size() == 0}">
-			<h3 class="announce-text">No comments yet</h3>
+			<h3 class="title-text announce-smaller">No comments yet</h3>
 		</c:when>
 		<c:otherwise>
-			<h4>Comments:</h4>
+			<h4 class="title-text announce-smaller">Comments:</h4>
 			<c:forEach items="${comments}" var="comment">
 				<c:if test="${not empty sessionScope.CommentMessage}">
 					<c:if test="${sessionScope.commentId == comment.getId()}">
 						<p>${sessionScope.CommentMessage}</p>
 					</c:if>
 				</c:if>
-				<p>Published by: <a href = "/Project-Friend-Book/${comment.getUserId()}">${comment.getAuthorName()}</a></p>
-				<c:out value="${comment.text}" />
+				<p class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${comment.getUserId()}">${comment.getAuthorName()}</a></p>
+				<p class="login-field post-textContent"><c:out value="${comment.text}" /></p>
 				<br>
-				<c:out value="Published on: ${comment.time}" />
+				<p class="login-field">
+				<c:out value="Published on: ${comment.time}" /></p>
 				<br>
+				<p class="login-field">
 				<c:out value="${comment.getLikes()} likes" />
+				</p>
 				<br>
 				<form method="POST" action="/Project-Friend-Book/comment/like">
 					<input type="hidden" name="commentId" value="${comment.getId()}">
 					<input type="hidden" name="postId" value="${comment.getPostId()}">
-					<input type="submit" value="like">
+					<input type="submit" value="like" class="like-submit">
 				</form>
 				<c:if test="${sessionScope.USERID == comment.getUserId() or sessionScope.isAdmin == true}">
 					<form action="/Project-Friend-Book/comment/${post.getId()}/deleteComment" method = "POST">
 						<input type = "hidden" name = "commentAuthorId" value = ${comment.getUserId()}>
 						<input type = "hidden" name = "commentId" value = ${comment.getId()}>
-						<input type="submit" value="Delete comment">
+						<input type="submit" value="Delete comment" class="login-submit delete-comment">
 					</form>
 				</c:if>
-				<c:out value="${comment.getAnswers().size()} answers" />
+				<p class="login-field">
+				<c:out value="${comment.getAnswers().size()} answers" /></p>
 				<c:choose>
 					<c:when test="${comment.getAnswers().size() > 0}">
-						<h4>Answers:</h4>
+						<h4 class="title-text announce-smaller">Answers:</h4><hr>
 						<c:forEach items="${comment.getAnswers()}" var="answer">
-							<p>Published by: <a href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
-							<c:out value="${answer.text}" />
+							<p class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
+							<p class="login-field post-textContent"><c:out value="${answer.text}" /></p>
 							<c:if test="${sessionScope.USERID == answer.getUserId() or sessionScope.isAdmin == true}">
 								<form action="/Project-Friend-Book/comment/${post.getId()}/delete" method = "POST">
 									<input type = "hidden" name = "answerAuthorId" value = ${answer.getUserId()}>
 									<input type = "hidden" name = "answerId" value = ${answer.getId()}>
-									<input type="submit" value="Delete answer">
+									<input type="submit" value="Delete answer" class="login-submit delete-comment">
 								</form>
 							</c:if>
 							<br>
@@ -64,14 +70,15 @@
 				<form action="/Project-Friend-Book/comment/${post.getId()}/answer/${comment.getId()}"
 					method="POST">
 					<div class="answer">
-						<textarea required name="answerText" cols="40" rows="1"
-							placeholder="Answer to this comment"></textarea>
-						<input type="submit" value="Answer" />
+						<textarea required name="answerText" cols="40" rows="2"
+							placeholder="Answer to this comment" class="postText-input"></textarea>
+						<input type="submit" value="Answer" class="delete-button login-submit"/>
 					</div>
 				</form><br>
 				<hr>
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
+	</div>
 </body>
 </html>

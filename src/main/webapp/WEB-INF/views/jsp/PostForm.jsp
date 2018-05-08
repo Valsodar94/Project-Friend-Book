@@ -20,10 +20,12 @@
 		<textarea name="tags" cols="50" rows="1" class="tags-input" 
 		placeholder="Place for tags"></textarea>
 		
-		<div class="delete-button">
-		<input class="login-submit" type="file" accept="image/*" 
-		name="pictureUrl" value="Browse" placeholder="Upload image"/>
-		<input class="login-submit" type="submit" value="Publish" />
+		<div class="buttons-row">
+		
+		<input type="file" name="pictureUrl"  accept="image/*"  id="file" class="inputfile" />
+		<label class="post-submit" for="file">Browse image</label>
+		
+		<input class="post-submit" type="submit" value="Publish" />
 		</div>
 	</form>
 	</div>

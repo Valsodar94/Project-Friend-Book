@@ -24,16 +24,17 @@
 			</div>
 		</c:when>
 		<c:when test="${not empty posts}">
-				<h3>Posts:</h3>
+		<div class="profile">
+				<h3 class="title-text announce-smaller">Posts:</h3>
 			<c:forEach items="${posts}" var="post">
 					<c:if test="${not empty sessionScope.PostMessage}">
 						<c:if test="${sessionScope.postId == post.getId()}">
 							<p class="login-field">${sessionScope.PostMessage}</p>
 						</c:if>
 					</c:if>
-					<h3>Published by: <a href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
+					<h3 class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${post.getUserId()}">${post.getUserUserName()}</a></h3>
 					<c:if test="${not empty post.getTags()}">
-						<p>Post tags: ${post.getTags()} </p>
+						<p class="login-field">Post tags: ${post.getTags()} </p>
 					</c:if>
 					<p class="login-field">
 						<c:out value="${post.text}" />
@@ -52,19 +53,20 @@
 						<input type="hidden" name="postId" value="${post.getId()}">
 						<input type="submit" value="like" class="like-submit">
 					</form>					
-					<a href="./comment/${post.id}" class="login-field">Comments</a>
+					<a href="./comment/${post.id}" class="link-text">Comments</a>
 					<c:if test="${sessionScope.USERID == post.getUserId()}">
 						<form action="/Project-Friend-Book/deletePost" method = "POST">
 							<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
 							<input type = "hidden" name = "postId" value = ${post.getId()}>
-							<input type="submit" value="Delete post">
+							<input type="submit" value="Delete post" class="login-submit delete-comment">
 						</form>
 					</c:if>
 					<hr>
 				</c:forEach>
+				</div>
 		</c:when>		
 		<c:otherwise>
-			<p>There are no results matching your search</p>
+			<p class="announce-text announce-smaller">There are no results matching your search</p>
 		</c:otherwise>
 	</c:choose>
 </body>
