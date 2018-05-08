@@ -150,9 +150,10 @@ input, textarea, select, label {
 .postText-input {
 	position: relative;
 	display: block; 
-	width : 100%; 
-	height : 100%;
-	margin-top : 20px; 
+	width: 100%;
+	height: 100 px;
+	margin-top : 20px;
+	margin-bottom: 20px; 
 	padding : 0 9px; 
 	color : white;
 	text-shadow: 0 1px black;
@@ -171,12 +172,7 @@ input, textarea, select, label {
 	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px
 		rgba(255, 255, 255, 0.2);
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px
-		rgba(255, 255, 255, 0.2);
-	color: white;
-	width: 100%;
-	height: 37px;
-	margin-bottom: 20px;
-	padding: 0 9px;
+		rgba(255, 255, 255, 0.2);	
 }
 
 .postText-input:focus {
@@ -413,6 +409,8 @@ input, textarea, select, label {
 }
 
 .delete-button {
+	/* display: flex;
+  	flex-direction: row; */
 	width: 85px
 }
 
@@ -444,4 +442,9 @@ div.followers-list {
 	width: 700px;
 	left: 25%;
 	float: left;
+}
+
+.post-display {
+    padding: 70px 0;
+    text-align: center;
 }

@@ -4,42 +4,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Post comments</title>
-<style type="text/css">
-.post {
-    padding: 70px 0;
-    text-align: center;
-}
-</style>
+<link href="../css/loginStyle.css" rel="stylesheet">
+<link href="../css/HeaderStyle.css" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="img/fbook.ico" />
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
-	
-	<div class="post">
-	<c:out value="${post.text}" />
-	<br>
-	<c:out value="Published on: ${post.time}" />
-	<br>
-	<c:choose>
-		<c:when test="${post.pictureUrl.length() > 0}">
-			<img class="img" src="../uploaded/${post.pictureUrl}" />
-			<br>
-		</c:when>
-	</c:choose>
-	<c:out value="${post.getLikes()} likes" />
-	<br>
-	<form method="POST" action="../like">
-		<input type="hidden" name="postId" value="${post.getId()}"> <input
-			type="submit" value="like">
-	</form>
+	<div class="dummy"></div>
+	<div class="profile">
+		<p class="login-field post-textContent">
+			<c:out value="${post.text}" />
+		</p>
+		<br>
+		<p class="login-field">
+			<c:out value="Published on: ${post.time}" />
+		</p>
+		<br>
+		<c:choose>
+			<c:when test="${post.pictureUrl.length() > 0}">
+				<img class="post-image" class="img"
+					src="../uploaded/${post.pictureUrl}" />
+				<br>
+			</c:when>
+		</c:choose>
+		<p class="login-field">
+			<c:out value="${post.getLikes()} likes" />
+		</p>
+		<form method="POST" action="./like">
+			<input type="hidden" name="postId" value="${post.getId()}"> <input
+				type="submit" value="like" class="like-submit">
+		</form>
 	</div>
-	<form action="/Project-Friend-Book/comment/${post.getId()}" method="POST">
-		<div class="comment">
+	<div class="profile">
+		<form action="/Project-Friend-Book/comment/${post.getId()}"
+			method="POST">
 			<textarea required name="commentText" cols="50" rows="4"
-				placeholder="Comment this post"></textarea>
-			<input type="submit" value="Comment" />
-		</div>
-	</form>
+				placeholder="Comment this post" class="postText-input"></textarea>
+			<input type="submit" value="Comment" class="delete-button login-submit"/>
+		</form>
+	</div>
 </body>
 </html>

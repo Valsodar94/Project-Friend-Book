@@ -4,15 +4,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" type="image/x-icon" href="img/fbook.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Comments list</title>
+<link href="../css/loginStyle.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="../img/fbook.ico" />
 </head>
 <body>
-	<jsp:include page="CommentsView.jsp" />
-
+	<jsp:include page="CommentsView.jsp" /><br>
 	<c:choose>
 		<c:when test="${comments.size() == 0}">
-			<h3>No comments yet</h3>
+			<h3 class="announce-text">No comments yet</h3>
 		</c:when>
 		<c:otherwise>
 			<h4>Comments:</h4>

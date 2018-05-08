@@ -21,7 +21,8 @@
 		placeholder="Place for tags"></textarea>
 		
 		<div class="delete-button">
-		<input class="login-submit" type="file" name="pictureUrl" placeholder="Upload image"/>
+		<input class="login-submit" type="file" accept="image/*" 
+		name="pictureUrl" value="Browse" placeholder="Upload image"/>
 		<input class="login-submit" type="submit" value="Publish" />
 		</div>
 	</form>
