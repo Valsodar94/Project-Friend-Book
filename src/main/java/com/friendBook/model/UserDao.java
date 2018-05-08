@@ -29,7 +29,7 @@ public class UserDao implements IUserDao{
 //DB statements	
 	private static final String INSERT_INTO_FOLLOWED_USERS = "INSERT INTO followed_users VALUES (?, ?)";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE user_name=? and user_pass = sha1(?)";
-	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?, ?, 0)";
+	private static final String ADD_USER_SQL = "INSERT INTO users VALUES (null, ?, sha1(?), ?, ?, 0, 0, 0)";
 	private static final String CHECK_FOR_USERNAME = "SELECT * FROM users WHERE user_name=?";
 	private static final String CHECK_FOR_EMAIL = "SELECT * FROM users WHERE user_email=?";
 	private static final String SELECT_USER = "SELECT * FROM users WHERE user_id=?;";

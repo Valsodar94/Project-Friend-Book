@@ -23,7 +23,7 @@ import exceptions.PostException;
 import exceptions.UserException;
 
 @Controller
-@RequestMapping(value="/index")
+@RequestMapping(value= {"/","/index"})
 public class HomePageController {
 
 	@Autowired

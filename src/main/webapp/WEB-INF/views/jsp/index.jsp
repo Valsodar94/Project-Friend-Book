@@ -11,6 +11,7 @@
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
+	<jsp:include page="upload.jsp"></jsp:include>
 	<c:choose>
 		<c:when test="${not empty sessionScope.USER}">
 				<h2 class="announce-text announce-bigger">Hello ${sessionScope.USER}</h2>
