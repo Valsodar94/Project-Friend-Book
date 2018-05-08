@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,13 +13,15 @@
 	<jsp:include page="Header.jsp" />
 	<c:choose>
 		<c:when test="${not empty users}">
-		<h3>Users:</h3>
-			<c:forEach items="${users}" var="user">
+		<div class="login">
+		<h3 class="title-text">Users:</h3>
+			<c:forEach items="${users}" var="user">			
 				<ul>
-					<li style = "display: flex;
-    align-items: center;"><a href="./${user.getId()}">${user.getUsername()}</a></li>
+					<li style = "display: flex;  align-items: center;">
+					<a class="link-text" href="./${user.getId()}">${user.getUsername()}</a></li>
 				</ul>
 			</c:forEach>
+			</div>
 		</c:when>
 		<c:when test="${not empty posts}">
 				<h3>Posts:</h3>
