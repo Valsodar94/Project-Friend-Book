@@ -12,7 +12,7 @@
 <body>	
 	<div class="profile">
 	<p class="title-text post-textContent">Enter your post text here</p>
-	<form method="POST" action="/Project-Friend-Book/publish">	
+	<form method="POST" action="/Project-Friend-Book/publish" enctype="multipart/form-data">	
 			
 		<textarea name="postText" cols="50" rows="5" class="postText-input"
 		placeholder="What's on your mind <c:out value = "${USER}"/> ?" autofocus></textarea><br>
