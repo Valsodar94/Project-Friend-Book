@@ -11,7 +11,7 @@
 			<form method="POST" action="/Project-Friend-Book/${id}/editProfile">
 				<h3>Edit profile<br></h3>
 		
-				<p>New Password: <input type="password" name="new password" pattern=".{5,15}"  title="5 to 15 characters" placeholder="5 to 15 characters"></p>
+				<p>New Password: <input type="password" name="new password" pattern=".{5,15}"  title="5 to 15 characters" placeholder="5 to 15 characters" autofocus></p>
 				<p>Confirm Password: <input type="password" name="new password2" pattern=".{5,15}"  title="5 to 15 characters" placeholder="5 to 15 characters"></p>
 				<p>Email: <input type="email" name="email" required value = "${user.getEmail()}"><br></p>		
 				<p>Old Password: <input type="password" name="old password" pattern=".{5,15}" required title="5 to 15 characters" placeholder="5 to 15 characters"></p>
