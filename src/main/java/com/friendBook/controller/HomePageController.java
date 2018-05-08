@@ -49,7 +49,7 @@ public class HomePageController {
 					} catch (UserException e) {
 						e.printStackTrace();
 						model.addAttribute("errorMessage", e.getMessage());
-						return "ErrorPage";
+						return "error";
 					}
 				}
 				return "index";
@@ -57,7 +57,7 @@ public class HomePageController {
 			catch(Exception e) {
 				e.printStackTrace();
 				model.addAttribute("errorMessage", e.getMessage());
-				return "ErrorPage";
+				return "error";
 			}
 		}	
 }

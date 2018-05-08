@@ -85,11 +85,11 @@ public class PostController {
 						return "redirect:/" + userId;
 					}
 					model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_POST);
-					return "ErrorPage";
+					return "error";
 				} catch (PostException e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
+					return "error";
 				}
 			} else {
 				session.setAttribute("error", SESSION_EXPIRED_MESSAGE);
@@ -98,7 +98,7 @@ public class PostController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 
@@ -150,7 +150,7 @@ public class PostController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 

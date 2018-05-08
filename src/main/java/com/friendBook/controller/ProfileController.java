@@ -63,15 +63,15 @@ public class ProfileController {
 					modelAndView.addObject("id", id);
 					return modelAndView;
 				} else
-					return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+					return new ModelAndView("error", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			} catch (UserException | PostException e) {
 				e.printStackTrace();
 				e.printStackTrace();
-				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+				return new ModelAndView("error", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ModelAndView("ErrorPage", "errorMessage", e.getMessage());
+			return new ModelAndView("error", "errorMessage", e.getMessage());
 		}
 
 	}
@@ -98,7 +98,7 @@ public class ProfileController {
 				} catch (UserException e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
+					return "error";
 				}
 			}
 			session.setAttribute("error", LOGIN_REQUIRED_ERROR);
@@ -107,7 +107,7 @@ public class ProfileController {
 		catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(method=RequestMethod.GET, value = "/editProfile")
@@ -126,7 +126,7 @@ public class ProfileController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(method=RequestMethod.POST, value = "/editProfile")
@@ -184,7 +184,7 @@ public class ProfileController {
 				catch(Exception e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
+					return "error";
 				}
 	}
 	@RequestMapping(method=RequestMethod.POST, value = "/deleteProfile")
@@ -209,7 +209,7 @@ public class ProfileController {
 				} catch (UserException | LoginException e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
+					return "error";
 				}
 			}
 			else {
@@ -220,7 +220,7 @@ public class ProfileController {
 		catch(Exception e){
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	

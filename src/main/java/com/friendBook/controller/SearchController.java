@@ -49,12 +49,12 @@ public class SearchController {
 				return modelAndView;
 	
 			} catch (UserException e) {
-				return new ModelAndView("ErrorPage", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+				return new ModelAndView("error", "errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
+			return new ModelAndView("error","errorMessage", e.getMessage());
 		}
 	}
 	

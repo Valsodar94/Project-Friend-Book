@@ -56,14 +56,14 @@ public class CommentController {
 			} catch (CommentException | PostException e) {
 				e.printStackTrace();
 				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-				return "ErrorPage";
+				return "error";
 
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	
@@ -81,11 +81,11 @@ public class CommentController {
 				return "redirect:../comment/"+postId;
 			}
 			model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
-			return "ErrorPage";
+			return "error";
 		} catch (CommentException e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	
@@ -102,12 +102,12 @@ public class CommentController {
 				return modelAndView;
 			} catch (CommentException e) {
 				e.printStackTrace();
-				return new ModelAndView("ErrorPage","errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+				return new ModelAndView("error","errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			return new ModelAndView("ErrorPage","errorMessage", e.getMessage());
+			return new ModelAndView("error","errorMessage", e.getMessage());
 		}
 	}
 	
@@ -127,17 +127,17 @@ public class CommentController {
 					return "redirect:/comment/" + postId;
 				}
 				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_EMPTY_COMMENT);
-				return "ErrorPage";
+				return "error";
 			} catch (CommentException e) {
 				e.printStackTrace();
 				model.addAttribute("errorMessage", e.getMessage());
-				return "ErrorPage";
+				return "error";
 			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(value = "/comment/{postId}/delete", method = RequestMethod.POST)
@@ -165,7 +165,7 @@ public class CommentController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(value = "/comment/{postId}/deleteComment", method = RequestMethod.POST)
@@ -193,7 +193,7 @@ public class CommentController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 }

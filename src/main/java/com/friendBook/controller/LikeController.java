@@ -58,7 +58,7 @@ public class LikeController {
 				} catch (LikeException e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";
+					return "error";
 				}
 			}
 			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
@@ -67,7 +67,7 @@ public class LikeController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 
 	}
@@ -95,7 +95,7 @@ public class LikeController {
 				} catch (LikeException e) {
 					e.printStackTrace();
 					model.addAttribute("errorMessage", e.getMessage());
-					return "ErrorPage";				}
+					return "error";				}
 			}
 			model.addAttribute("error", SESSION_EXPIRED_MESSAGE);
 			return "index";
@@ -104,7 +104,7 @@ public class LikeController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	

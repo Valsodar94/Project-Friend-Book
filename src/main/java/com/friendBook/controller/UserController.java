@@ -79,7 +79,7 @@ public class UserController {
 		catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 		
 	}
@@ -103,7 +103,7 @@ public class UserController {
 		catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -118,7 +118,7 @@ public class UserController {
 		catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	
@@ -157,13 +157,13 @@ public class UserController {
 			catch(RegisterException | UserException e) {
 				e.printStackTrace();
 				model.addAttribute("errorMessage", e.getMessage());
-				return "ErrorPage";
+				return "error";
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 
@@ -186,7 +186,7 @@ public class UserController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(value = "/forgottenPass", method = RequestMethod.GET)
@@ -202,7 +202,7 @@ public class UserController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
@@ -226,7 +226,7 @@ public class UserController {
 		catch(Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			return "ErrorPage";
+			return "error";
 		}
 	}
 }
