@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.friendBook.model.Post;
+
 import exceptions.UserException;
 
 public class User {

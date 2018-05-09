@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.friendBook.model.Comment;
+import com.friendBook.model.Likeable;
+
 public class Post implements Likeable, Comparable<Post>{
 	private int id;
 	private String text;

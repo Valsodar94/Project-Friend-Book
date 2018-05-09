@@ -32,7 +32,7 @@
 		<p class="login-field">
 			<c:out value="${post.getLikes()} likes" />
 		</p>
-		<form method="POST" action="./like">
+		<form method="POST" action="/Project-Friend-Book/like">
 			<input type="hidden" name="postId" value="${post.getId()}"> <input
 				type="submit" value="like" class="like-submit">
 		</form>

@@ -17,12 +17,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendBook.model.DBConnection;
+import com.friendBook.model.LikeDao;
+
 import exceptions.CommentException;
 import exceptions.LikeException;
 import exceptions.PostException;
 
 @Component
-public class PostDao implements IPostDAO {
+public class PostDao implements IPostDao {
 private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 //constants
 	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
@@ -54,6 +57,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 	private LikeDao likeDao;
 
 
+	@Override
 	public Post getPostById(int postId) throws PostException {
 		if (postId <= 0) {
 			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -80,6 +84,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 		}
 	}
 
+	@Override
 	public boolean publish(Post post) throws PostException {
 		if (post == null) {
 			throw new PostException(ERROR_MESSAGE_FOR_NULL_POST);
@@ -108,6 +113,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 		}
 	}
 
+	@Override
 	public List<Post> extractPosts(int userId) throws PostException {
 		if (userId <= 0) {
 			throw new PostException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -143,6 +149,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 			throw new PostException(DB_ERROR_MESSAGE, e);
 		}
 	}
+	@Override
 	public List<Post> extractPostsByTag(String tag) throws PostException {
 		if(tag == null || tag.length() < 1) {
 			return null;
@@ -183,6 +190,7 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 		}
 		
 	}
+	@Override
 	public boolean checkIfTagMatchAnyOfPostTags(String postTags, String tag) {
 		if(postTags == null || postTags.length() < 1) {
 			return false;
@@ -195,14 +203,17 @@ private static final String ERROR_MESSAGE_FOR_NULL_POST = "Post is null";
 		return false;
 	}
 
+	@Override
 	public void delete() throws PostException {
 
 	}
 
+	@Override
 	public void edit() throws PostException {
 
 	}
 
+	@Override
 	public boolean deletePost(int postId) throws PostException {
 		if(postId > 0) {
 			PreparedStatement pstmt;
