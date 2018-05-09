@@ -120,11 +120,13 @@ public class CommentDAO implements ICommentDao {
 				answer.setTime(LocalDateTime.parse(resultSet.getString("comment_time"),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				answer.setAuthorName(resultSet.getString("user_name"));
+				List<Integer> likedCommentUserIds = new LinkedList<>(likeDao.getUsersIdForLikedComment(resultSet.getInt("comment_id")));
+				answer.setLikes(likedCommentUserIds.size());
 				comentAnswers.add(answer);
 			}
 			Collections.sort(comentAnswers);
 			return comentAnswers;
-		} catch (SQLException e) {
+		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
 			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}

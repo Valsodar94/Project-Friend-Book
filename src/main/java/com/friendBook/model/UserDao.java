@@ -215,6 +215,8 @@ public class UserDao implements IUserDao{
 				ResultSet resultSet = pstmt.executeQuery();
 				List<User> users = new LinkedList<>();
 				while(resultSet.next()) {
+					if(resultSet.getBoolean("is_deleted"))
+						continue;
 					int id = resultSet.getInt(1);
 					String username = resultSet.getString(2);
 					String password = resultSet.getString(3);
