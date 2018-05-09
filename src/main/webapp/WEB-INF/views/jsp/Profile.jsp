@@ -25,11 +25,11 @@ li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    background-color: #111;
+    background-color: #3f65b7;
 }
 
 li a:hover {
-    background-color: #111;
+    background-color: #3f65b7;
 }
 </style>
 </head>
