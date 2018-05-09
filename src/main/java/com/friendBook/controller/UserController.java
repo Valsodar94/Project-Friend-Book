@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.friendBook.model.EmailSender;
-import com.friendBook.model.RandomCodeGenerator;
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
+import com.friendBook.model.EmailSender;
+import com.friendBook.model.RandomCodeGenerator;
 import com.mysql.fabric.Response;
 
 import exceptions.LoginException;

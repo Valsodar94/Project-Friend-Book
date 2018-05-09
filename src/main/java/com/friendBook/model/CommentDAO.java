@@ -14,12 +14,14 @@ import java.sql.PreparedStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendBook.model.DBConnection;
+import com.friendBook.model.LikeDao;
+
 import exceptions.CommentException;
 import exceptions.LikeException;
-import exceptions.PostException;
 
 @Component
-public class CommentDAO implements ICommentDAO {
+public class CommentDAO implements ICommentDao {
 
 //	constants
 	private static final String ERROR_MESSAGE_FOR_ANSWER_INPUT = "Invalid answer input";
@@ -28,7 +30,7 @@ public class CommentDAO implements ICommentDAO {
 	private static final String DB_ERROR_MESSAGE = "Something went wrong with the database!";
 
 // DB statements
-	private static final String COMMENT_POST_SQL = "INSERT INTO comments\r\n"
+	private static final String ADD_COMMENT_IN_DB = "INSERT INTO comments\r\n"
 			+ "(comment_content, comment_user_id, comment_post_id)\r\n" 
 			+ "VALUES(?, ?, ?);";
 	private static final String EXTRACT_COMMENTS_FOR_POST = "select u.user_name, c.comment_id, c.comment_content, c.comment_time, c.comment_user_id, c.comment_post_id, c.comment_answer, c.is_deleted\n" + 
@@ -60,6 +62,7 @@ public class CommentDAO implements ICommentDAO {
 	private LikeDao likeDao;
 
 	
+	@Override
 	public List<Comment> extractComments(int postId) throws CommentException {
 		List<Comment> postsComments = new LinkedList<>();
 		if(postId <= 0) {
@@ -95,6 +98,7 @@ public class CommentDAO implements ICommentDAO {
 		}
 	}
 	
+	@Override
 	public List<CommentAnswer> extractAnswers(int commentId) throws CommentException {
 		List<CommentAnswer> comentAnswers = new LinkedList<>();
 		if(commentId <= 0) 
@@ -135,7 +139,7 @@ public class CommentDAO implements ICommentDAO {
 		
 		PreparedStatement pstmt;
 		try {
-			pstmt = db.getConnection().prepareStatement(COMMENT_POST_SQL, Statement.RETURN_GENERATED_KEYS);
+			pstmt = db.getConnection().prepareStatement(ADD_COMMENT_IN_DB, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, comment.getText());
 			pstmt.setInt(2, comment.getUserId());
 			pstmt.setInt(3, comment.getPostId());
@@ -150,6 +154,7 @@ public class CommentDAO implements ICommentDAO {
 		
 	}
 	
+	@Override
 	public boolean answerComment(CommentAnswer answer) throws CommentException {
 		if (answer == null || answer.getText() == null 
 				|| answer.getText().length() == 0) {
@@ -174,6 +179,7 @@ public class CommentDAO implements ICommentDAO {
 		
 	}
 
+	@Override
 	public Comment getCommentById(int commentId) throws CommentException{
 		if(commentId <= 0) {
 			throw new CommentException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -198,6 +204,7 @@ public class CommentDAO implements ICommentDAO {
 		}
 	}
 
+	@Override
 	public boolean deleteAnwer(int answerId) throws CommentException {
 		if(answerId > 0) {
 			PreparedStatement pstmt;
@@ -223,6 +230,7 @@ public class CommentDAO implements ICommentDAO {
 		
 	}
 
+	@Override
 	public boolean deleteComment(int commentId) throws CommentException {
 		if(commentId > 0) {
 			PreparedStatement pstmt;

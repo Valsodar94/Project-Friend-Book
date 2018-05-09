@@ -9,11 +9,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendBook.model.DBConnection;
+
 import exceptions.LikeException;
 import exceptions.UserException;
 
 @Component
-public class LikeDao {
+public class LikeDao implements ILikeDao {
 //constants
 	private static final String ERROR_MESSAGE_FOR_FAILED_LIKE = "Like failed";
 	private static final String ERROR_MESSAGE_FOR_INVALID_ID = "Invalid id";
@@ -33,6 +35,7 @@ public class LikeDao {
 	private DBConnection db;
 	
 	
+	@Override
 	public boolean checkIfLikeExistsInDb(int postId,int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -53,6 +56,7 @@ public class LikeDao {
 
 	}
 	
+	@Override
 	public boolean checkIfLikeCommentExistsInDb(int commentId,int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -73,6 +77,7 @@ public class LikeDao {
 
 	}
 	
+	@Override
 	public boolean likeAPost(int postId, int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -92,6 +97,7 @@ public class LikeDao {
 		}
 	}
 	
+	@Override
 	public boolean likeAComment(int commentId, int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_INVALID_ID);
@@ -111,6 +117,7 @@ public class LikeDao {
 		}
 	}
 	
+	@Override
 	public boolean dislikeAPost(int postId, int userId) throws LikeException {
 		if(userId <=0 || postId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
@@ -130,6 +137,7 @@ public class LikeDao {
 		}
 	}
 	
+	@Override
 	public boolean dislikeAComment(int commentId, int userId) throws LikeException {
 		if(userId <=0 || commentId<=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);
@@ -150,6 +158,7 @@ public class LikeDao {
 	}
 	
 	
+	@Override
 	public List<Integer> getUsersIdForLikedPost(int postId) throws LikeException {
 		if(postId <=0)
 			throw new LikeException("Invalid id");
@@ -168,6 +177,7 @@ public class LikeDao {
 		}
 
 	}
+	@Override
 	public List<Integer> getUsersIdForLikedComment(int commentId) throws LikeException {
 		if(commentId <=0)
 			throw new LikeException(ERROR_MESSAGE_FOR_FAILED_LIKE);

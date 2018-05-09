@@ -11,6 +11,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendBook.model.DBConnection;
+
 import exceptions.LikeException;
 import exceptions.LoginException;
 import exceptions.PostException;
@@ -71,6 +73,7 @@ public class UserDao implements IUserDao{
 
 	
 	
+
 	@Override
 	public User login(String username, String password) throws LoginException {
 		PreparedStatement pstmt;
@@ -99,6 +102,7 @@ public class UserDao implements IUserDao{
 
 	}
 	
+
 	@Override
 	public int register(User u) throws RegisterException {
 		PreparedStatement pstmt;
@@ -125,6 +129,7 @@ public class UserDao implements IUserDao{
 			throw new RegisterException("User is null!!!");
 	}
 	
+	@Override
 	public boolean checkIfUsernameExistsInDB(String username)throws UserException {
 		if(username!=null) {
 			PreparedStatement pstmt;
@@ -148,6 +153,7 @@ public class UserDao implements IUserDao{
 			throw new UserException("username is null");
 	}
 	
+	@Override
 	public boolean checkIfEmailExistsInDB(String email) throws UserException {
 		if(email!=null) {
 				try {
@@ -168,6 +174,8 @@ public class UserDao implements IUserDao{
 		else
 			throw new UserException("email is null");
 	}
+
+	@Override
 	public User getUserById(int id) throws UserException {
 		if(id>0) {
 			PreparedStatement pstmt;
@@ -196,6 +204,8 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
+
+	@Override
 	public List<User> getUsersByString(String name) throws UserException{
 		if(name!=null) {
 			PreparedStatement pstmt;
@@ -223,6 +233,8 @@ public class UserDao implements IUserDao{
 			throw new UserException("name is null");
 
 	}
+
+	@Override
 	public boolean follow(int followerID, int followedID) throws UserException {
 		if(followerID > 0 && followedID > 0) {
 			try {
@@ -245,6 +257,7 @@ public class UserDao implements IUserDao{
 
 	}
 	
+	@Override
 	public boolean unfollow(int followerID, int followedID) throws UserException {
 		if(followerID > 0 && followedID > 0) {
 			try {
@@ -266,6 +279,7 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}
 	
+	@Override
 	public List<User> getAllFollowedUsers(int id) throws UserException{
 		if(id > 0) {
 			try {
@@ -290,6 +304,8 @@ public class UserDao implements IUserDao{
 		else
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}	
+	
+	@Override
 	public List<User> getAllFollowers(int id) throws UserException{
 		if(id > 0) {
 			try {
@@ -315,7 +331,8 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 
 	}
-	
+
+	@Override
 	public boolean checkIfFollowExistsInDb(int followerId,int followedId) throws UserException {
 		if(followerId > 0 && followedId > 0) {
 			try {
@@ -337,6 +354,7 @@ public class UserDao implements IUserDao{
 
 	}
 
+	@Override
 	public boolean checkIfUserExistsInDB(Integer id) throws UserException {
 		if(id > 0) {
 			try {
@@ -356,6 +374,7 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_INVALID_ID);
 	}
 
+	@Override
 	public boolean checkIfAccountVerified(String username) throws UserException {
 		PreparedStatement pstmt;
 		if(username!=null) {
@@ -377,6 +396,7 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 
+	@Override
 	public boolean checkConfirmationCode(int confirmationCode, String username) throws UserException {
 		PreparedStatement pstmt;
 		if(username!=null) {
@@ -402,6 +422,7 @@ public class UserDao implements IUserDao{
 			throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 
+	@Override
 	public boolean verifyAccount(String username) throws UserException {
 		if(username!=null) {
 			PreparedStatement pstmt;
@@ -421,6 +442,8 @@ public class UserDao implements IUserDao{
 		throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 
+
+	@Override
 	public boolean resetPassword(String email, String newPassword) throws UserException {
 		if(email!=null) {
 			PreparedStatement pstmt;
@@ -441,6 +464,8 @@ public class UserDao implements IUserDao{
 		throw new UserException(ERROR_MESSAGE_FOR_NULL);
 	}
 
+
+	@Override
 	public boolean editProfile(int id, String pass, String email) throws UserException {
 		if(id>0 && pass !=null && email!=null) {
 			PreparedStatement pstmt;
@@ -465,6 +490,8 @@ public class UserDao implements IUserDao{
 
 	}
 
+
+	@Override
 	public boolean deleteProfile(int userId) throws UserException {
 		if(userId > 0) {
 			PreparedStatement pstmt;
@@ -504,6 +531,7 @@ public class UserDao implements IUserDao{
 		}
 	}
 
+	@Override
 	public boolean checkifAdmin(int userId) throws UserException {
 		PreparedStatement pstmt;
 		if(userId>0) {
