@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.friendBook.model.EmailSender;
+import com.friendBook.model.RandomCodeGenerator;
 import com.friendBook.model.User;
 import com.friendBook.model.UserDao;
 import com.mysql.fabric.Response;
@@ -31,15 +32,17 @@ import exceptions.UserException;
 
 @Component
 @Controller
-public class UserController {
+public class UserController implements RandomCodeGenerator {
+	private static final String EMAIL_REGISTRATION_TITLE = "Friend-Book email confirmation";
 	private static final String UNEXPECTED_ERROR = "Something went wrong, please try again";
-	private static final int SESSION_TIMEOUT = 120;
+	private static final int SESSION_TIMEOUT = 60*10;
 	private static final String INVALID_EMAIL_ERROR = "No user with such mail has been registered";
 	private static final String INVALID_CONFIRMATION_CODE = "The code is invalid. Please try again";
 	private static final String EXPIRED_SESSION_ERROR_MESSAGE = "Your session has expired";
 	private static final String ERROR_MESSAGE_FOR_TAKEN_EMAIL = "Email is already used, please enter a different email";
 	private static final String ERROR_MESSAGE_FOR_USERNAME_TAKEN = "Username is taken, please enter a different username";
 	private static final String ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH = "passwords missmatch";
+	private static final String EMAIL_REGISTRATION_MESSAGE = "Congratulations you have successfully registered in Friend Book. This is your code to complete your registration: ";
 
 	@Autowired
 	private UserDao uDao;
@@ -130,27 +133,26 @@ public class UserController {
 	
 			
 	        if(!(password.equals(password2))){
-	        	model.addAttribute("error", ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH);
+	        	model.addAttribute("registrationError", ERROR_MESSAGE_FOR_PASSWORD_MISSMATCH);
 	        	return"RegistrationForm";            
 	        }
 			try {
 				if(uDao.checkIfUsernameExistsInDB(username)) {
-		            model.addAttribute("error", ERROR_MESSAGE_FOR_USERNAME_TAKEN);
+		            model.addAttribute("registrationError", ERROR_MESSAGE_FOR_USERNAME_TAKEN);
 		            return"RegistrationForm";
 		            
 				}
 				if(uDao.checkIfEmailExistsInDB(email)) {
-					model.addAttribute("error", ERROR_MESSAGE_FOR_TAKEN_EMAIL);
+					model.addAttribute("registrationError", ERROR_MESSAGE_FOR_TAKEN_EMAIL);
 				    return"RegistrationForm";
 				}
-			    Random rand = new Random();
-				Integer confirmationCode =rand.nextInt(8000000) + 1000000;
+				Integer confirmationCode =RandomCodeGenerator.generateRandomCode();
 				User u = new User(0,username,password,email);
 				u.setConfirmationCode(confirmationCode);
 				uDao.register(u);
 				
-				eSender.sendEmail(email, "Friend-Book email confirmation", confirmationCode.toString());
-				return "index";
+				eSender.sendEmail(email, EMAIL_REGISTRATION_TITLE, EMAIL_REGISTRATION_MESSAGE+confirmationCode.toString());
+				return "redirect:/";
 			}
 			catch(RegisterException | UserException e) {
 				e.printStackTrace();
@@ -164,6 +166,8 @@ public class UserController {
 			return "error";
 		}
 	}
+
+	
 
 	@RequestMapping(value = "/confirmAccount", method = RequestMethod.POST)
 	public String confirmAccount(Model model, @RequestParam("code") String confirmationsCode, @RequestParam("username") String username, HttpSession session) {
@@ -207,25 +211,18 @@ public class UserController {
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
 	public String resetPass(Model model, @RequestParam("email") String email,HttpSession session) {
 		try {
-			if(session.getAttribute("user")!=null) {
-				if(uDao.checkIfEmailExistsInDB(email)) {
-					Random rand = new Random();
-					String newPass = ""+rand.nextInt(8000000)+1000000;
-					if(uDao.resetPassword(email, newPass)) {
-						eSender.sendEmail(email, "Friend-Book password reset", newPass);
-						return "index";
-					}
-					session.setAttribute("error", UNEXPECTED_ERROR);
+			if(uDao.checkIfEmailExistsInDB(email)) {
+				String newPass = ""+RandomCodeGenerator.generateRandomCode();
+				if(uDao.resetPassword(email, newPass)) {
+					eSender.sendEmail(email, "Friend-Book password reset", newPass);
 					return "redirect:/";
 				}
-				else {
-					model.addAttribute("resetPassError", INVALID_EMAIL_ERROR);
-					return"ForgottenPassword";
-				}
+				session.setAttribute("error", UNEXPECTED_ERROR);
+				return "redirect:/";
 			}
 			else {
-				session.setAttribute("error", EXPIRED_SESSION_ERROR_MESSAGE);
-				return "redirect:/";
+				model.addAttribute("resetPassError", INVALID_EMAIL_ERROR);
+				return"ForgottenPassword";
 			}
 		}
 		catch(Exception e) {

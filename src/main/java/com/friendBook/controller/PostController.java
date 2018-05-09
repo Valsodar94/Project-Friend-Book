@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -108,6 +109,10 @@ public class PostController {
 	            return null;
 	        }
         try {
+        	List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+        	if(!contentTypes.contains(file.getContentType())) {
+        		return null;
+        	}
     		byte[] bytes = file.getBytes();
     		String pictureName = file.getOriginalFilename();
             Path path = Paths.get(UPLOADED_FOLDER +pictureName);
