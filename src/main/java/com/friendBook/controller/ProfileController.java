@@ -26,12 +26,14 @@ import exceptions.UserException;
 @Controller
 @RequestMapping(value="/{id}")
 public class ProfileController {
+	private static final String NO_ACCESS = "You don't have access to this menu";
 	private static final String PASSWORD_MISSMATCH_ERROR = "The passwords do not match";
 	private static final String UNEXPECTED_ERROR = "Something went wrong";
 	private static final String SUCESSFULL_PROFILE_EDIT_MESSAGE = "You have successfully edited your profile";
 	private static final String EMAIL_DUPLICATE_ERROR = "The email is already in use";
 	private static final String LOGIN_REQUIRED_ERROR = "You need to be logged in to see this menu.";
 	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
+	private static final Object WRONG_PASSWORD_ERROR = "Wrong password";
 	@Autowired
 	private UserController userController;
 	@Autowired
@@ -126,9 +128,15 @@ public class ProfileController {
 	public String editProfile(@PathVariable int id, Model model, HttpSession session) {
 		try {
 			if(session.getAttribute("user")!=null) {
-				User u = uDao.getUserById(id);
-				model.addAttribute("user", u);
-				return "EditProfile";
+				User user = (User) session.getAttribute("user");
+				int sessionUserId = user.getId();
+				if(sessionUserId == id)
+					return "EditProfile";
+				else {
+					session.setAttribute("errorMessage", NO_ACCESS);
+					return "redirect:/error";
+				}
+					
 			}
 			else {
 				session.setAttribute("error", LOGIN_REQUIRED_ERROR);
@@ -147,18 +155,34 @@ public class ProfileController {
 			@RequestParam("old password") String pass, Model model, HttpSession session) {
 				try {
 					if(session.getAttribute("user")!=null) {
-						User u = uDao.getUserById(id);
-						User u2 = uDao.login(u.getUsername(), pass);
-						if(!email.equals(u.getEmail())) {
-							if(uDao.checkIfEmailExistsInDB(email)) {
-								model.addAttribute("message", EMAIL_DUPLICATE_ERROR);
-								return"EditProfile";
+						try {
+							User u = uDao.getUserById(id);
+							User u2 = uDao.login(u.getUsername(), pass);
+							if(!email.equals(u.getEmail())) {
+								if(uDao.checkIfEmailExistsInDB(email)) {
+									model.addAttribute("message", EMAIL_DUPLICATE_ERROR);
+									return"EditProfile";
+								}
 							}
-						}
-						if(id == u2.getId()) {
-							if(newPass!=null && newPass.trim().length()>5) {
-								if(newPassConf!=null && newPass.equals(newPassConf)) {
-									if(uDao.editProfile(id,newPass,email)) {
+							if(id == u2.getId()) {
+								if(newPass!=null && newPass.trim().length()>5) {
+									if(newPassConf!=null && newPass.equals(newPassConf)) {
+										if(uDao.editProfile(id,newPass,email)) {
+											model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
+											return"EditProfile";
+										}
+										else {
+											model.addAttribute("message", UNEXPECTED_ERROR);
+											return"EditProfile";
+										}
+									}
+									else {
+										model.addAttribute("message", PASSWORD_MISSMATCH_ERROR);
+										return"EditProfile";
+									}
+								}
+								else {
+									if(uDao.editProfile(id,pass,email)) {
 										model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
 										return"EditProfile";
 									}
@@ -167,25 +191,15 @@ public class ProfileController {
 										return"EditProfile";
 									}
 								}
-								else {
-									model.addAttribute("message", PASSWORD_MISSMATCH_ERROR);
-									return"EditProfile";
-								}
+	
 							}
 							else {
-								if(uDao.editProfile(id,pass,email)) {
-									model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
-									return"EditProfile";
-								}
-								else {
-									model.addAttribute("message", UNEXPECTED_ERROR);
-									return"EditProfile";
-								}
+								return"redirect:/";
 							}
-
 						}
-						else {
-							return"redirect:/";
+						catch(UserException e) {
+							model.addAttribute("message", WRONG_PASSWORD_ERROR);
+							return"EditProfile";
 						}
 					}
 					else {
@@ -205,7 +219,7 @@ public class ProfileController {
 			if(session.getAttribute("user")!=null) {
 				User user = (User) session.getAttribute("user");
 				int sessionUserId = user.getId();
-				if(id != sessionUserId && (boolean)session.getAttribute("isAdmin") == false) {
+				if(id != sessionUserId) {
 					return"redirect:/";
 				}
 				try {

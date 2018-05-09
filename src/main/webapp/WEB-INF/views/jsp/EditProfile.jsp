@@ -17,7 +17,6 @@
 		<c:if test="${not empty message}">
 			<h4 style="color: red;">${message}</h4>
 		</c:if>
-		<c:if test="${not empty user}">
 			<div class="dummy"></div>
 			<div class="profile">
 				<form method="POST" action="/Project-Friend-Book/${id}/editProfile">
@@ -37,7 +36,7 @@
 					</p>
 					<p class="login-field">
 						Email: <input type="email" name="email" required
-							value="${user.getEmail()}" class="tags-input" ><br>
+							value="${sessionScope.user.getEmail()}" class="tags-input" ><br>
 					</p>
 					<p class="login-field">
 						Old Password: <input type="password" name="old password"
@@ -64,6 +63,5 @@
 				</form>
 			</div>
 		</c:if>
-	</c:if>
 </body>
 </html>
