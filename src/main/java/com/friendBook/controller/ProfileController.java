@@ -43,20 +43,28 @@ public class ProfileController {
 			try {		
 				modelAndView.setViewName("Profile");
 				if (uDao.checkIfUserExistsInDB(id)) {
+					if(checkIfFollowed(session, id))
+						modelAndView.addObject("isFollowed", true);
+					else
+						modelAndView.addObject("isFollowed", false);
 					if(show!=null) {
-						switch(show) {
-							case "followed":
-								List<User> followed = new LinkedList<>(uDao.getAllFollowedUsers(id));
-								modelAndView.addObject("users", followed);
-								modelAndView.setViewName("Profile");
-								return modelAndView;
-							case "followers":
-								List<User> followers = new LinkedList<>(uDao.getAllFollowers(id));
-								modelAndView.addObject("users", followers);
-								return modelAndView;
-
+						if(session.getAttribute("USER")!=null) {
+							switch(show) {
+								case "followed":
+									List<User> followed = new LinkedList<>(uDao.getAllFollowedUsers(id));
+									modelAndView.addObject("users", followed);
+									modelAndView.setViewName("Profile");
+									return modelAndView;
+								case "followers":
+									List<User> followers = new LinkedList<>(uDao.getAllFollowers(id));
+									modelAndView.addObject("users", followers);
+									return modelAndView;
+	
+							}
 						}
-						
+						else {
+							modelAndView.addObject("accessError", LOGIN_REQUIRED_ERROR);
+						}
 					}
 					List<Post> postsList = new LinkedList<>(postDao.extractPosts(id));
 					modelAndView.addObject("posts", postsList);
@@ -78,20 +86,19 @@ public class ProfileController {
 	
 	
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
-	public String follow(@RequestParam("profileID") String profileID, HttpSession session, Model model) {
+	public String follow(@RequestParam("profileID") int profileID, HttpSession session, Model model) {
 		try {
-			if(session.getAttribute("USERID") !=null && profileID!=null) {
+			if(session.getAttribute("USERID") !=null && profileID>0) {
 				int followerId = (int) session.getAttribute("USERID");
-				int followedId = Integer.parseInt(profileID);
 				try {
-					if(uDao.checkIfFollowExistsInDb(followerId, followedId)) {
-						uDao.unfollow(followerId, followedId);
-						session.setAttribute("followedUser", followedId);
+					if(uDao.checkIfFollowExistsInDb(followerId, profileID)) {
+						uDao.unfollow(followerId, profileID);
+						session.setAttribute("followedUser", profileID);
 						session.setAttribute("followMessage", "Unfollowed");
 						return "redirect:/"+profileID;
 					}
 					else {
-						uDao.follow(followerId, followedId);
+						uDao.follow(followerId, profileID);
 						session.setAttribute("followMessage", "Followed");
 						return "redirect:/"+profileID;
 					}
@@ -223,5 +230,15 @@ public class ProfileController {
 			return "error";
 		}
 	}
-	
+	private boolean checkIfFollowed(HttpSession session, int followedId) throws UserException {
+		if(session.getAttribute("USERID")!=null) {
+			int followerId = (int) session.getAttribute("USERID");
+			if(uDao.checkIfFollowExistsInDb(followerId, followedId))
+				return true;
+			else
+				return false;
+					
+		}
+		return false;
+	}
 }

@@ -35,37 +35,36 @@ li a:hover {
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
-	<c:if test="${not empty error}">
-		<h4 style="color: red;">${error}</h4>
+	
+	<c:if test="${not empty accessError}">
+		<h4 style="color: red;">${accessError}</h4>
 	</c:if>
-
 	<c:choose>
 		<c:when test="${sessionScope.USERID == id}">
 				<jsp:include page="PostForm.jsp" />
 		</c:when>
-		<c:otherwise>
+		<c:when test="${not empty sessionScope.USERID}">
 			<form method="POST" action="/Project-Friend-Book/${id}/follow">
-				<c:if test="${not empty sessionScope.followMessage}">
-					<c:if test="${sessionScope.followedUser == id}">
-						<p>
-							<b>${sessionScope.followMessage}</b>
-						</p>
-					</c:if>
-				</c:if>
 				<div class="follow-button">
-					<input type="hidden" name="profileID" value="${id}"> <input
-						class="login-submit" type="submit" value="follow">
+						<c:choose>
+							<c:when test="${isFollowed == true}"><input type="hidden" name="profileID" value="${id}"> <input
+						class="login-submit" type="submit" value="unfollow"></c:when>
+							<c:otherwise><input type="hidden" name="profileID" value=${id}> <input
+						class="login-submit" type="submit" value="follow"></c:otherwise>
+						</c:choose>
 				</div>
 			</form>
-
-		</c:otherwise>
+		</c:when>
 	</c:choose>
+
 	<div class="followers-list">
 		<ul >
 			<li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
 			<li><a href="/Project-Friend-Book/${id}?show=followers">Followers</a></li>
 			<li><a href="/Project-Friend-Book/${id}?show=followed">Followed</a></li>
-			<li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
+			<c:if test="${sessionScope.USERID == id}">
+				<li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
+			</c:if>
 		</ul>
 	</div>
 	<c:choose>
