@@ -1,6 +1,7 @@
 package com.friendBook.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,8 +48,10 @@ public class Comment implements Likeable, Comparable<Comment>{
 		return text;
 	}
 
-	public LocalDateTime getTime() {
-		return time;
+	public String getTime() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String text = time.format(formatter);
+		return text;
 	}
 
 	public int getUserId() {
