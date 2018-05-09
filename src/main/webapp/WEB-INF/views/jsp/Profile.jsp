@@ -108,7 +108,7 @@ li a:hover {
 						</c:when>
 					</c:choose>
 					<p class="login-field">
-						<c:out value="Published on: ${post.time}" />
+						<c:out value="Published on: ${post.getTime()}" />
 					</p>
 					<p class="login-field">
 						<c:out value="${post.getLikes()} likes" />
