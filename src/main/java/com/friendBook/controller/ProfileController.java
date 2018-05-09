@@ -26,6 +26,10 @@ import exceptions.UserException;
 @Controller
 @RequestMapping(value="/{id}")
 public class ProfileController {
+	private static final String PASSWORD_MISSMATCH_ERROR = "The passwords do not match";
+	private static final String UNEXPECTED_ERROR = "Something went wrong";
+	private static final String SUCESSFULL_PROFILE_EDIT_MESSAGE = "You have successfully edited your profile";
+	private static final String EMAIL_DUPLICATE_ERROR = "The email is already in use";
 	private static final String LOGIN_REQUIRED_ERROR = "You need to be logged in to see this menu.";
 	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
 	@Autowired
@@ -48,7 +52,7 @@ public class ProfileController {
 					else
 						modelAndView.addObject("isFollowed", false);
 					if(show!=null) {
-						if(session.getAttribute("USER")!=null) {
+						if(session.getAttribute("user")!=null) {
 							switch(show) {
 								case "followed":
 									List<User> followed = new LinkedList<>(uDao.getAllFollowedUsers(id));
@@ -88,8 +92,9 @@ public class ProfileController {
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	public String follow(@RequestParam("profileID") int profileID, HttpSession session, Model model) {
 		try {
-			if(session.getAttribute("USERID") !=null && profileID>0) {
-				int followerId = (int) session.getAttribute("USERID");
+			if(session.getAttribute("user") !=null && profileID>0) {
+				User user = (User) session.getAttribute("user");
+				int followerId = user.getId();
 				try {
 					if(uDao.checkIfFollowExistsInDb(followerId, profileID)) {
 						uDao.unfollow(followerId, profileID);
@@ -120,7 +125,7 @@ public class ProfileController {
 	@RequestMapping(method=RequestMethod.GET, value = "/editProfile")
 	public String editProfile(@PathVariable int id, Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")!=null) {
+			if(session.getAttribute("user")!=null) {
 				User u = uDao.getUserById(id);
 				model.addAttribute("user", u);
 				return "EditProfile";
@@ -141,39 +146,39 @@ public class ProfileController {
 			@RequestParam(value = "new password2", required = false) String newPassConf,@RequestParam("email") String email,
 			@RequestParam("old password") String pass, Model model, HttpSession session) {
 				try {
-					if(session.getAttribute("USER")!=null) {
+					if(session.getAttribute("user")!=null) {
 						User u = uDao.getUserById(id);
-						int id2 = uDao.login(u.getUsername(), pass);
+						User u2 = uDao.login(u.getUsername(), pass);
 						if(!email.equals(u.getEmail())) {
 							if(uDao.checkIfEmailExistsInDB(email)) {
-								model.addAttribute("message", "The email is already in use");
+								model.addAttribute("message", EMAIL_DUPLICATE_ERROR);
 								return"EditProfile";
 							}
 						}
-						if(id == id2) {
+						if(id == u2.getId()) {
 							if(newPass!=null && newPass.trim().length()>5) {
 								if(newPassConf!=null && newPass.equals(newPassConf)) {
 									if(uDao.editProfile(id,newPass,email)) {
-										model.addAttribute("message", "You have successfully edited your profile");
+										model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
 										return"EditProfile";
 									}
 									else {
-										model.addAttribute("message", "Something went wrong");
+										model.addAttribute("message", UNEXPECTED_ERROR);
 										return"EditProfile";
 									}
 								}
 								else {
-									model.addAttribute("message", "The passwords do not match");
+									model.addAttribute("message", PASSWORD_MISSMATCH_ERROR);
 									return"EditProfile";
 								}
 							}
 							else {
 								if(uDao.editProfile(id,pass,email)) {
-									model.addAttribute("message", "You have successfully edited your profile");
+									model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
 									return"EditProfile";
 								}
 								else {
-									model.addAttribute("message", "Something went wrong");
+									model.addAttribute("message", UNEXPECTED_ERROR);
 									return"EditProfile";
 								}
 							}
@@ -197,9 +202,10 @@ public class ProfileController {
 	@RequestMapping(method=RequestMethod.POST, value = "/deleteProfile")
 	public String deleteProfile(@PathVariable int id,@RequestParam("password") String password, Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")!=null) {
-				int sessionId = (int) session.getAttribute("USERID");
-				if(id != sessionId && (boolean)session.getAttribute("isAdmin") == false) {
+			if(session.getAttribute("user")!=null) {
+				User user = (User) session.getAttribute("user");
+				int sessionUserId = user.getId();
+				if(id != sessionUserId && (boolean)session.getAttribute("isAdmin") == false) {
 					return"redirect:/";
 				}
 				try {
@@ -209,7 +215,7 @@ public class ProfileController {
 						return userController.logOut(session, model);
 					}
 					else {
-						model.addAttribute("message", "Something went wrong");
+						model.addAttribute("message", UNEXPECTED_ERROR);
 						return"EditProfile";
 					}
 					
@@ -231,8 +237,9 @@ public class ProfileController {
 		}
 	}
 	private boolean checkIfFollowed(HttpSession session, int followedId) throws UserException {
-		if(session.getAttribute("USERID")!=null) {
-			int followerId = (int) session.getAttribute("USERID");
+		if(session.getAttribute("user")!=null) {
+			User user = (User) session.getAttribute("user");
+			int followerId = user.getId();
 			if(uDao.checkIfFollowExistsInDb(followerId, followedId))
 				return true;
 			else

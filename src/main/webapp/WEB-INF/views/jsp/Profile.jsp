@@ -40,10 +40,10 @@ li a:hover {
 		<h4 style="color: red;">${accessError}</h4>
 	</c:if>
 	<c:choose>
-		<c:when test="${sessionScope.USERID == id}">
+		<c:when test="${sessionScope.user.getId() == id}">
 				<jsp:include page="PostForm.jsp" />
 		</c:when>
-		<c:when test="${not empty sessionScope.USERID}">
+		<c:when test="${not empty sessionScope.user}">
 			<form method="POST" action="/Project-Friend-Book/${id}/follow">
 				<div class="follow-button">
 						<c:choose>
@@ -62,7 +62,7 @@ li a:hover {
 			<li><a class="active" href="/Project-Friend-Book/${id}">Posts</a></li>
 			<li><a href="/Project-Friend-Book/${id}?show=followers">Followers</a></li>
 			<li><a href="/Project-Friend-Book/${id}?show=followed">Followed</a></li>
-			<c:if test="${sessionScope.USERID == id}">
+			<c:if test="${sessionScope.user.getId() == id}">
 				<li><a href="/Project-Friend-Book/${id}/editProfile">Edit profile</a>
 			</c:if>
 		</ul>
@@ -120,7 +120,7 @@ li a:hover {
 					</form>
 					<a href="./comment/${post.id}" class="link-text">Comments</a>
 					<c:if
-						test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
+						test="${sessionScope.user.getId() == post.getUserId() or sessionScope.user.isAdmin() == true}">
 						<form action="/Project-Friend-Book/deletePost" method="POST">
 							<div class="delete-button">
 								<input type="hidden" name="postAuthorId"

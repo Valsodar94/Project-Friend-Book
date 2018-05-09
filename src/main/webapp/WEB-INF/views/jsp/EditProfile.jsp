@@ -13,7 +13,7 @@
 <body>
 	<jsp:include page="Header.jsp" />
 	<c:if
-		test="${sessionScope.USERID == id or sessionScope.isAdmin == true}">
+		test="${sessionScope.user.getId() == id or sessionScope.user.isAdmin() == true}">
 		<c:if test="${not empty message}">
 			<h4 style="color: red;">${message}</h4>
 		</c:if>

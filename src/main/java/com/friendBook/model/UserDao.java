@@ -72,7 +72,7 @@ public class UserDao implements IUserDao{
 	
 	
 	@Override
-	public int login(String username, String password) throws LoginException {
+	public User login(String username, String password) throws LoginException {
 		PreparedStatement pstmt;
 		if(username!=null && password!=null) {
 			try {
@@ -83,7 +83,10 @@ public class UserDao implements IUserDao{
 				ResultSet resultSet = pstmt.executeQuery();
 				
 				if (resultSet.next() && resultSet.getBoolean("is_deleted")!=true) {
-					return resultSet.getInt(1);
+					User user = new User(resultSet.getInt("user_id"),resultSet.getString("user_name"),resultSet.getString("user_pass"),resultSet.getString("user_email"));
+					user.setAdmin(resultSet.getBoolean("is_admin"));
+					user.setConfirmed(resultSet.getBoolean("is_confirmed"));
+					return user;
 				}
 				throw new LoginException(FAIL_LOGIN_MESSAGE);
 			} catch (SQLException e) {

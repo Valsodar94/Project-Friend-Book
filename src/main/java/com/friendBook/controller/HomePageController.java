@@ -36,8 +36,9 @@ public class HomePageController {
 		public String home(Model model, HttpServletRequest request){
 			try {
 				HttpSession session = request.getSession();
-				if(session.getAttribute("USERID")!=null) {
-					int userId = (int) session.getAttribute("USERID");
+				if(session.getAttribute("user")!=null) {
+					User user = (User) session.getAttribute("user");
+					int userId = user.getId();
 					try {
 						List<User> followedUsers = new LinkedList<>(uDao.getAllFollowedUsers(userId));
 						Set<Post> feed = new TreeSet<>();

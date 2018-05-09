@@ -44,7 +44,7 @@
 						<input type="submit" value="like" class="like-submit">
 					</form>					
 					<a href="./comment/${post.id}" class="link-text">Comments</a>
-					<c:if test="${sessionScope.USERID == post.getUserId() or sessionScope.isAdmin == true}">
+					<c:if test="${sessionScope.user.getId() == post.getUserId() or sessionScope.user.isAdmin() == true}">
 						<form action="/Project-Friend-Book/deletePost" method = "POST">
 							<div class="delete-button">
 								<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>

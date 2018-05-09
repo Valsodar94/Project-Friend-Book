@@ -17,9 +17,9 @@
 		<div class="homePageLink">
 			<a class="hyperlink-text hyperlink-bigger"
 				href="/Project-Friend-Book/">Home</a>
-			<c:if test="${not empty sessionScope.USER}">
+			<c:if test="${not empty sessionScope.user}">
 				<a class="hyperlink-text hyperlink-bigger"
-					href="/Project-Friend-Book/${sessionScope.USERID}">Profile</a>
+					href="/Project-Friend-Book/${sessionScope.user.getId()}">Profile</a>
 			</c:if>
 		</div>
 		<div class="wrap">
@@ -35,7 +35,7 @@
 		</div>
 		<div class="loginLogoutlink">
 			<c:choose>
-				<c:when test="${not empty fn:trim(sessionScope.USER)}">
+				<c:when test="${not empty fn:trim(sessionScope.user)}">
 					<a class="hyperlink-text hyperlink-bigger"
 						href="/Project-Friend-Book/logOut">LogOut</a>
 				</c:when>

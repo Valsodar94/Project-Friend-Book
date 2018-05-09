@@ -12,8 +12,8 @@
 <body>
 	<jsp:include page="Header.jsp" />
 	<c:choose>
-		<c:when test="${not empty sessionScope.USER}">
-				<h2 class="announce-text announce-bigger">Hello ${sessionScope.USER}</h2>
+		<c:when test="${not empty sessionScope.user}">
+				<h2 class="announce-text announce-bigger">Hello ${sessionScope.user.getUsername()}</h2>
 				<h4 class="announce-text announce-smaller">Posts from the people you follow:</h4>
 			<jsp:include page="PostList.jsp" />
 		</c:when>

@@ -67,7 +67,7 @@ public class PostController {
 			response.setCharacterEncoding("UTF-8");
 			request.setCharacterEncoding("utf-8");
 
-			if (session.getAttribute("USER") != null) {
+			if (session.getAttribute("user") != null) {
 				String text = request.getParameter("postText");
 				System.out.println("[DEBUG] PostController .publish " + text);
 				String picture = savePicture(file);
@@ -75,7 +75,8 @@ public class PostController {
 				try {
 					if (!((text == null || text.length() == 0) && (picture == null || picture.length() == 0))) {
 
-						int userId = (int) session.getAttribute("USERID");
+						User user = (User) session.getAttribute("user");
+						int userId = user.getId();
 						Post newPost = new Post(0, userId);
 						newPost.setText(text);
 						newPost.setPictureUrl(picture);
@@ -120,17 +121,14 @@ public class PostController {
 
 	}
 	
-	   @GetMapping("/uploadStatus")
-	    public String uploadStatus() {
-	        return "uploadStatus";
-	    }
 	
 	@RequestMapping(value = "/deletePost", method = RequestMethod.POST)
 	public String deletePost(@RequestParam("postId")int postId, @RequestParam("postAuthorId")int postAuthorId, Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")!=null) {
-				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= postAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
+			if(session.getAttribute("user")!=null) {
+				User user = (User) session.getAttribute("user");
+				int sessionUserId = user.getId();
+				if(sessionUserId!= postAuthorId && user.isAdmin()==false) {
 					return "redirect:/";
 				}
 				else {

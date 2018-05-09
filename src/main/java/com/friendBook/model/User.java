@@ -21,21 +21,26 @@ public class User {
 	private Set<User> followedUsers;
 	private List<Post> posts;
 	private int confirmationCode;
+	private boolean isConfirmed;
 	private boolean isAdmin;
 	
-	public User(int id, String username, String password, String email) throws UserException {
+	public User(int id, String username, String password, String email){
 		this.id = id;
-		setUsername(username);
+		this.username=username;
 		this.password = password;
 		this.email = email;
 		this.followedUsers = new HashSet<>();
 		this.posts = new ArrayList<>();		
 	}
-	
 	public boolean isAdmin() {
 		return isAdmin;
 	}
-	
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+	public void setConfirmed(boolean isConfirmed) {
+		this.isConfirmed = isConfirmed;
+	}
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}

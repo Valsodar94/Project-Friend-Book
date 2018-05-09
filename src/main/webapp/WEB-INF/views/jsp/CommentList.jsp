@@ -40,7 +40,7 @@
 					<input type="hidden" name="postId" value="${comment.getPostId()}">
 					<input type="submit" value="like" class="like-submit">
 				</form>
-				<c:if test="${sessionScope.USERID == comment.getUserId() or sessionScope.isAdmin == true}">
+				<c:if test="${sessionScope.user.getId() == comment.getUserId() or sessionScope.user.isAdmin() == true}">
 					<form action="/Project-Friend-Book/comment/${post.getId()}/deleteComment" method = "POST">
 						<input type = "hidden" name = "commentAuthorId" value = ${comment.getUserId()}>
 						<input type = "hidden" name = "commentId" value = ${comment.getId()}>
@@ -55,7 +55,7 @@
 						<c:forEach items="${comment.getAnswers()}" var="answer">
 							<p class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
 							<p class="login-field post-textContent"><c:out value="${answer.text}" /></p>
-							<c:if test="${sessionScope.USERID == answer.getUserId() or sessionScope.isAdmin == true}">
+							<c:if test="${sessionScope.user.getId() == answer.getUserId() or sessionScope.user.isAdmin() == true}">
 								<form action="/Project-Friend-Book/comment/${post.getId()}/delete" method = "POST">
 									<input type = "hidden" name = "answerAuthorId" value = ${answer.getUserId()}>
 									<input type = "hidden" name = "answerId" value = ${answer.getId()}>

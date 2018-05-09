@@ -23,6 +23,7 @@ import com.friendBook.model.CommentAnswer;
 import com.friendBook.model.CommentDAO;
 import com.friendBook.model.Post;
 import com.friendBook.model.PostDao;
+import com.friendBook.model.User;
 
 import exceptions.CommentException;
 import exceptions.LikeException;
@@ -73,7 +74,8 @@ public class CommentController {
 		String commentText = request.getParameter("commentText");
 		try {			
 			if (!(commentText == null || commentText.length() == 0)) {	
-				int userId = (int) session.getAttribute("USERID");
+				User user = (User) session.getAttribute("user");
+				int userId = user.getId();
 				Comment newComment = new Comment(0, userId, postId);
 				newComment.setText(commentText);
 				commentDao.putComment(newComment);	
@@ -120,7 +122,8 @@ public class CommentController {
 			String answerText = request.getParameter("answerText");
 			try {			
 				if (!(answerText == null || answerText.length() == 0)) {	
-					int userId = (int) session.getAttribute("USERID");
+					User user = (User) session.getAttribute("user");
+					int userId = user.getId();
 					CommentAnswer newAnswer = new CommentAnswer(0, userId, postId, commentId);
 					newAnswer.setText(answerText);
 					commentDao.answerComment(newAnswer);	
@@ -143,9 +146,10 @@ public class CommentController {
 	@RequestMapping(value = "/comment/{postId}/delete", method = RequestMethod.POST)
 	public String deleteAnswer(@PathVariable("postId") int postId, @RequestParam("answerId")int answerId, @RequestParam("answerAuthorId")int answerAuthorId, Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")!=null) {
-				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= answerAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
+			if(session.getAttribute("user")!=null) {
+				User user = (User) session.getAttribute("user");
+				int sessionUserId = user.getId();
+				if(sessionUserId!= answerAuthorId && user.isAdmin()==false) {
 					return "redirect:/";
 				}
 				else {
@@ -171,9 +175,10 @@ public class CommentController {
 	@RequestMapping(value = "/comment/{postId}/deleteComment", method = RequestMethod.POST)
 	public String deleteComment(@PathVariable("postId") int postId, @RequestParam("commentId")int commentId, @RequestParam("commentAuthorId")int commentAuthorId, Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")!=null) {
-				int sessionUserId = (int) session.getAttribute("USERID");
-				if(sessionUserId!= commentAuthorId && (boolean)session.getAttribute("isAdmin")==false) {
+			if(session.getAttribute("user")!=null) {
+				User user = (User) session.getAttribute("user");
+				int sessionUserId = user.getId();
+				if(sessionUserId!= commentAuthorId && user.isAdmin()==false) {
 					return "redirect:/";
 				}
 				else {

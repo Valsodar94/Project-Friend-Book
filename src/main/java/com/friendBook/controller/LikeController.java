@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.friendBook.model.LikeDao;
+import com.friendBook.model.User;
 
 import exceptions.LikeException;
 import exceptions.UserException;
@@ -33,8 +34,9 @@ public class LikeController {
 	@RequestMapping(value = "/like", method = RequestMethod.POST)
 	public String like(@RequestParam("postId") String postId,@RequestParam(value = "profileId", required = false) String profileId, HttpSession session, Model model) {
 		try {
-			if(session.getAttribute("USERID") !=null) {
-				int userId = (int) session.getAttribute("USERID");
+			if(session.getAttribute("user") !=null) {
+				User user = (User) session.getAttribute("user");
+				int userId = user.getId();
 				int postID = Integer.parseInt(postId);
 				ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
 				URI newUri = builder.build().toUri();
@@ -75,8 +77,9 @@ public class LikeController {
 	@RequestMapping(value = "/comment/like", method = RequestMethod.POST)
 	public String likeComment(@RequestParam("postId") String postId,@RequestParam("commentId") String commentId, HttpSession session, Model model) {
 		try {
-			if(session.getAttribute("USERID") !=null) {
-				int userId = (int) session.getAttribute("USERID");
+			if(session.getAttribute("user") !=null) {
+				User user = (User) session.getAttribute("user");
+				int userId = user.getId();
 				int commentID = Integer.parseInt(commentId);
 				
 				try {

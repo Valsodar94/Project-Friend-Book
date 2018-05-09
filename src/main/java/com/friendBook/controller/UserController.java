@@ -32,6 +32,8 @@ import exceptions.UserException;
 @Component
 @Controller
 public class UserController {
+	private static final String UNEXPECTED_ERROR = "Something went wrong, please try again";
+	private static final int SESSION_TIMEOUT = 120;
 	private static final String INVALID_EMAIL_ERROR = "No user with such mail has been registered";
 	private static final String INVALID_CONFIRMATION_CODE = "The code is invalid. Please try again";
 	private static final String EXPIRED_SESSION_ERROR_MESSAGE = "Your session has expired";
@@ -49,15 +51,12 @@ public class UserController {
 			@RequestParam("password") String password,
 			HttpSession session, Model model, HttpServletResponse response){
 		try {
-			if(session.getAttribute("USER") == null) {
+			if(session.getAttribute("user") == null) {
 				try {
-					int userId = uDao.login(username, password);
-					boolean isAdmin = uDao.checkifAdmin(userId);
+					User user = uDao.login(username, password);
 					if(uDao.checkIfAccountVerified(username)) {
-						session.setAttribute("USER", username);
-						session.setAttribute("USERID", userId);
-						session.setAttribute("isAdmin", isAdmin);
-						session.setMaxInactiveInterval(120);
+						session.setAttribute("user", user);
+						session.setMaxInactiveInterval(SESSION_TIMEOUT);
 						
 						return "redirect:/";
 					}
@@ -92,9 +91,8 @@ public class UserController {
 	@RequestMapping(value = "/logOut", method = RequestMethod.GET)
 	public String logOut(HttpSession session, Model model) {
 		try {
-			if (session.getAttribute("USER") != null) {
-				session.setAttribute("USER", null);
-				session.setAttribute("USERID", null);
+			if (session.getAttribute("user") != null) {
+				session.setAttribute("user", null);
 				session.invalidate();
 				return"redirect:/";
 			}
@@ -109,7 +107,7 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String showRegistrationForm(Model model, HttpSession session) {
 		try {
-			if(session.getAttribute("USER")== null)
+			if(session.getAttribute("user")== null)
 				return "RegistrationForm";
 			else {
 				return "redirect:/";
@@ -170,18 +168,19 @@ public class UserController {
 	@RequestMapping(value = "/confirmAccount", method = RequestMethod.POST)
 	public String confirmAccount(Model model, @RequestParam("code") String confirmationsCode, @RequestParam("username") String username, HttpSession session) {
 		try {
-			int confirmationCode = Integer.parseInt(confirmationsCode);
-			if(uDao.checkConfirmationCode(confirmationCode, username)) {
-				if(uDao.verifyAccount(username)) {
-					session.setAttribute("USER", username);
+				int confirmationCode = Integer.parseInt(confirmationsCode);
+				if(uDao.checkConfirmationCode(confirmationCode, username)) {
+					if(uDao.verifyAccount(username)) {
+						session.setAttribute("message", "You have confirmed your account sucessfully.");
+						return "redirect:/";
+					}
+					session.setAttribute("error", UNEXPECTED_ERROR);
 					return "redirect:/";
 				}
-				session.setAttribute("error", "Something went wrong, please try again");
-				return "redirect:/";
-			}
-			model.addAttribute("username", username);
-			model.addAttribute("confirmationError", INVALID_CONFIRMATION_CODE);
-			return "AccountConfirmation";
+				model.addAttribute("username", username);
+				model.addAttribute("confirmationError", INVALID_CONFIRMATION_CODE);
+				return "AccountConfirmation";
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -192,7 +191,7 @@ public class UserController {
 	@RequestMapping(value = "/forgottenPass", method = RequestMethod.GET)
 	public String showForgottenPassView(HttpSession session,Model model) {
 		try {
-			if(session.getAttribute("USER")!=null) {
+			if(session.getAttribute("user")!=null) {
 				return "redirect:/";
 			}
 			else {
@@ -206,21 +205,27 @@ public class UserController {
 		}
 	}
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
-	public String resetPass(Model model, @RequestParam("email") String email) {
+	public String resetPass(Model model, @RequestParam("email") String email,HttpSession session) {
 		try {
-			if(uDao.checkIfEmailExistsInDB(email)) {
-				Random rand = new Random();
-				String newPass = ""+rand.nextInt(8000000)+1000000;
-				if(uDao.resetPassword(email, newPass)) {
-					eSender.sendEmail(email, "Friend-Book password reset", newPass);
-					return "index";
+			if(session.getAttribute("user")!=null) {
+				if(uDao.checkIfEmailExistsInDB(email)) {
+					Random rand = new Random();
+					String newPass = ""+rand.nextInt(8000000)+1000000;
+					if(uDao.resetPassword(email, newPass)) {
+						eSender.sendEmail(email, "Friend-Book password reset", newPass);
+						return "index";
+					}
+					session.setAttribute("error", UNEXPECTED_ERROR);
+					return "redirect:/";
 				}
-				model.addAttribute("error", "Something went wrong");
-				return "index";
+				else {
+					model.addAttribute("resetPassError", INVALID_EMAIL_ERROR);
+					return"ForgottenPassword";
+				}
 			}
 			else {
-				model.addAttribute("resetPassError", INVALID_EMAIL_ERROR);
-				return"ForgottenPassword";
+				session.setAttribute("error", EXPIRED_SESSION_ERROR_MESSAGE);
+				return "redirect:/";
 			}
 		}
 		catch(Exception e) {
