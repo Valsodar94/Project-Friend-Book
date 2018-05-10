@@ -11,8 +11,7 @@
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
-	<c:choose>
-		<c:when test="${not empty users}">
+		<c:if test="${not empty users}">
 		<div class="login">
 		<h3 class="title-text">Users:</h3>
 			<c:forEach items="${users}" var="user">			
@@ -22,8 +21,8 @@
 				</ul>
 			</c:forEach>
 			</div>
-		</c:when>
-		<c:when test="${not empty posts}">
+		</c:if>
+		<c:if test="${not empty posts}">
 		<div class="profile">
 				<h3 class="title-text announce-smaller">Posts:</h3>
 			<c:forEach items="${posts}" var="post">
@@ -64,10 +63,9 @@
 					<hr>
 				</c:forEach>
 				</div>
-		</c:when>		
-		<c:otherwise>
+		</c:if>	
+		<c:if test="${empty users and empty posts}">
 			<p class="announce-text announce-smaller">There are no results matching your search</p>
-		</c:otherwise>
-	</c:choose>
+		</c:if>
 </body>
 </html>

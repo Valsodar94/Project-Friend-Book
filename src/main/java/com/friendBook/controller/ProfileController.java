@@ -158,6 +158,7 @@ public class ProfileController {
 						try {
 							User u = uDao.getUserById(id);
 							User u2 = uDao.login(u.getUsername(), pass);
+							User user3 =(User) session.getAttribute("user");
 							if(!email.equals(u.getEmail())) {
 								if(uDao.checkIfEmailExistsInDB(email)) {
 									model.addAttribute("message", EMAIL_DUPLICATE_ERROR);
@@ -168,6 +169,8 @@ public class ProfileController {
 								if(newPass!=null && newPass.trim().length()>5) {
 									if(newPassConf!=null && newPass.equals(newPassConf)) {
 										if(uDao.editProfile(id,newPass,email)) {
+											user3.setEmail(email);
+											session.setAttribute("user", user3);
 											model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
 											return"EditProfile";
 										}
@@ -183,6 +186,9 @@ public class ProfileController {
 								}
 								else {
 									if(uDao.editProfile(id,pass,email)) {
+										
+										user3.setEmail(email);
+										session.setAttribute("user", user3);
 										model.addAttribute("message", SUCESSFULL_PROFILE_EDIT_MESSAGE);
 										return"EditProfile";
 									}
@@ -197,7 +203,7 @@ public class ProfileController {
 								return"redirect:/";
 							}
 						}
-						catch(UserException e) {
+						catch(LoginException e) {
 							model.addAttribute("message", WRONG_PASSWORD_ERROR);
 							return"EditProfile";
 						}

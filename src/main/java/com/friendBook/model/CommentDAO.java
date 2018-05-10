@@ -19,6 +19,7 @@ import com.friendBook.model.LikeDao;
 
 import exceptions.CommentException;
 import exceptions.LikeException;
+import exceptions.PostException;
 
 @Component
 public class CommentDAO implements ICommentDao {
@@ -252,6 +253,12 @@ public class CommentDAO implements ICommentDao {
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new CommentException(DB_ERROR_MESSAGE, e);
+				}
 				throw new CommentException(DB_ERROR_MESSAGE, e);
 			}
 			finally {

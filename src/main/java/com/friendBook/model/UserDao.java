@@ -516,6 +516,12 @@ public class UserDao implements IUserDao{
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new UserException(DB_ERROR_MESSAGE, e);
+				}
 				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 			finally {

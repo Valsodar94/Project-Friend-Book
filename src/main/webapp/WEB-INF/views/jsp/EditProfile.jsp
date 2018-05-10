@@ -14,12 +14,13 @@
 	<jsp:include page="Header.jsp" />
 	<c:if
 		test="${sessionScope.user.getId() == id or sessionScope.user.isAdmin() == true}">
-		<c:if test="${not empty message}">
-			<h4 style="color: red;">${message}</h4>
-		</c:if>
+		
 			<div class="dummy"></div>
 			<div class="profile">
 				<form method="POST" action="/Project-Friend-Book/${id}/editProfile">
+					<c:if test="${not empty message}">
+						<h4 style="color: red;">${message}</h4>
+					</c:if>
 					<h3 class="title-text post-textContent">
 						Edit profile
 					</h3><br>

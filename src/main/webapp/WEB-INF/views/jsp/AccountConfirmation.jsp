@@ -18,7 +18,7 @@
 			<p class="login-field">Confirmation code: 
 			<input type="text" name="code" placeholder="Enter the code" class="login-input" required autofocus></p>
 			<input type="hidden" name="username" value= "${username}" >			
-		<br> <input type="submit" value="Login" class="login-submit">
+		<br> <input type="submit" value="Confirm Account" class="login-submit">
 		</form>
 	</body>
 </html>

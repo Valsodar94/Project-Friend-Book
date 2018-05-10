@@ -16,10 +16,6 @@ public interface IPostDao {
 
 	boolean checkIfTagMatchAnyOfPostTags(String postTags, String tag);
 
-	void delete() throws PostException;
-
-	void edit() throws PostException;
-
 	boolean deletePost(int postId) throws PostException;
 
 }
