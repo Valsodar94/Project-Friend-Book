@@ -13,7 +13,7 @@
 <body>
 	<jsp:include page="Header.jsp" />
 
-	<h1 class="announce-text announce-smaller">An Error has occurred</h1>
+	<h1 style="color: #3f65b7; text-align: center;">An Error has occurred</h1>
 	
 	<c:if test="${not empty errorMessage}">
 		<h4 style="color: red; text-align: center;">${errorMessage}</h4>
