@@ -215,6 +215,8 @@ public class UserDao implements IUserDao{
 				ResultSet resultSet = pstmt.executeQuery();
 				List<User> users = new LinkedList<>();
 				while(resultSet.next()) {
+					if(resultSet.getBoolean("is_deleted"))
+						continue;
 					int id = resultSet.getInt(1);
 					String username = resultSet.getString(2);
 					String password = resultSet.getString(3);
@@ -514,6 +516,12 @@ public class UserDao implements IUserDao{
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new UserException(DB_ERROR_MESSAGE, e);
+				}
 				throw new UserException(DB_ERROR_MESSAGE, e);
 			}
 			finally {

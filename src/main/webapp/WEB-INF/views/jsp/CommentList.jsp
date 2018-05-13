@@ -53,8 +53,21 @@
 					<c:when test="${comment.getAnswers().size() > 0}">
 						<h4 class="title-text announce-smaller">Answers:</h4><hr>
 						<c:forEach items="${comment.getAnswers()}" var="answer">
+							<c:if test="${not empty sessionScope.CommentMessage}">
+								<c:if test="${sessionScope.commentId == answer.getId()}">
+									<p>${sessionScope.CommentMessage}</p>
+								</c:if>
+							</c:if>
 							<p class="login-field">Published by: <a class="link-text" href = "/Project-Friend-Book/${answer.getUserId()}">${answer.getAuthorName()}</a></p>			
 							<p class="login-field post-textContent"><c:out value="${answer.text}" /></p>
+							<p class="login-field">
+								<c:out value="${answer.getLikes()} likes" />
+							</p>
+							<form method="POST" action="/Project-Friend-Book/comment/like">
+								<input type="hidden" name="commentId" value="${answer.getId()}">
+								<input type="hidden" name="postId" value="${answer.getPostId()}">
+								<input type="submit" value="like" class="like-submit">
+							</form>
 							<c:if test="${sessionScope.user.getId() == answer.getUserId() or sessionScope.user.isAdmin() == true}">
 								<form action="/Project-Friend-Book/comment/${post.getId()}/delete" method = "POST">
 									<input type = "hidden" name = "answerAuthorId" value = ${answer.getUserId()}>

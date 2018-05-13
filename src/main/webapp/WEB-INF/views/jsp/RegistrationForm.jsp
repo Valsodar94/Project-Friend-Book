@@ -12,7 +12,7 @@
 <body>
 	<jsp:include page="Header.jsp"/>
 	<form method="POST" action="register" class="login">
-		<c:if test="${not empty error}">
+		<c:if test="${not empty registrationError}">
 			<h4 style=color:red;>${registrationError}</h4>
 		</c:if>
 		<h3 class="title-text">Sign up<br></h3>

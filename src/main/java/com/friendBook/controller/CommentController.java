@@ -32,7 +32,6 @@ import exceptions.UserException;
 
 @Controller
 public class CommentController {
-//	TODO: Required in posts/comment/answer to type text.
 //	constants
 	private static final String ERROR_MESSAGE_FOR_EMPTY_COMMENT = "You can't publish an empty content. Write a text.";
 	private static final Object ERROR_MESSAGE_FOR_INVALID_PAGE = "The page you are looking for doesn't exist or you don't have access";
@@ -44,8 +43,7 @@ public class CommentController {
 	private CommentDAO commentDao;
 	
 	@RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
-	public String getComments(@PathVariable("id") int postId, Model model, HttpServletRequest request) {
-//		TODO:check if post with that id is deleted
+	public String getComments(@PathVariable("id") int postId, Model model, HttpServletRequest request, HttpSession session) {
 		try {
 			try {
 				List<Comment> commentsOnPost = new LinkedList<>(commentDao.extractComments(postId));
@@ -56,8 +54,8 @@ public class CommentController {
 				return "CommentList";
 			} catch (CommentException | PostException e) {
 				e.printStackTrace();
-				model.addAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
-				return "error";
+				session.setAttribute("errorMessage", ERROR_MESSAGE_FOR_INVALID_PAGE);
+				return "redirect:/error";
 
 			}
 		}

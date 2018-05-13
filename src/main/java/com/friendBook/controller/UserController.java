@@ -33,6 +33,8 @@ import exceptions.UserException;
 @Component
 @Controller
 public class UserController implements RandomCodeGenerator {
+	private static final String PASSWORD_RESET_TEXT = "You have successfully reset your password. Your new password is: ";
+	private static final String TITLE_FOR_PASSWORD_RESET_EMAIL = "Friend-Book password reset";
 	private static final String EMAIL_REGISTRATION_TITLE = "Friend-Book email confirmation";
 	private static final String UNEXPECTED_ERROR = "Something went wrong, please try again";
 	private static final int SESSION_TIMEOUT = 60*10;
@@ -175,7 +177,7 @@ public class UserController implements RandomCodeGenerator {
 				int confirmationCode = Integer.parseInt(confirmationsCode);
 				if(uDao.checkConfirmationCode(confirmationCode, username)) {
 					if(uDao.verifyAccount(username)) {
-						session.setAttribute("message", "You have confirmed your account sucessfully.");
+						session.setAttribute("accountConfirmMessage", "You have confirmed your account sucessfully.");
 						return "redirect:/";
 					}
 					session.setAttribute("error", UNEXPECTED_ERROR);
@@ -214,7 +216,7 @@ public class UserController implements RandomCodeGenerator {
 			if(uDao.checkIfEmailExistsInDB(email)) {
 				String newPass = ""+RandomCodeGenerator.generateRandomCode();
 				if(uDao.resetPassword(email, newPass)) {
-					eSender.sendEmail(email, "Friend-Book password reset", newPass);
+					eSender.sendEmail(email, TITLE_FOR_PASSWORD_RESET_EMAIL, PASSWORD_RESET_TEXT+newPass);
 					return "redirect:/";
 				}
 				session.setAttribute("error", UNEXPECTED_ERROR);

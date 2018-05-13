@@ -24,7 +24,7 @@ public class UserTests {
 
 	@Test(expected = LoginException.class)
 	public void testBadUsername() throws LoginException {
-		uDao.login("raditass", "123456");
+		uDao.login("raditasssss", "123456");
 	}
 	
 	@Test(expected = LoginException.class)
@@ -32,16 +32,6 @@ public class UserTests {
 		uDao.login("raditas", "1234567");
 	}
 	
-	@Test
-	public void testSucesslogin() throws LoginException {
-		assertEquals(12,uDao.login("raditas", "123456"));
-	}
-	
-	@Test
-	public void registerSuccess()throws UserException, RegisterException {
-		User u = new User(0,"Kolio","123456","kolio@abv.bg");
-		assertTrue(uDao.register(u) > 0);
-	}
 	
 	@Test(expected = RegisterException.class)
 	public void registerFailDuplicateUsername() throws UserException, RegisterException {

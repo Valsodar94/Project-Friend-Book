@@ -32,10 +32,6 @@ public class LikeTests {
 	public void testWrongIdInput() throws LikeException {
 		assertTrue(lDao.checkIfLikeExistsInDb(-3, 3));
 	}
-	@Test
-	public void testLikeSuccess() throws LikeException {
-		assertTrue(lDao.likeAPost(187, 3));
-	}
 	@Test(expected = LikeException.class)
 	public void testLikeFailDuplicate() throws LikeException {
 		assertFalse(lDao.likeAPost(99, 3));

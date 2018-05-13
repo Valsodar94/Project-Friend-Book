@@ -19,6 +19,7 @@ import com.friendBook.model.LikeDao;
 
 import exceptions.CommentException;
 import exceptions.LikeException;
+import exceptions.PostException;
 
 @Component
 public class CommentDAO implements ICommentDao {
@@ -120,11 +121,13 @@ public class CommentDAO implements ICommentDao {
 				answer.setTime(LocalDateTime.parse(resultSet.getString("comment_time"),
 						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
 				answer.setAuthorName(resultSet.getString("user_name"));
+				List<Integer> likedCommentUserIds = new LinkedList<>(likeDao.getUsersIdForLikedComment(resultSet.getInt("comment_id")));
+				answer.setLikes(likedCommentUserIds.size());
 				comentAnswers.add(answer);
 			}
 			Collections.sort(comentAnswers);
 			return comentAnswers;
-		} catch (SQLException e) {
+		} catch (SQLException | LikeException e) {
 			e.printStackTrace();
 			throw new CommentException(DB_ERROR_MESSAGE, e);
 		}
@@ -250,6 +253,12 @@ public class CommentDAO implements ICommentDao {
 					return false;
 			} catch (SQLException e) {
 				e.printStackTrace();
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new CommentException(DB_ERROR_MESSAGE, e);
+				}
 				throw new CommentException(DB_ERROR_MESSAGE, e);
 			}
 			finally {

@@ -22,6 +22,9 @@
 				<c:if test="${not empty error}">
 					<h4 style=color:red;>${error}</h4>
 				</c:if>
+				<c:if test="${not empty accountConfirmMessage}">
+					<h4 style=color:white;>${accountConfirmMessage}</h4>
+				</c:if>
 			
 				<h3 class="title-text">
 					FriendBook<br>

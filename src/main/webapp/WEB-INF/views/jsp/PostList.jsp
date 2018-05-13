@@ -49,7 +49,7 @@
 							<div class="delete-button">
 								<input type = "hidden" name = "postAuthorId" value = ${post.getUserId()}>
 								<input type = "hidden" name = "postId" value = ${post.getId()}>
-								<input class="login-submit" type="submit" value="Delete post">
+								<input class="login-submit" type="submit" value="Delete">
 							</div>
 						</form>
 					</c:if>
